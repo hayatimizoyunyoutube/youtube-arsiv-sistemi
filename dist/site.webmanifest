@@ -1,0 +1,8 @@
+{
+  "name": "Hayatımız Oyun Arşivi",
+  "short_name": "Hayatımız Oyun",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070816",
+  "theme_color": "#070816"
+}
