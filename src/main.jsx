@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 import SeriesCard from './components/SeriesCard.jsx';
@@ -8,7 +8,7 @@ import { channels } from './data/channels.js';
 import { completedUpdates, plannedUpdates } from './data/updates.js';
 import { siteConfig } from './config/site.js';
 import { supabasePublicConfig } from './lib/supabasePublic.js';
-import { clearAdminSession, getAdminSession, signInAdminWithPassword, supabaseAuthConfig } from './lib/supabaseAuth.js';
+import { clearAdminSession, createAdminSeries, deleteAdminSeries, getAdminSession, listAdminSeries, signInAdminWithPassword, supabaseAuthConfig, updateAdminSeries } from './lib/supabaseAuth.js';
 
 const VERSION = siteConfig.version;
 
@@ -71,10 +71,10 @@ function HomePage() {
     <Layout>
       <section className="hero-card showcase-hero">
         <div className="showcase-copy">
-          <div className="version-pill">🔐 {VERSION} • Admin Giriş Başlangıcı</div>
+          <div className="version-pill">🔐 {VERSION} • Seri Yönetimi Başlangıcı</div>
           <h1>Hayatımız Oyun arşivinin sürüm takibi artık daha düzenli.</h1>
           <p>
-            Bu sürümde Supabase Auth tabanlı güvenli admin giriş başlangıcı, çıkış akışı ve korumalı yönetim başlangıç sayfası eklendi.
+            Bu sürümde admin panelde Supabase bağlantılı seri ekleme, düzenleme ve silme başlangıcı eklendi.
           </p>
           <div className="hero-actions">
             <a href="/series" className="primary-btn">Serileri Keşfet</a>
@@ -863,7 +863,8 @@ function StatusPage() {
     { path: '/channels', label: 'Kanallar', note: 'Kanal merkezi' },
     { path: '/channels/hayatimiz-oyun', label: 'Kanal Detayı', note: 'Ayrı kanal sayfası' },
     { path: '/updates', label: 'Güncellemeler', note: 'Tamamlanan ve planlanan sürümler' },
-    { path: '/status', label: 'Durum', note: 'Bu kontrol sayfası' }
+    { path: '/status', label: 'Durum', note: 'Bu kontrol sayfası' },
+    { path: '/admin', label: 'Admin', note: 'Admin giriş ve seri yönetimi' }
   ];
 
   const stabilityChecks = [
@@ -878,8 +879,8 @@ function StatusPage() {
       <section className="updates-hero status-hero">
         <div>
           <span>✅ Durum Kontrolü</span>
-          <h1>v1.1.0 stabilite ve temizlik kontrolü</h1>
-          <p>Bu sayfa v1.1.0 Supabase geçişinden önce public route, kırık link, boş durum, 404 ve temel içerik kontrolünde kullanılır. Hâlâ veritabanı/API yok; sadece stabil public demo yapı test ediliyor.</p>
+          <h1>v1.1.2 seri yönetimi ve Supabase kontrolü</h1>
+          <p>Bu sayfa v1.1.2 sonrası ana site üzerinde Supabase, admin giriş ve seri yönetimi kontrolünde kullanılır. YouTube API ve RAWG hâlâ eklenmedi.</p>
         </div>
         <div className="release-target">
           <small>Mevcut sürüm</small>
@@ -908,7 +909,7 @@ function StatusPage() {
       <section className="updates-section">
         <div className="section-heading">
           <span>🧪 Stabilite Kontrolleri</span>
-          <h2>v1.1.0 öncesi yapılacak son local testler</h2>
+          <h2>Ana site üzerinde yapılacak kontroller</h2>
           <p>Bu kontroller tamamlanmadan Supabase tarafına geçilmeyecek.</p>
         </div>
         <div className="status-grid">
@@ -924,11 +925,11 @@ function StatusPage() {
       <section className="notes-card">
         <h2>🚫 Bilerek Eklenmeyenler</h2>
         <ul>
-          <li>Supabase bağlantısı yok.</li>
+          <li>Supabase bağlantısı var ve v1.1.2 için gereklidir.</li>
+          <li>Status başarı notu: schema.sql çalışınca public_series yönetimi hazır.</li>
           <li>YouTube playlist çekme yok.</li>
           <li>RAWG / Steam otomasyonu yok.</li>
-          <li>Admin paneli yok.</li>
-          <li>Kullanıcı giriş sistemi yok.</li>
+          <li>Gelişmiş rol/yetki sistemi henüz yok.</li>
         </ul>
       </section>
     </Layout>
@@ -938,13 +939,16 @@ function StatusPage() {
 function Updates() {
   return (
     <section id="guncellemeler" className="notes-card">
-      <h2>📌 v1.1.0 Tamamlananlar</h2>
+      <h2>📌 v1.1.2 Tamamlananlar</h2>
       <ul>
         <li>✅ v1.1.0 öncesi stabilite kontrol sayfası güncellendi.</li>
         <li>🔗 Public route ve kırık link kontrol listesi netleştirildi.</li>
         <li>🧪 Boş durum, 404 ve local test akışı toparlandı.</li>
         <li>📋 v1.1.0 tamamlananlara taşındı, v1.1.0 ilk Supabase planı sıraya alındı.</li>
-        <li>🚫 Admin giriş başlangıcı eklendi; veri yönetimi, YouTube API ve RAWG hâlâ eklenmedi.</li>
+        <li>✅ Admin panelde seri ekleme, düzenleme ve silme başlangıcı eklendi.</li>
+        <li>🟢 Supabase gereklidir: işlemler public_series tablosuna yazılır.</li>
+        <li>🧾 Status başarı kısmına v1.1.2 Supabase notu eklendi.</li>
+        <li>🛡️ GitHub/Vercel akışı için PS1 yerine BAT dosyaları eklendi.</li>
       </ul>
     </section>
   );
@@ -953,8 +957,8 @@ function Updates() {
 function NextPlan() {
   return (
     <section id="sonraki" className="next-card">
-      <h2>➡️ Sonraki Plan: v1.1.2</h2>
-      <p>Seri yönetimi başlayacak. Admin panelde seri ekleme, düzenleme ve silme akışı küçük adımlarla eklenecek.</p>
+      <h2>➡️ Sonraki Plan: v1.1.3</h2>
+      <p>Kategori yönetimi başlayacak. Admin panelde kategori ekleme, düzenleme ve silme akışı küçük adımlarla eklenecek.</p>
     </section>
   );
 }
@@ -993,7 +997,7 @@ function AdminLoginPage() {
         <div className="admin-hero">
           <div className="version-pill">🔐 {VERSION} • Admin Giriş</div>
           <h1>Yönetim paneli için güvenli giriş başlangıcı.</h1>
-          <p>Bu sürüm sadece giriş/çıkış ve korumalı admin başlangıç ekranını ekler. Seri ekleme, kategori yönetimi ve YouTube otomasyonu sonraki sürümlerde gelecek.</p>
+          <p>Bu sürüm admin girişine ek olarak Supabase public_series tablosu üzerinde seri ekleme, düzenleme ve silme başlangıcını ekler.</p>
         </div>
 
         <div className="admin-grid">
@@ -1030,6 +1034,192 @@ function AdminLoginPage() {
   );
 }
 
+
+function AdminSeriesManager({ session }) {
+  const emptyForm = {
+    slug: '',
+    title: '',
+    description: '',
+    category_slug: 'korku',
+    category_title: 'Korku',
+    channel_slug: 'hayatimiz-oyun',
+    channel_title: 'Hayatımız Oyun',
+    status: 'Planlandı',
+    episodes: 0,
+    progress: 0,
+    cover_url: '',
+    is_public: true,
+    sort_order: 100,
+  };
+
+  const [rows, setRows] = useState([]);
+  const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  async function loadRows() {
+    setLoading(true);
+    const result = await listAdminSeries(session);
+    setLoading(false);
+    if (result.error) {
+      setMessage(result.error);
+      return;
+    }
+    setRows(result.data);
+    setMessage(`Başarı: ${result.data.length} seri Supabase public_series tablosundan yüklendi.`);
+  }
+
+  useEffect(() => {
+    loadRows();
+  }, []);
+
+  function updateField(name, value) {
+    setForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function editRow(row) {
+    setEditingId(row.id);
+    setForm({
+      slug: row.slug || '',
+      title: row.title || '',
+      description: row.description || '',
+      category_slug: row.category_slug || 'korku',
+      category_title: row.category_title || 'Korku',
+      channel_slug: row.channel_slug || 'hayatimiz-oyun',
+      channel_title: row.channel_title || 'Hayatımız Oyun',
+      status: row.status || 'Planlandı',
+      episodes: row.episodes || 0,
+      progress: row.progress || 0,
+      cover_url: row.cover_url || '',
+      is_public: row.is_public !== false,
+      sort_order: row.sort_order || 100,
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    setEditingId(null);
+    setForm(emptyForm);
+  }
+
+  async function submitForm(event) {
+    event.preventDefault();
+    setLoading(true);
+    setMessage('');
+
+    const payload = {
+      ...form,
+      slug: form.slug.trim().toLocaleLowerCase('tr-TR').replaceAll(' ', '-'),
+      title: form.title.trim(),
+      episodes: Number(form.episodes) || 0,
+      progress: Math.max(0, Math.min(100, Number(form.progress) || 0)),
+      sort_order: Number(form.sort_order) || 100,
+    };
+
+    const result = editingId
+      ? await updateAdminSeries(session, editingId, payload)
+      : await createAdminSeries(session, payload);
+
+    setLoading(false);
+
+    if (result.error) {
+      setMessage(result.error);
+      return;
+    }
+
+    setMessage(editingId ? 'Başarı: seri Supabase üzerinde güncellendi.' : 'Başarı: yeni seri Supabase public_series tablosuna eklendi.');
+    resetForm();
+    await loadRows();
+  }
+
+  async function removeRow(row) {
+    const confirmed = window.confirm(`${row.title} serisi silinsin mi?`);
+    if (!confirmed) return;
+    setLoading(true);
+    const result = await deleteAdminSeries(session, row.id);
+    setLoading(false);
+    if (result.error) {
+      setMessage(result.error);
+      return;
+    }
+    setMessage('Başarı: seri Supabase üzerinden silindi.');
+    await loadRows();
+  }
+
+  return (
+    <section className="admin-series-manager">
+      <div className="admin-grid">
+        <form className="admin-card login-card series-form-card" onSubmit={submitForm}>
+          <h2>{editingId ? 'Seriyi Düzenle' : 'Yeni Seri Ekle'}</h2>
+          <p>Bu alan Supabase gerektirir. Vercel Environment Variables içinde VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yoksa işlem yapılmaz.</p>
+
+          <div className="form-two-col">
+            <label>Slug<input value={form.slug} onChange={(event) => updateField('slug', event.target.value)} placeholder="resident-evil" required /></label>
+            <label>Başlık<input value={form.title} onChange={(event) => updateField('title', event.target.value)} placeholder="Resident Evil" required /></label>
+          </div>
+
+          <label>Açıklama<textarea value={form.description} onChange={(event) => updateField('description', event.target.value)} placeholder="Seri açıklaması" rows="4" /></label>
+
+          <div className="form-two-col">
+            <label>Kategori Slug<input value={form.category_slug} onChange={(event) => updateField('category_slug', event.target.value)} /></label>
+            <label>Kategori Başlığı<input value={form.category_title} onChange={(event) => updateField('category_title', event.target.value)} /></label>
+            <label>Kanal Slug<input value={form.channel_slug} onChange={(event) => updateField('channel_slug', event.target.value)} /></label>
+            <label>Kanal Başlığı<input value={form.channel_title} onChange={(event) => updateField('channel_title', event.target.value)} /></label>
+            <label>Durum<select value={form.status} onChange={(event) => updateField('status', event.target.value)}><option>Tamamlandı</option><option>Devam Ediyor</option><option>Planlandı</option><option>Yakında</option></select></label>
+            <label>Bölüm Sayısı<input type="number" value={form.episodes} onChange={(event) => updateField('episodes', event.target.value)} /></label>
+            <label>İlerleme %<input type="number" min="0" max="100" value={form.progress} onChange={(event) => updateField('progress', event.target.value)} /></label>
+            <label>Sıra<input type="number" value={form.sort_order} onChange={(event) => updateField('sort_order', event.target.value)} /></label>
+          </div>
+
+          <label>Kapak URL<input value={form.cover_url} onChange={(event) => updateField('cover_url', event.target.value)} placeholder="https://..." /></label>
+          <label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={(event) => updateField('is_public', event.target.checked)} /> Public görünsün</label>
+
+          <div className="hero-actions">
+            <button className="primary-btn" type="submit" disabled={loading}>{loading ? 'Kaydediliyor...' : editingId ? 'Güncelle' : 'Seri Ekle'}</button>
+            {editingId ? <button className="ghost-btn" type="button" onClick={resetForm}>Vazgeç</button> : null}
+          </div>
+          {message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}
+        </form>
+
+        <aside className="admin-card">
+          <h2>v1.1.2 Durumu</h2>
+          <ul className="check-list compact-list">
+            <li className={supabaseAuthConfig.isReady ? 'ok' : 'warn'}>Supabase env: {supabaseAuthConfig.isReady ? 'hazır' : 'eksik'}</li>
+            <li className="ok">schema.sql başarı notu v1.1.2 olarak güncellendi.</li>
+            <li>YouTube, RAWG ve Steam hâlâ eklenmedi.</li>
+            <li>Bu sürüm ana sitede Vercel deploy sonrası test edilecek.</li>
+          </ul>
+          <button className="ghost-btn" type="button" onClick={loadRows}>Listeyi Yenile</button>
+        </aside>
+      </div>
+
+      <div className="admin-card admin-table-card">
+        <h2>Supabase Seri Listesi</h2>
+        <p>{loading ? 'Yükleniyor...' : `${rows.length} kayıt listeleniyor.`}</p>
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead><tr><th>Başlık</th><th>Durum</th><th>Kategori</th><th>Bölüm</th><th>Public</th><th>İşlem</th></tr></thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td><strong>{row.title}</strong><small>{row.slug}</small></td>
+                  <td>{row.status}</td>
+                  <td>{row.category_title}</td>
+                  <td>{row.episodes}</td>
+                  <td>{row.is_public ? 'Evet' : 'Hayır'}</td>
+                  <td><button type="button" onClick={() => editRow(row)}>Düzenle</button><button type="button" onClick={() => removeRow(row)}>Sil</button></td>
+                </tr>
+              ))}
+              {!rows.length ? <tr><td colSpan="6">Kayıt yok veya Supabase env/policy eksik.</td></tr> : null}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AdminPanelPage() {
   const session = getAdminSession();
 
@@ -1047,28 +1237,15 @@ function AdminPanelPage() {
       <section className="admin-shell">
         <div className="admin-hero">
           <div className="version-pill">✅ {VERSION} • Korumalı Alan</div>
-          <h1>Admin başlangıç paneli hazır.</h1>
-          <p>Giriş başarılı. Bu panel şimdilik sadece güvenli girişin çalıştığını gösterir; veri yönetimi sonraki sürümlerde parça parça eklenecek.</p>
+          <h1>Admin seri yönetimi hazır.</h1>
+          <p>Giriş başarılı. Bu panelde ilk kez Supabase public_series tablosuna bağlı seri yönetimi başladı.</p>
           <div className="hero-actions">
             <button className="ghost-btn" type="button" onClick={handleLogout}>Çıkış Yap</button>
             <a href="/updates" className="ghost-btn">Sürüm Notları</a>
           </div>
         </div>
 
-        <div className="admin-grid three-col">
-          <div className="admin-card">
-            <h2>v1.1.2</h2>
-            <p>Seri yönetimi: ekle, düzenle ve sil.</p>
-          </div>
-          <div className="admin-card">
-            <h2>v1.1.3</h2>
-            <p>Kategori yönetimi: kategori ekleme ve düzenleme.</p>
-          </div>
-          <div className="admin-card">
-            <h2>v1.1.4</h2>
-            <p>Kanal yönetimi: kanal kayıtlarını yönetme.</p>
-          </div>
-        </div>
+        <AdminSeriesManager session={session} />
       </section>
     </Layout>
   );

@@ -1,12 +1,19 @@
 {
   "name": "Hayatımız Oyun YouTube Arşivi",
-  "version": "v1.1.1",
+  "version": "v1.1.2",
   "release": "Admin Giriş Sistemi",
-  "status": "ok",
+  "status": "success",
   "features": [
     "public routes",
     "supabase public data",
     "admin login start"
   ],
-  "note": "API key ve şifreler repoya eklenmez."
+  "note": "API key ve şifreler repoya eklenmez.",
+  "releaseName": "v1.1.2 Seri Yönetimi",
+  "supabaseStatus": "schema.sql başarı kısmında v1.1.2 seri yönetimi yazacak. Supabase gereklidir: admin seri ekle/düzenle/sil işlemleri public_series tablosuna yazar.",
+  "notes": [
+    "Admin seri yönetimi eklendi",
+    "BAT dosyaları eklendi",
+    "Vercel üzerinden deploy akışı kullanılacak"
+  ]
 }

@@ -1,25 +1,9 @@
-# Bağımlılıklar
-node_modules/
-
-# Build çıktıları
-dist/
-.vite/
-
-# Gizli anahtarlar / ortam değişkenleri
+node_modules
+dist
 .env
 .env.local
-.env.development
 .env.production
-.env.*.local
-
-# Log dosyaları
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Sistem / editör
+.env.development
+.vercel
+*.log
 .DS_Store
-Thumbs.db
-.vscode/
-.idea/

@@ -27,9 +27,18 @@ export function clearAdminSession() {
   window.localStorage.removeItem(SESSION_KEY);
 }
 
+function authHeaders(session, prefer = '') {
+  return {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${session?.access_token || SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json',
+    ...(prefer ? { Prefer: prefer } : {}),
+  };
+}
+
 export async function signInAdminWithPassword(email, password) {
   if (!supabaseAuthConfig.isReady) {
-    return { data: null, error: 'Supabase env bilgileri yok. Vercel ve .env.local içine VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY eklenmeli.' };
+    return { data: null, error: 'Supabase env bilgileri yok. Vercel Environment Variables içine VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY eklenmeli.' };
   }
 
   try {
@@ -60,5 +69,68 @@ export async function signInAdminWithPassword(email, password) {
     return { data: session, error: null };
   } catch (error) {
     return { data: null, error: error?.message || 'Giriş bağlantı hatası' };
+  }
+}
+
+export async function listAdminSeries(session) {
+  if (!supabaseAuthConfig.isReady) return { data: [], error: 'Supabase env eksik.' };
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series?select=*&order=sort_order.asc`, {
+      headers: authHeaders(session),
+    });
+    const payload = await response.json().catch(() => []);
+    if (!response.ok) return { data: [], error: payload?.message || `Listeleme hatası: ${response.status}` };
+    return { data: Array.isArray(payload) ? payload : [], error: null };
+  } catch (error) {
+    return { data: [], error: error?.message || 'Seri listesi alınamadı.' };
+  }
+}
+
+export async function createAdminSeries(session, form) {
+  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series`, {
+      method: 'POST',
+      headers: authHeaders(session, 'return=representation'),
+      body: JSON.stringify([form]),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) return { data: null, error: payload?.message || `Ekleme hatası: ${response.status}` };
+    return { data: Array.isArray(payload) ? payload[0] : payload, error: null };
+  } catch (error) {
+    return { data: null, error: error?.message || 'Seri eklenemedi.' };
+  }
+}
+
+export async function updateAdminSeries(session, id, form) {
+  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: authHeaders(session, 'return=representation'),
+      body: JSON.stringify({ ...form, updated_at: new Date().toISOString() }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) return { data: null, error: payload?.message || `Güncelleme hatası: ${response.status}` };
+    return { data: Array.isArray(payload) ? payload[0] : payload, error: null };
+  } catch (error) {
+    return { data: null, error: error?.message || 'Seri güncellenemedi.' };
+  }
+}
+
+export async function deleteAdminSeries(session, id) {
+  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: authHeaders(session),
+    });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      return { data: null, error: payload?.message || `Silme hatası: ${response.status}` };
+    }
+    return { data: true, error: null };
+  } catch (error) {
+    return { data: null, error: error?.message || 'Seri silinemedi.' };
   }
 }

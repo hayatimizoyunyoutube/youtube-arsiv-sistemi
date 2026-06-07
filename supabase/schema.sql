@@ -1,7 +1,6 @@
 -- Hayatımız Oyun YouTube Arşivi
--- v1.1.0 - İlk Supabase Public Veri Başlangıcı
--- Bu sürüm sadece public seri listesi için başlangıç tablosu ekler.
--- Admin/Auth/YouTube/RAWG yoktur.
+-- v1.1.2 - Seri Yönetimi
+-- Supabase gereklidir: admin panelde seri ekle/düzenle/sil işlemleri public_series tablosuna yazar.
 
 create table if not exists public.public_series (
   id uuid primary key default gen_random_uuid(),
@@ -28,7 +27,29 @@ drop policy if exists "Public series can be read by everyone" on public.public_s
 create policy "Public series can be read by everyone"
   on public.public_series
   for select
-  using (is_public = true);
+  using (is_public = true or auth.role() = 'authenticated');
+
+drop policy if exists "Authenticated admins can insert public series" on public.public_series;
+create policy "Authenticated admins can insert public series"
+  on public.public_series
+  for insert
+  to authenticated
+  with check (true);
+
+drop policy if exists "Authenticated admins can update public series" on public.public_series;
+create policy "Authenticated admins can update public series"
+  on public.public_series
+  for update
+  to authenticated
+  using (true)
+  with check (true);
+
+drop policy if exists "Authenticated admins can delete public series" on public.public_series;
+create policy "Authenticated admins can delete public series"
+  on public.public_series
+  for delete
+  to authenticated
+  using (true);
 
 insert into public.public_series (
   slug, title, description, category_slug, category_title, channel_slug, channel_title, status, episodes, progress, cover_url, sort_order
@@ -49,3 +70,7 @@ on conflict (slug) do update set
   cover_url = excluded.cover_url,
   sort_order = excluded.sort_order,
   updated_at = now();
+
+-- STATUS BAŞARI NOTU:
+-- v1.1.2 başarıyla çalıştıysa admin seri yönetimi için public_series tablosu hazırdır.
+-- Vercel Environment Variables içinde VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ekli olmalıdır.
