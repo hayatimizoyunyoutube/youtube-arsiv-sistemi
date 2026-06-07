@@ -68,10 +68,10 @@ function HomePage() {
     <Layout>
       <section className="hero-card showcase-hero">
         <div className="showcase-copy">
-          <div className="version-pill">🎬 {VERSION} • Profesyonel Ana Sayfa Vitrini</div>
-          <h1>Hayatımız Oyun arşivi artık daha sinematik görünüyor.</h1>
+          <div className="version-pill">🎬 {VERSION} • Güncelleme Merkezi</div>
+          <h1>Hayatımız Oyun arşivinin sürüm takibi artık daha düzenli.</h1>
           <p>
-            Bu sürümde ana sayfa büyük hero, vitrin kartları, devam eden seriler, son eklenenler ve hızlı keşif alanlarıyla public beta görünümünden profesyonel arşiv platformuna yaklaştırıldı.
+            Bu sürümde güncelleme merkezi yenilendi; tamamlanan ve planlanan sürümler daha okunur, daha profesyonel ve mobil uyumlu hale getirildi.
           </p>
           <div className="hero-actions">
             <a href="/series" className="primary-btn">Serileri Keşfet</a>
@@ -170,8 +170,8 @@ function HomePage() {
 
       <section className="beta-panel">
         <div>
-          <span>✅ v1.0.3 Durumu</span>
-          <h2>Profesyonel ana sayfa vitrini tamamlandı.</h2>
+          <span>✅ v1.0.7 Durumu</span>
+          <h2>Güncelleme merkezi geliştirildi.</h2>
           <p>Bu aşamada hâlâ Supabase, YouTube API, RAWG, Steam ve admin paneli yok. Önce public arayüz parça parça sağlamlaştırılıyor.</p>
         </div>
         <ul>
@@ -193,13 +193,18 @@ function SeriesPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [channelFilter, setChannelFilter] = useState('all');
+  const [sortMode, setSortMode] = useState('featured');
+  const [viewMode, setViewMode] = useState('grid');
 
   const statusOptions = useMemo(() => [...new Set(series.map((item) => item.status))], []);
+  const totalEpisodes = series.reduce((sum, item) => sum + item.episodes, 0);
+  const completedCount = series.filter((item) => item.status === 'Tamamlandı').length;
+  const activeCount = series.filter((item) => item.status === 'Devam Ediyor').length;
 
   const filteredSeries = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('tr-TR');
 
-    return series.filter((item) => {
+    const result = series.filter((item) => {
       const searchableText = `${item.title} ${item.description} ${item.category} ${item.channelTitle} ${item.status}`.toLocaleLowerCase('tr-TR');
       const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch);
       const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
@@ -208,31 +213,69 @@ function SeriesPage() {
 
       return matchesSearch && matchesStatus && matchesCategory && matchesChannel;
     });
-  }, [searchTerm, statusFilter, categoryFilter, channelFilter]);
+
+    return [...result].sort((a, b) => {
+      if (sortMode === 'episodes-desc') return b.episodes - a.episodes;
+      if (sortMode === 'progress-desc') return b.progress - a.progress;
+      if (sortMode === 'year-desc') return b.year - a.year;
+      if (sortMode === 'title-asc') return a.title.localeCompare(b.title, 'tr');
+      return a.id - b.id;
+    });
+  }, [searchTerm, statusFilter, categoryFilter, channelFilter, sortMode]);
 
   const clearFilters = () => {
     setSearchTerm('');
     setStatusFilter('all');
     setCategoryFilter('all');
     setChannelFilter('all');
+    setSortMode('featured');
   };
+
+  const activeFilterLabels = [
+    searchTerm.trim() ? `Arama: ${searchTerm.trim()}` : null,
+    statusFilter !== 'all' ? `Durum: ${statusFilter}` : null,
+    categoryFilter !== 'all' ? `Kategori: ${categories.find((item) => item.slug === categoryFilter)?.title}` : null,
+    channelFilter !== 'all' ? `Kanal: ${channels.find((item) => item.slug === channelFilter)?.title}` : null,
+    sortMode !== 'featured' ? `Sıralama: ${sortMode}` : null
+  ].filter(Boolean);
 
   return (
     <Layout>
-      <section className="series-section">
-        <div className="section-heading">
-          <span>🔎 Demo Arşiv Arama</span>
+      <section className="series-library-hero">
+        <div>
+          <div className="version-pill">🎞️ {VERSION} • Seriler Sayfası Profesyonel Yenileme</div>
+          <h1>Seri arşivi artık daha düzenli ve okunabilir.</h1>
+          <p>
+            Grid/liste görünümü, gelişmiş filtre paneli, sıralama seçenekleri ve daha belirgin seri geçişleriyle public seri sayfası güçlendirildi.
+          </p>
+          <div className="hero-actions">
+            <a className="primary-btn" href="#seri-listesi">Serileri görüntüle</a>
+            <a className="ghost-btn" href="/categories">Kategoriler</a>
+            <a className="ghost-btn" href="/channels">Kanallar</a>
+          </div>
+        </div>
+        <aside className="library-stats-panel">
+          <article><strong>{series.length}</strong><span>Toplam seri</span></article>
+          <article><strong>{totalEpisodes}</strong><span>Demo bölüm</span></article>
+          <article><strong>{completedCount}</strong><span>Tamamlanan</span></article>
+          <article><strong>{activeCount}</strong><span>Devam eden</span></article>
+        </aside>
+      </section>
+
+      <section className="series-section" id="seri-listesi">
+        <div className="section-heading library-heading">
+          <span>🔎 Profesyonel Seri Kütüphanesi</span>
           <h2>Seriler</h2>
-          <p>Seri adı, açıklama, kategori, kanal ve duruma göre arama/filtreleme yap. Her seri yine kendi detay sayfasında açılır.</p>
+          <p>Seri adı, açıklama, kategori, kanal ve duruma göre arama/filtreleme yap. Her seri kendi detay sayfasında açılır.</p>
         </div>
 
-        <div className="filter-panel" aria-label="Seri arama ve filtreleme paneli">
-          <label className="search-field">
+        <div className="pro-filter-panel" aria-label="Seri arama ve filtreleme paneli">
+          <label className="search-field wide-search">
             <span>Seri ara</span>
             <input
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Resident Evil, korku, hikaye..."
+              placeholder="Resident Evil, korku, hikaye, devam eden..."
             />
           </label>
 
@@ -259,18 +302,56 @@ function SeriesPage() {
               {channels.map((channel) => <option key={channel.slug} value={channel.slug}>{channel.title}</option>)}
             </select>
           </label>
+
+          <label>
+            <span>Sıralama</span>
+            <select value={sortMode} onChange={(event) => setSortMode(event.target.value)}>
+              <option value="featured">Varsayılan sıra</option>
+              <option value="episodes-desc">Bölüm sayısı yüksek</option>
+              <option value="progress-desc">İlerleme yüksek</option>
+              <option value="year-desc">Yıl yeni</option>
+              <option value="title-asc">Ada göre A-Z</option>
+            </select>
+          </label>
         </div>
 
-        <div className="filter-summary">
-          <strong>{filteredSeries.length}</strong>
-          <span>/ {series.length} demo seri gösteriliyor</span>
-          <button type="button" onClick={clearFilters}>Filtreleri temizle</button>
+        <div className="library-toolbar">
+          <div className="filter-summary pro-summary">
+            <strong>{filteredSeries.length}</strong>
+            <span>/ {series.length} demo seri gösteriliyor</span>
+            <button type="button" onClick={clearFilters}>Filtreleri temizle</button>
+          </div>
+          <div className="view-toggle" aria-label="Görünüm seçimi">
+            <button className={viewMode === 'grid' ? 'active' : ''} type="button" onClick={() => setViewMode('grid')}>Grid</button>
+            <button className={viewMode === 'list' ? 'active' : ''} type="button" onClick={() => setViewMode('list')}>Liste</button>
+          </div>
+        </div>
+
+        <div className="active-filter-row">
+          {activeFilterLabels.length ? activeFilterLabels.map((label) => <span key={label}>{label}</span>) : <span>Aktif filtre yok</span>}
         </div>
 
         {filteredSeries.length ? (
-          <div className="series-grid">
-            {filteredSeries.map((item) => <SeriesCard key={item.id} {...item} />)}
-          </div>
+          viewMode === 'grid' ? (
+            <div className="series-grid premium-series-grid">
+              {filteredSeries.map((item) => <SeriesCard key={item.id} {...item} />)}
+            </div>
+          ) : (
+            <div className="series-list-view">
+              {filteredSeries.map((item) => (
+                <a className="series-list-row" href={`/series/${item.slug}`} key={item.id}>
+                  <img src={item.image} alt={item.title} />
+                  <div>
+                    <span>{item.status} • {item.category}</span>
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                    <small>{item.channelTitle} • {item.episodes} bölüm • %{item.progress} ilerleme</small>
+                  </div>
+                  <strong>Detaya git →</strong>
+                </a>
+              ))}
+            </div>
+          )
         ) : (
           <div className="empty-state">
             <h3>Sonuç bulunamadı.</h3>
@@ -366,26 +447,64 @@ function SeriesDetailPage({ slug }) {
 }
 
 function CategoriesPage() {
+  const totalLinkedSeries = categories.reduce((sum, category) => sum + series.filter((item) => item.categorySlug === category.slug).length, 0);
+  const strongestCategory = categories
+    .map((category) => ({ ...category, count: series.filter((item) => item.categorySlug === category.slug).length }))
+    .sort((a, b) => b.count - a.count)[0];
+
   return (
     <Layout>
-      <section className="series-section">
+      <section className="category-showcase-hero">
+        <div>
+          <span className="version-pill">🗂️ {VERSION} • Kategori Deneyimi</span>
+          <h1>Kategoriler artık ayrı vitrin sayfası gibi çalışıyor.</h1>
+          <p>
+            v1.0.5 ile kategori merkezi daha büyük hero, istatistik kartları, premium kategori kartları ve kategoriye bağlı seri önizlemeleriyle güçlendirildi.
+          </p>
+          <div className="hero-actions">
+            <a className="primary-btn" href="#category-list">Kategorileri Gör</a>
+            <a className="ghost-btn" href="/series">Tüm Seriler</a>
+          </div>
+        </div>
+        <aside className="category-feature-panel">
+          <span>Öne çıkan kategori</span>
+          <strong>{strongestCategory.icon} {strongestCategory.title}</strong>
+          <p>{strongestCategory.description}</p>
+          <small>{strongestCategory.count} demo seri bağlı</small>
+        </aside>
+      </section>
+
+      <section className="category-stats-row" aria-label="Kategori istatistikleri">
+        <article><span>{categories.length}</span><p>Toplam kategori</p></article>
+        <article><span>{totalLinkedSeries}</span><p>Bağlı demo seri</p></article>
+        <article><span>{series.reduce((sum, item) => sum + item.episodes, 0)}</span><p>Demo bölüm</p></article>
+        <article><span>{channels.length}</span><p>Kanal bağlantısı</p></article>
+      </section>
+
+      <section id="category-list" className="series-section category-premium-section">
         <div className="section-heading">
           <span>🗂️ Kategori Merkezi</span>
-          <h2>Kategoriler</h2>
-          <p>Her kategori ayrı sayfada açılır. Aynı sayfada karışık filtreleme yok.</p>
+          <h2>Her kategori ayrı sayfada açılır</h2>
+          <p>Aynı sayfada karışık filtreleme yok. Her kategori kendi kapak görseli, bağlı seri listesi ve istatistikleriyle ayrı detay sayfasına gider.</p>
         </div>
 
-        <div className="category-grid">
+        <div className="category-grid premium-category-grid">
           {categories.map((category) => {
-            const count = series.filter((item) => item.categorySlug === category.slug).length;
+            const linkedSeries = series.filter((item) => item.categorySlug === category.slug);
+            const totalEpisodes = linkedSeries.reduce((sum, item) => sum + item.episodes, 0);
+            const activeCount = linkedSeries.filter((item) => item.status === 'Devam Ediyor').length;
             return (
-              <a className="category-card" href={`/categories/${category.slug}`} key={category.id}>
+              <a className="category-card premium-category-card" href={`/categories/${category.slug}`} key={category.id}>
                 <img src={category.cover} alt={`${category.title} kategorisi`} loading="lazy" />
                 <div>
                   <span>{category.icon} {category.accent}</span>
                   <h3>{category.title}</h3>
                   <p>{category.description}</p>
-                  <small>{count} bağlı demo seri</small>
+                  <div className="category-mini-stats">
+                    <b>{linkedSeries.length} seri</b>
+                    <b>{totalEpisodes} bölüm</b>
+                    <b>{activeCount} aktif</b>
+                  </div>
                   <strong>Kategoriyi aç →</strong>
                 </div>
               </a>
@@ -403,16 +522,48 @@ function CategoryDetailPage({ slug }) {
 
   if (!category) return <NotFoundPage />;
 
+  const totalEpisodes = categorySeries.reduce((sum, item) => sum + item.episodes, 0);
+  const completedCount = categorySeries.filter((item) => item.status === 'Tamamlandı').length;
+  const activeCount = categorySeries.filter((item) => item.status === 'Devam Ediyor').length;
+  const relatedChannels = [...new Set(categorySeries.map((item) => item.channelTitle))];
+
   return (
     <Layout>
-      <section className="category-hero">
+      <section className="category-detail-premium-hero">
         <img src={category.cover} alt={`${category.title} kategori kapak görseli`} />
-        <div>
-          <span>🗂️ Kategori Detayı</span>
+        <div className="category-detail-overlay">
+          <span>{category.icon} Kategori Detayı • {category.accent}</span>
           <h1>{category.title}</h1>
           <p>{category.description}</p>
-          <a className="ghost-btn" href="/categories">Tüm kategorilere dön</a>
+          <div className="detail-stats category-detail-stats">
+            <strong>{categorySeries.length} seri</strong>
+            <strong>{totalEpisodes} bölüm</strong>
+            <strong>{completedCount} tamamlandı</strong>
+            <strong>{activeCount} devam ediyor</strong>
+          </div>
+          <div className="hero-actions">
+            <a className="primary-btn" href="/categories">Tüm kategorilere dön</a>
+            <a className="ghost-btn" href="/series">Seri arşivine git</a>
+          </div>
         </div>
+      </section>
+
+      <section className="category-insight-grid" aria-label="Kategori özet bilgileri">
+        <article>
+          <span>Bağlı Kanallar</span>
+          <strong>{relatedChannels.length || 0}</strong>
+          <p>{relatedChannels.length ? relatedChannels.join(' • ') : 'Henüz kanal bağlantısı yok'}</p>
+        </article>
+        <article>
+          <span>Ortalama İlerleme</span>
+          <strong>%{categorySeries.length ? Math.round(categorySeries.reduce((sum, item) => sum + item.progress, 0) / categorySeries.length) : 0}</strong>
+          <p>Demo serilerin kategori içi ilerleme ortalaması.</p>
+        </article>
+        <article>
+          <span>Public Durum</span>
+          <strong>Hazır</strong>
+          <p>Bu kategori public sayfada ayrı vitrin olarak görüntülenebilir.</p>
+        </article>
       </section>
 
       <section className="series-section">
@@ -422,9 +573,16 @@ function CategoryDetailPage({ slug }) {
           <p>{categorySeries.length ? `${categorySeries.length} demo seri listeleniyor.` : 'Bu kategoriye bağlı demo seri henüz yok.'}</p>
         </div>
 
-        <div className="series-grid">
-          {categorySeries.map((item) => <SeriesCard key={item.id} {...item} />)}
-        </div>
+        {categorySeries.length ? (
+          <div className="series-grid premium-series-grid">
+            {categorySeries.map((item) => <SeriesCard key={item.id} {...item} />)}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <h3>Bu kategori boş.</h3>
+            <p>İleriki sürümlerde Supabase bağlantısı gelince kategori içerikleri panelden yönetilecek.</p>
+          </div>
+        )}
       </section>
     </Layout>
   );
@@ -432,28 +590,69 @@ function CategoryDetailPage({ slug }) {
 
 
 function ChannelsPage() {
+  const totalEpisodes = channels.reduce((sum, channel) => sum + channel.episodeCount, 0);
+  const totalSeries = channels.reduce((sum, channel) => sum + channel.seriesCount, 0);
+  const activeChannels = channels.filter((channel) => channel.status === 'Aktif').length;
+  const featuredChannel = channels[0];
+
   return (
     <Layout>
-      <section className="series-section">
+      <section className="channel-showcase-hero">
+        <div>
+          <span className="version-pill">📺 {VERSION} • Kanal Deneyimi</span>
+          <h1>Kanallar artık ayrı bir arşiv vitrini gibi görünüyor.</h1>
+          <p>
+            v1.0.6 ile kanal merkezi; büyük hero, kanal istatistikleri, premium kanal kartları ve detay sayfalarında bağlı seri önizlemeleriyle güçlendirildi.
+          </p>
+          <div className="hero-actions">
+            <a className="primary-btn" href="#channel-list">Kanalları Gör</a>
+            <a className="ghost-btn" href="/series">Seri Arşivi</a>
+          </div>
+        </div>
+        <aside className="channel-feature-panel">
+          <span>Öne çıkan kanal</span>
+          <strong>{featuredChannel.title}</strong>
+          <p>{featuredChannel.description}</p>
+          <small>{featuredChannel.seriesCount} seri • {featuredChannel.episodeCount} bölüm</small>
+        </aside>
+      </section>
+
+      <section className="channel-stats-row" aria-label="Kanal istatistikleri">
+        <article><span>{channels.length}</span><p>Toplam kanal</p></article>
+        <article><span>{activeChannels}</span><p>Aktif kanal</p></article>
+        <article><span>{totalSeries}</span><p>Bağlı demo seri</p></article>
+        <article><span>{totalEpisodes}</span><p>Demo bölüm</p></article>
+      </section>
+
+      <section id="channel-list" className="series-section channel-premium-section">
         <div className="section-heading">
           <span>📺 Kanal Merkezi</span>
-          <h2>Kanallar</h2>
-          <p>Her kanal ayrı sayfada açılır. Bu aşamada tüm içerikler demo veridir.</p>
+          <h2>Her kanal ayrı sayfada açılır</h2>
+          <p>Aynı sayfada karışık liste yok. Her kanal kendi kapak görseli, odak bilgisi, bağlı seri alanı ve istatistikleriyle ayrı detay sayfasına gider.</p>
         </div>
 
-        <div className="channel-grid">
-          {channels.map((channel) => (
-            <a className="channel-card" href={`/channels/${channel.slug}`} key={channel.id}>
-              <img src={channel.cover} alt={`${channel.title} kanal kapak görseli`} loading="lazy" />
-              <div>
-                <span>{channel.status} • {channel.focus}</span>
-                <h3>{channel.title}</h3>
-                <p>{channel.description}</p>
-                <small>{channel.seriesCount} seri • {channel.episodeCount} bölüm</small>
-                <strong>Kanalı aç →</strong>
-              </div>
-            </a>
-          ))}
+        <div className="channel-grid premium-channel-grid">
+          {channels.map((channel) => {
+            const linkedSeries = series.filter((item) => item.channelSlug === channel.slug).slice(0, 3);
+            const statusIcon = channel.status === 'Aktif' ? '🟢' : channel.status === 'Demo' ? '🟣' : '🟡';
+            return (
+              <a className="channel-card premium-channel-card" href={`/channels/${channel.slug}`} key={channel.id}>
+                <img src={channel.cover} alt={`${channel.title} kanal kapak görseli`} loading="lazy" />
+                <div>
+                  <span>{statusIcon} {channel.status} • {channel.focus}</span>
+                  <h3>{channel.title}</h3>
+                  <p>{channel.description}</p>
+                  <div className="channel-mini-stats">
+                    <b>{channel.seriesCount} seri</b>
+                    <b>{channel.episodeCount} bölüm</b>
+                    <b>{channel.handle}</b>
+                  </div>
+                  <small>{linkedSeries.length ? linkedSeries.map((item) => item.title).join(' • ') : 'Demo seri bağlantısı bekleniyor'}</small>
+                  <strong>Kanalı aç →</strong>
+                </div>
+              </a>
+            );
+          })}
         </div>
       </section>
     </Layout>
@@ -465,46 +664,75 @@ function ChannelDetailPage({ slug }) {
 
   if (!channel) return <NotFoundPage />;
 
+  const linkedSeries = series.filter((item) => item.channelSlug === channel.slug);
+  const fallbackSeries = series.slice(0, Math.min(channel.seriesCount, series.length));
+  const visibleSeries = linkedSeries.length ? linkedSeries : fallbackSeries;
+  const completedCount = visibleSeries.filter((item) => item.status === 'Tamamlandı').length;
+  const activeCount = visibleSeries.filter((item) => item.status === 'Devam Ediyor').length;
+  const avgProgress = visibleSeries.length ? Math.round(visibleSeries.reduce((sum, item) => sum + item.progress, 0) / visibleSeries.length) : 0;
+
   return (
     <Layout>
-      <section className="category-hero">
+      <section className="channel-detail-premium-hero">
         <img src={channel.cover} alt={`${channel.title} kanal kapak görseli`} />
-        <div>
+        <div className="channel-detail-overlay">
           <span>📺 Kanal Detayı • {channel.handle}</span>
           <h1>{channel.title}</h1>
           <p>{channel.description}</p>
-          <div className="channel-stats">
+          <div className="detail-stats channel-detail-stats">
             <strong>{channel.focus}</strong>
             <strong>{channel.status}</strong>
             <strong>{channel.seriesCount} seri</strong>
             <strong>{channel.episodeCount} bölüm</strong>
           </div>
-          <a className="ghost-btn" href="/channels">Tüm kanallara dön</a>
+          <div className="hero-actions">
+            <a className="primary-btn" href="/channels">Tüm kanallara dön</a>
+            <a className="ghost-btn" href="/series">Seri arşivine git</a>
+          </div>
         </div>
+      </section>
+
+      <section className="channel-insight-grid" aria-label="Kanal özet bilgileri">
+        <article>
+          <span>Kanal Odağı</span>
+          <strong>{channel.focus}</strong>
+          <p>Bu kanalın public arşivde hangi içerik türünü taşıyacağı gösterilir.</p>
+        </article>
+        <article>
+          <span>Ortalama İlerleme</span>
+          <strong>%{avgProgress}</strong>
+          <p>Bağlı demo serilerin kanal içi ilerleme ortalaması.</p>
+        </article>
+        <article>
+          <span>Durum Özeti</span>
+          <strong>{channel.status}</strong>
+          <p>{completedCount} tamamlanan • {activeCount} devam eden seri.</p>
+        </article>
       </section>
 
       <section className="series-section">
         <div className="section-heading">
           <span>🧪 Demo Kanal İçeriği</span>
           <h2>Bu kanalın seri alanı</h2>
-          <p>Şimdilik gerçek YouTube bağlantısı yok. v1.x aşamasına kadar demo veriyle ilerliyoruz.</p>
+          <p>Şimdilik gerçek YouTube bağlantısı yok. Bu bölüm ileride YouTube playlist ve Supabase verisiyle beslenecek.</p>
         </div>
 
-        <div className="series-grid">
-          {series.slice(0, Math.min(channel.seriesCount, series.length)).map((item) => <SeriesCard key={item.id} {...item} />)}
+        <div className="series-grid premium-series-grid">
+          {visibleSeries.map((item) => <SeriesCard key={item.id} {...item} />)}
         </div>
       </section>
     </Layout>
   );
 }
 
-function UpdateCard({ update, type }) {
+function UpdateCard({ update, type, index = 0 }) {
   return (
     <article className={`update-card ${type === 'planned' ? 'planned-update' : ''}`}>
       <div className="update-card-head">
         <span>{update.version}</span>
-        {update.date && <small>{update.date}</small>}
+        {update.date ? <small>{update.date}</small> : <small>Plan</small>}
       </div>
+      <div className="update-card-index">{String(index + 1).padStart(2, '0')}</div>
       <h3>{update.title}</h3>
       <p>{update.summary}</p>
       <ul>
@@ -515,42 +743,62 @@ function UpdateCard({ update, type }) {
 }
 
 function UpdatesPage() {
+  const totalCompleted = completedUpdates.length;
+  const latestUpdate = completedUpdates[completedUpdates.length - 1];
+  const nextUpdate = plannedUpdates[0];
+
   return (
     <Layout>
-      <section className="updates-hero">
+      <section className="updates-hero updates-hero-pro">
         <div>
           <span>📝 Güncelleme Merkezi</span>
-          <h1>Adım adım sürüm takibi</h1>
+          <h1>Sürüm geçmişi artık daha okunur.</h1>
           <p>
-            Bu sayfada biten sürümler ve sıradaki planlar ayrı ayrı tutulur. Böylece hangi sürümde ne eklendiği karışmaz.
+            Tamamlanan sürümler, sıradaki planlar ve ana yayın hedefi tek merkezde düzenli tutulur. Bu sayede her pakette ne eklendiği karışmadan takip edilir.
           </p>
+          <div className="hero-actions">
+            <a href="#tamamlananlar" className="primary-btn">Tamamlananları Gör</a>
+            <a href="#planlananlar" className="ghost-btn">Planlananlar</a>
+          </div>
         </div>
-        <div className="release-target">
-          <small>Ana hedef</small>
-          <strong>v4.0.0</strong>
-          <p>Yayın/açılış sürümü</p>
+        <div className="release-target release-dashboard">
+          <small>Mevcut sürüm</small>
+          <strong>{VERSION}</strong>
+          <p>{siteConfig.releaseName}</p>
+          <div className="release-mini-list">
+            <span>{totalCompleted} tamamlanan sürüm</span>
+            <span>Sıradaki: {nextUpdate.version}</span>
+            <span>Hedef: v4.0.0</span>
+          </div>
         </div>
       </section>
 
-      <section className="updates-section">
+      <section className="update-overview-grid" aria-label="Güncelleme özeti">
+        <article><span>{totalCompleted}</span><p>Tamamlanan sürüm</p></article>
+        <article><span>{plannedUpdates.length}</span><p>Planlanan adım</p></article>
+        <article><span>{latestUpdate.version}</span><p>Son paket</p></article>
+        <article><span>v4.0.0</span><p>Ana yayın hedefi</p></article>
+      </section>
+
+      <section className="updates-section timeline-section" id="tamamlananlar">
         <div className="section-heading">
           <span>✅ Tamamlananlar</span>
           <h2>Biten sürümler</h2>
-          <p>Şu ana kadar hazırlanan küçük ve kontrollü public site adımları.</p>
+          <p>Küçük ve kontrollü public site adımları. En yeni tamamlanan sürüm listenin sonunda korunur.</p>
         </div>
-        <div className="updates-grid">
-          {completedUpdates.map((update) => <UpdateCard key={update.version} update={update} type="completed" />)}
+        <div className="updates-grid timeline-grid">
+          {completedUpdates.map((update, index) => <UpdateCard key={update.version} update={update} type="completed" index={index} />)}
         </div>
       </section>
 
-      <section className="updates-section">
+      <section className="updates-section" id="planlananlar">
         <div className="section-heading">
           <span>📋 Planlananlar</span>
           <h2>Sıradaki adımlar</h2>
-          <p>Henüz Supabase, YouTube API ve yönetim paneli yok. Önce public arayüz sağlamlaştırılacak.</p>
+          <p>Henüz Supabase, YouTube API ve yönetim paneli yok. Önce public arayüz sağlamlaştırılıyor.</p>
         </div>
         <div className="updates-grid planned-grid">
-          {plannedUpdates.map((update) => <UpdateCard key={update.version} update={update} type="planned" />)}
+          {plannedUpdates.map((update, index) => <UpdateCard key={update.version} update={update} type="planned" index={index} />)}
         </div>
       </section>
     </Layout>
@@ -600,13 +848,13 @@ function StatusPage() {
       <section className="updates-hero status-hero">
         <div>
           <span>✅ Durum Kontrolü</span>
-          <h1>v1.0.2 seri kartları kontrolü</h1>
-          <p>Bu sayfa v1.0.2 seri kartları geliştirme route, sayfa ve temel içerik kontrolü için kullanılır. Hâlâ veritabanı/API yok; sadece public demo yapı test ediliyor.</p>
+          <h1>v1.0.7 güncelleme merkezi kontrolü</h1>
+          <p>Bu sayfa v1.0.7 güncelleme merkezi geliştirme route, sayfa ve temel içerik kontrolü için kullanılır. Hâlâ veritabanı/API yok; sadece public demo yapı test ediliyor.</p>
         </div>
         <div className="release-target">
           <small>Mevcut sürüm</small>
           <strong>{VERSION}</strong>
-          <p>Seri Kartları Geliştirme</p>
+          <p>{siteConfig.releaseName}</p>
         </div>
       </section>
 
@@ -644,13 +892,13 @@ function StatusPage() {
 function Updates() {
   return (
     <section id="guncellemeler" className="notes-card">
-      <h2>📌 v1.0.2 Tamamlananlar</h2>
+      <h2>📌 v1.0.7 Tamamlananlar</h2>
       <ul>
-        <li>✅ Seri Kartları Geliştirme ana sayfa görünümü eklendi.</li>
-        <li>📊 /health.json public kontrol dosyası eklendi.</li>
-        <li>⭐ 404 sayfası daha açıklayıcı hale getirildi.</li>
-        <li>🧭 Mobil/tablet küçük görünüm cilaları yapıldı.</li>
-        <li>🚫 Supabase, YouTube API ve admin paneli bu fix sürümünde de eklenmedi.</li>
+        <li>✅ Güncelleme merkezi profesyonel hero ve özet kartlarıyla yenilendi.</li>
+        <li>🧾 Tamamlanan sürümler daha okunur timeline/kart düzenine taşındı.</li>
+        <li>📋 Planlanan sürümler ayrı bölümde korunmaya devam ediyor.</li>
+        <li>📱 Mobil güncelleme kartları daha rahat okunacak şekilde düzenlendi.</li>
+        <li>🚫 Supabase, YouTube API ve admin paneli bu sürümde de eklenmedi.</li>
       </ul>
     </section>
   );
@@ -659,8 +907,8 @@ function Updates() {
 function NextPlan() {
   return (
     <section id="sonraki" className="next-card">
-      <h2>➡️ Sonraki Plan: v1.0.3</h2>
-      <p>Ana Sayfa Vitrin Geliştirme hazırlanacak. Büyük hero, son eklenenler, hızlı keşif alanları ve daha güçlü public arşiv vitrini eklenecek.</p>
+      <h2>➡️ Sonraki Plan: v1.0.8</h2>
+      <p>Mobil Public Deneyim hazırlanacak. Mobil alt menü, küçük ekran arama/filtre davranışı ve kart okunabilirliği daha da iyileştirilecek.</p>
     </section>
   );
 }

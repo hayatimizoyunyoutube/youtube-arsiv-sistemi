@@ -1,25 +1,22 @@
-# Hayatımız Oyun - v1.0.3
+# Hayatımız Oyun Arşivi - v1.0.7
 
-## Profesyonel Ana Sayfa Vitrini
-
-Bu paket v1.0.2 üzerine kurulmuştur. Supabase, YouTube API, RAWG, Steam ve admin paneli henüz eklenmedi.
+Bu paket v1.0.7 Güncelleme Merkezi Geliştirme sürümüdür.
 
 ## Eklenenler
+- Güncelleme merkezi profesyonel hero alanı
+- Sürüm özet kartları
+- Tamamlanan sürümler için daha okunur timeline/kart düzeni
+- Planlanan sürümler alanı
+- Mobil güncelleme kartı iyileştirmeleri
 
-- Sinematik ana sayfa hero alanı
-- Vitrin özet paneli
-- Arşiv istatistikleri
-- Öne çıkan seriler bölümü
-- Devam eden seriler bölümü
-- Son eklenenler bölümü
-- Hızlı keşif kartları
-- v1.0.4 plan notu
+## Bilerek Eklenmeyenler
+- Supabase bağlantısı yok
+- YouTube API yok
+- RAWG / Steam otomasyonu yok
+- Admin paneli yok
 
-## Local test
-
-```powershell
+## Local Test
+```bash
 npm install
 npm run dev
 ```
-
-Adres: http://localhost:5173

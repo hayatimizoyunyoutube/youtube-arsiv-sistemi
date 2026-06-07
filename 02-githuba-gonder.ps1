@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$repo = "https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
+$repo = "https://github.com/hayatimizoyunyoutube/test.git"
 $commit = "v0.0.1 temiz temel site"
 
 if (!(Test-Path ".git")) {
@@ -20,4 +20,3 @@ git commit -m $commit
 git push -f origin main
 
 Write-Host "GitHub gönderimi tamamlandı: $commit" -ForegroundColor Green
-

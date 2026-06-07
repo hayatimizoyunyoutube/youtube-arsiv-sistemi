@@ -1,8 +1,8 @@
 {
   "name": "Hayatımız Oyun",
-  "version": "v1.0.3",
-  "releaseName": "Profesyonel Ana Sayfa Vitrini",
+  "version": "v1.0.7",
+  "releaseName": "Güncelleme Merkezi Geliştirme",
   "status": "ok",
-  "supabase": "not-added-yet",
-  "youtubeApi": "not-added-yet"
+  "supabase": false,
+  "youtubeApi": false
 }
