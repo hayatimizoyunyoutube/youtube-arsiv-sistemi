@@ -74,3 +74,10 @@ on conflict (slug) do update set
 -- STATUS BAŞARI NOTU:
 -- v1.1.2 başarıyla çalıştıysa admin seri yönetimi için public_series tablosu hazırdır.
 -- Vercel Environment Variables içinde VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ekli olmalıdır.
+
+-- Supabase SQL Editor > Results alanında görünecek başarı satırı.
+select
+  'v1.1.2 FIX başarıyla çalıştı' as status,
+  'public_series tablosu, RLS policyleri ve demo seri kayıtları hazır' as aciklama,
+  'Vercel env değişkenleri: VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY' as vercel_env,
+  now() as calisma_zamani;

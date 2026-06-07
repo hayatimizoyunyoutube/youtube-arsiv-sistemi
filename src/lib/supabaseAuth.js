@@ -38,7 +38,7 @@ function authHeaders(session, prefer = '') {
 
 export async function signInAdminWithPassword(email, password) {
   if (!supabaseAuthConfig.isReady) {
-    return { data: null, error: 'Supabase env bilgileri yok. Vercel Environment Variables içine VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY eklenmeli.' };
+    return { data: null, error: 'Supabase env bilgileri tarayıcı build içinde görünmüyor. Vercel > Settings > Environment Variables içine VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ekle, Production/Preview/Development seç, sonra yeni Redeploy yap.' };
   }
 
   try {
@@ -73,7 +73,7 @@ export async function signInAdminWithPassword(email, password) {
 }
 
 export async function listAdminSeries(session) {
-  if (!supabaseAuthConfig.isReady) return { data: [], error: 'Supabase env eksik.' };
+  if (!supabaseAuthConfig.isReady) return { data: [], error: 'Supabase env eksik. Vercel env ekledikten sonra mutlaka Redeploy gerekir.' };
   try {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series?select=*&order=sort_order.asc`, {
       headers: authHeaders(session),
@@ -87,7 +87,7 @@ export async function listAdminSeries(session) {
 }
 
 export async function createAdminSeries(session, form) {
-  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik. Vercel env ekledikten sonra mutlaka Redeploy gerekir.' };
   try {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series`, {
       method: 'POST',
@@ -103,7 +103,7 @@ export async function createAdminSeries(session, form) {
 }
 
 export async function updateAdminSeries(session, id, form) {
-  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik. Vercel env ekledikten sonra mutlaka Redeploy gerekir.' };
   try {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series?id=eq.${id}`, {
       method: 'PATCH',
@@ -119,7 +119,7 @@ export async function updateAdminSeries(session, id, form) {
 }
 
 export async function deleteAdminSeries(session, id) {
-  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  if (!supabaseAuthConfig.isReady) return { data: null, error: 'Supabase env eksik. Vercel env ekledikten sonra mutlaka Redeploy gerekir.' };
   try {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/public_series?id=eq.${id}`, {
       method: 'DELETE',

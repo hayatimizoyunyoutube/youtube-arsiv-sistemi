@@ -925,7 +925,7 @@ function StatusPage() {
       <section className="notes-card">
         <h2>🚫 Bilerek Eklenmeyenler</h2>
         <ul>
-          <li>Supabase bağlantısı var ve v1.1.2 için gereklidir.</li>
+          <li>Supabase bağlantısı v1.1.2 için gereklidir. Env Vercel'e eklenince mutlaka yeniden deploy edilmelidir.</li>
           <li>Status başarı notu: schema.sql çalışınca public_series yönetimi hazır.</li>
           <li>YouTube playlist çekme yok.</li>
           <li>RAWG / Steam otomasyonu yok.</li>
@@ -1022,7 +1022,7 @@ function AdminLoginPage() {
           <aside className="admin-card">
             <h2>Kurulum Notu</h2>
             <ul className="check-list compact-list">
-              <li className={supabaseAuthConfig.isReady ? 'ok' : 'warn'}>Supabase env: {supabaseAuthConfig.isReady ? 'hazır' : 'eksik'}</li>
+              <li className={supabaseAuthConfig.isReady ? 'ok' : 'warn'}>Supabase env: {supabaseAuthConfig.isReady ? 'hazır' : 'eksik - Vercel env + Redeploy kontrol et'}</li>
               <li>GitHub’a gerçek key gönderme. Sadece `.env.example` gider.</li>
               <li>Local için `.env.local`, Vercel için Environment Variables kullanılacak.</li>
               <li>Supabase Dashboard → Authentication → Users bölümünden kullanıcı oluştur.</li>
@@ -1185,8 +1185,8 @@ function AdminSeriesManager({ session }) {
         <aside className="admin-card">
           <h2>v1.1.2 Durumu</h2>
           <ul className="check-list compact-list">
-            <li className={supabaseAuthConfig.isReady ? 'ok' : 'warn'}>Supabase env: {supabaseAuthConfig.isReady ? 'hazır' : 'eksik'}</li>
-            <li className="ok">schema.sql başarı notu v1.1.2 olarak güncellendi.</li>
+            <li className={supabaseAuthConfig.isReady ? 'ok' : 'warn'}>Supabase env: {supabaseAuthConfig.isReady ? 'hazır' : 'eksik - Vercel env + Redeploy kontrol et'}</li>
+            <li className="ok">schema.sql Results satırı v1.1.2 FIX başarı mesajı gösterecek şekilde güncellendi.</li>
             <li>YouTube, RAWG ve Steam hâlâ eklenmedi.</li>
             <li>Bu sürüm ana sitede Vercel deploy sonrası test edilecek.</li>
           </ul>

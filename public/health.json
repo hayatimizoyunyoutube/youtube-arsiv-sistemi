@@ -9,11 +9,11 @@
     "admin login start"
   ],
   "note": "API key ve şifreler repoya eklenmez.",
-  "releaseName": "v1.1.2 Seri Yönetimi",
-  "supabaseStatus": "schema.sql başarı kısmında v1.1.2 seri yönetimi yazacak. Supabase gereklidir: admin seri ekle/düzenle/sil işlemleri public_series tablosuna yazar.",
+  "releaseName": "v1.1.2 Fix Supabase Env ve SQL Results",
+  "supabaseStatus": "schema.sql sonunda SELECT başarı satırı eklendi: Supabase Results alanında v1.1.2 FIX başarıyla çalıştı yazmalı.",
   "notes": [
-    "Admin seri yönetimi eklendi",
-    "BAT dosyaları eklendi",
-    "Vercel üzerinden deploy akışı kullanılacak"
+    "Supabase env uyarısı Vercel Redeploy açıklamasıyla düzeltildi",
+    "SQL Results başarı satırı eklendi",
+    "Versiyon v1.1.2 olarak korundu"
   ]
 }
