@@ -1,7 +1,9 @@
 export const siteConfig = {
   name: 'Hayatımız Oyun',
   subtitle: 'YouTube Oynatma Listesi Arşivi',
-  version: 'v1.0.7',
-  releaseName: 'Güncelleme Merkezi Geliştirme',
-  releaseDate: '2026-06-08'
+  version: 'v1.1.0',
+  releaseName: 'v1.1.0 Öncesi Stabilite',
+  releaseDate: '2026-06-08',
+  description: 'Hayatımız Oyun YouTube oynatma listesi arşivi için public seri, kategori, kanal ve güncelleme merkezi.',
+  url: 'https://hayatimiz-oyun.vercel.app'
 };

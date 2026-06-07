@@ -1,22 +1,54 @@
-# Hayatımız Oyun Arşivi - v1.0.7
+# Hayatımız Oyun YouTube Arşiv Sistemi
 
-Bu paket v1.0.7 Güncelleme Merkezi Geliştirme sürümüdür.
+Sürüm: v1.1.0 Fix
 
-## Eklenenler
-- Güncelleme merkezi profesyonel hero alanı
-- Sürüm özet kartları
-- Tamamlanan sürümler için daha okunur timeline/kart düzeni
-- Planlanan sürümler alanı
-- Mobil güncelleme kartı iyileştirmeleri
+Bu paket Supabase public veri başlangıcı sonrası güvenli GitHub/Vercel hazırlığı içerir.
 
-## Bilerek Eklenmeyenler
-- Supabase bağlantısı yok
-- YouTube API yok
-- RAWG / Steam otomasyonu yok
-- Admin paneli yok
+## Önemli Güvenlik Kuralı
 
-## Local Test
-```bash
+Gerçek API keyler GitHub'a gönderilmez.
+
+Local dosya:
+
+```text
+.env.local
+```
+
+GitHub'a gidebilecek örnek dosya:
+
+```text
+.env.example
+```
+
+## Local test
+
+```powershell
 npm install
 npm run dev
+```
+
+Adres:
+
+```text
+http://localhost:5173
+```
+
+## GitHub'a gönderme
+
+```powershell
+.\02-githuba-gonder.ps1
+```
+
+Repo:
+
+```text
+https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi
+```
+
+## Vercel
+
+Detaylı anlatım için:
+
+```text
+VERCEL-KURULUM-REHBERI.md
 ```

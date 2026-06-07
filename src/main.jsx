@@ -7,6 +7,7 @@ import { categories } from './data/categories.js';
 import { channels } from './data/channels.js';
 import { completedUpdates, plannedUpdates } from './data/updates.js';
 import { siteConfig } from './config/site.js';
+import { supabasePublicConfig } from './lib/supabasePublic.js';
 
 const VERSION = siteConfig.version;
 
@@ -68,10 +69,10 @@ function HomePage() {
     <Layout>
       <section className="hero-card showcase-hero">
         <div className="showcase-copy">
-          <div className="version-pill">🎬 {VERSION} • Güncelleme Merkezi</div>
+          <div className="version-pill">🎬 {VERSION} • Supabase Public Veri</div>
           <h1>Hayatımız Oyun arşivinin sürüm takibi artık daha düzenli.</h1>
           <p>
-            Bu sürümde güncelleme merkezi yenilendi; tamamlanan ve planlanan sürümler daha okunur, daha profesyonel ve mobil uyumlu hale getirildi.
+            Bu sürümde public site için SEO meta yapısı, sitemap, robots, manifest, health bilgisi ve performans hazırlığı eklendi.
           </p>
           <div className="hero-actions">
             <a href="/series" className="primary-btn">Serileri Keşfet</a>
@@ -170,8 +171,8 @@ function HomePage() {
 
       <section className="beta-panel">
         <div>
-          <span>✅ v1.0.7 Durumu</span>
-          <h2>Güncelleme merkezi geliştirildi.</h2>
+          <span>✅ v1.1.0 Durumu</span>
+          <h2>İlk Supabase public veri altyapısı hazırlandı.</h2>
           <p>Bu aşamada hâlâ Supabase, YouTube API, RAWG, Steam ve admin paneli yok. Önce public arayüz parça parça sağlamlaştırılıyor.</p>
         </div>
         <ul>
@@ -182,6 +183,7 @@ function HomePage() {
         </ul>
       </section>
 
+      <SupabaseStartPanel />
       <Updates />
       <NextPlan />
     </Layout>
@@ -742,6 +744,25 @@ function UpdateCard({ update, type, index = 0 }) {
   );
 }
 
+
+function SupabaseStartPanel() {
+  return (
+    <section className="beta-panel supabase-panel">
+      <div>
+        <span>🟢 v1.1.0 Supabase Başlangıcı</span>
+        <h2>Public veri için ilk Supabase tablosu hazır.</h2>
+        <p>Bu sürümde sadece seri listesi için güvenli başlangıç yapıldı. Env bilgileri yoksa site demo verilerle çalışmaya devam eder.</p>
+      </div>
+      <ul>
+        <li>✓ Tablo: public_series</li>
+        <li>✓ RLS: public okuma açık</li>
+        <li>✓ Schema: supabase/schema.sql</li>
+        <li>{supabasePublicConfig.isReady ? '✓ Env hazır görünüyor' : '• Env yoksa demo veri kullanılır'}</li>
+      </ul>
+    </section>
+  );
+}
+
 function UpdatesPage() {
   const totalCompleted = completedUpdates.length;
   const latestUpdate = completedUpdates[completedUpdates.length - 1];
@@ -843,13 +864,20 @@ function StatusPage() {
     { path: '/status', label: 'Durum', note: 'Bu kontrol sayfası' }
   ];
 
+  const stabilityChecks = [
+    { title: 'Route kontrolü', text: 'Ana sayfa, seriler, kategori, kanal, güncelleme ve durum sayfaları tek tek test edilecek.' },
+    { title: 'Kırık link kontrolü', text: 'Kart butonları, menü bağlantıları, kategori/kanal/seri detay linkleri kontrol edilecek.' },
+    { title: 'Boş durum kontrolü', text: 'Arama/filtre sonucu bulunamadığında kullanıcıya net boş ekran gösterilecek.' },
+    { title: '404 kontrolü', text: 'Yanlış URL açıldığında güvenli yönlendirme butonları olan 404 ekranı çalışacak.' }
+  ];
+
   return (
     <Layout>
       <section className="updates-hero status-hero">
         <div>
           <span>✅ Durum Kontrolü</span>
-          <h1>v1.0.7 güncelleme merkezi kontrolü</h1>
-          <p>Bu sayfa v1.0.7 güncelleme merkezi geliştirme route, sayfa ve temel içerik kontrolü için kullanılır. Hâlâ veritabanı/API yok; sadece public demo yapı test ediliyor.</p>
+          <h1>v1.1.0 stabilite ve temizlik kontrolü</h1>
+          <p>Bu sayfa v1.1.0 Supabase geçişinden önce public route, kırık link, boş durum, 404 ve temel içerik kontrolünde kullanılır. Hâlâ veritabanı/API yok; sadece stabil public demo yapı test ediliyor.</p>
         </div>
         <div className="release-target">
           <small>Mevcut sürüm</small>
@@ -875,6 +903,22 @@ function StatusPage() {
         </div>
       </section>
 
+      <section className="updates-section">
+        <div className="section-heading">
+          <span>🧪 Stabilite Kontrolleri</span>
+          <h2>v1.1.0 öncesi yapılacak son local testler</h2>
+          <p>Bu kontroller tamamlanmadan Supabase tarafına geçilmeyecek.</p>
+        </div>
+        <div className="status-grid">
+          {stabilityChecks.map((check) => (
+            <article className="status-check-card" key={check.title}>
+              <strong>{check.title}</strong>
+              <p>{check.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="notes-card">
         <h2>🚫 Bilerek Eklenmeyenler</h2>
         <ul>
@@ -892,12 +936,12 @@ function StatusPage() {
 function Updates() {
   return (
     <section id="guncellemeler" className="notes-card">
-      <h2>📌 v1.0.7 Tamamlananlar</h2>
+      <h2>📌 v1.1.0 Tamamlananlar</h2>
       <ul>
-        <li>✅ Güncelleme merkezi profesyonel hero ve özet kartlarıyla yenilendi.</li>
-        <li>🧾 Tamamlanan sürümler daha okunur timeline/kart düzenine taşındı.</li>
-        <li>📋 Planlanan sürümler ayrı bölümde korunmaya devam ediyor.</li>
-        <li>📱 Mobil güncelleme kartları daha rahat okunacak şekilde düzenlendi.</li>
+        <li>✅ v1.1.0 öncesi stabilite kontrol sayfası güncellendi.</li>
+        <li>🔗 Public route ve kırık link kontrol listesi netleştirildi.</li>
+        <li>🧪 Boş durum, 404 ve local test akışı toparlandı.</li>
+        <li>📋 v1.1.0 tamamlananlara taşındı, v1.1.0 ilk Supabase planı sıraya alındı.</li>
         <li>🚫 Supabase, YouTube API ve admin paneli bu sürümde de eklenmedi.</li>
       </ul>
     </section>
@@ -907,8 +951,8 @@ function Updates() {
 function NextPlan() {
   return (
     <section id="sonraki" className="next-card">
-      <h2>➡️ Sonraki Plan: v1.0.8</h2>
-      <p>Mobil Public Deneyim hazırlanacak. Mobil alt menü, küçük ekran arama/filtre davranışı ve kart okunabilirliği daha da iyileştirilecek.</p>
+      <h2>➡️ Sonraki Plan: v1.1.0</h2>
+      <p>İlk Supabase bağlantısı başlayacak. Sadece seri listesi veritabanından okunacak; YouTube, RAWG, Steam ve admin paneli hâlâ eklenmeyecek.</p>
     </section>
   );
 }

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#070816"/><stop offset=".55" stop-color="#20104a"/><stop offset="1" stop-color="#5b1023"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <circle cx="960" cy="120" r="180" fill="#7c3aed" opacity=".28"/>
+  <circle cx="140" cy="520" r="220" fill="#ef4444" opacity=".22"/>
+  <text x="90" y="210" font-size="58" font-family="Arial, sans-serif" font-weight="800" fill="#ffffff">Hayatımız Oyun Arşivi</text>
+  <text x="90" y="290" font-size="34" font-family="Arial, sans-serif" fill="#d7dbff">Seriler • Kategoriler • Kanallar • Güncellemeler</text>
+  <text x="90" y="455" font-size="28" font-family="Arial, sans-serif" fill="#aeb6ff">v1.0.9 v1.1.0 Öncesi Stabilite</text>
+</svg>

@@ -1,8 +1,15 @@
 {
-  "name": "Hayatımız Oyun",
-  "version": "v1.0.7",
-  "releaseName": "Güncelleme Merkezi Geliştirme",
+  "name": "Hayatımız Oyun Arşivi",
+  "version": "v1.1.0",
+  "releaseName": "v1.1.0 Öncesi Stabilite",
   "status": "ok",
-  "supabase": false,
-  "youtubeApi": false
+  "supabase": "not-connected-yet",
+  "youtube": "not-connected-yet",
+  "seo": {
+    "robots": true,
+    "sitemap": true,
+    "manifest": true,
+    "openGraph": true,
+    "twitterCard": true
+  }
 }
