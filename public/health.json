@@ -1,15 +1,12 @@
 {
-  "name": "Hayatımız Oyun Arşivi",
-  "version": "v1.1.0",
-  "releaseName": "v1.1.0 Öncesi Stabilite",
+  "name": "Hayatımız Oyun YouTube Arşivi",
+  "version": "v1.1.1",
+  "release": "Admin Giriş Sistemi",
   "status": "ok",
-  "supabase": "not-connected-yet",
-  "youtube": "not-connected-yet",
-  "seo": {
-    "robots": true,
-    "sitemap": true,
-    "manifest": true,
-    "openGraph": true,
-    "twitterCard": true
-  }
+  "features": [
+    "public routes",
+    "supabase public data",
+    "admin login start"
+  ],
+  "note": "API key ve şifreler repoya eklenmez."
 }

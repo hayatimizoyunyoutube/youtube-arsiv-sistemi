@@ -1,6 +1,6 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.1.0 Fix
+Sürüm: v1.1.1 Fix
 
 Bu paket Supabase public veri başlangıcı sonrası güvenli GitHub/Vercel hazırlığı içerir.
 
@@ -52,3 +52,8 @@ Detaylı anlatım için:
 ```text
 VERCEL-KURULUM-REHBERI.md
 ```
+
+
+## v1.1.1
+
+Admin giriş sistemi eklendi. `/admin` sayfası Supabase Auth ile giriş denemesi yapar. Gerçek keyler `.env.local` ve Vercel Environment Variables içinde tutulmalıdır.

@@ -8,6 +8,7 @@ import { channels } from './data/channels.js';
 import { completedUpdates, plannedUpdates } from './data/updates.js';
 import { siteConfig } from './config/site.js';
 import { supabasePublicConfig } from './lib/supabasePublic.js';
+import { clearAdminSession, getAdminSession, signInAdminWithPassword, supabaseAuthConfig } from './lib/supabaseAuth.js';
 
 const VERSION = siteConfig.version;
 
@@ -18,6 +19,7 @@ const menuItems = [
   { label: 'Kanallar', href: '/channels' },
   { label: 'Güncellemeler', href: '/updates' },
   { label: 'Durum', href: '/status' },
+  { label: 'Admin', href: '/admin' },
 ];
 
 function Layout({ children }) {
@@ -44,7 +46,7 @@ function Layout({ children }) {
       <nav className="mobile-bottom-nav" aria-label="Mobil hızlı menü">
         {menuItems.map((item) => (
           <a key={item.label} href={item.href}>
-            <span>{item.label === 'Ana Sayfa' ? '🏠' : item.label === 'Seriler' ? '🎞️' : item.label === 'Kategoriler' ? '🗂️' : item.label === 'Kanallar' ? '📺' : item.label === 'Güncellemeler' ? '📝' : '✅'}</span>
+            <span>{item.label === 'Ana Sayfa' ? '🏠' : item.label === 'Seriler' ? '🎞️' : item.label === 'Kategoriler' ? '🗂️' : item.label === 'Kanallar' ? '📺' : item.label === 'Güncellemeler' ? '📝' : item.label === 'Admin' ? '🔐' : '✅'}</span>
             <b>{item.label}</b>
           </a>
         ))}
@@ -69,10 +71,10 @@ function HomePage() {
     <Layout>
       <section className="hero-card showcase-hero">
         <div className="showcase-copy">
-          <div className="version-pill">🎬 {VERSION} • Supabase Public Veri</div>
+          <div className="version-pill">🔐 {VERSION} • Admin Giriş Başlangıcı</div>
           <h1>Hayatımız Oyun arşivinin sürüm takibi artık daha düzenli.</h1>
           <p>
-            Bu sürümde public site için SEO meta yapısı, sitemap, robots, manifest, health bilgisi ve performans hazırlığı eklendi.
+            Bu sürümde Supabase Auth tabanlı güvenli admin giriş başlangıcı, çıkış akışı ve korumalı yönetim başlangıç sayfası eklendi.
           </p>
           <div className="hero-actions">
             <a href="/series" className="primary-btn">Serileri Keşfet</a>
@@ -942,7 +944,7 @@ function Updates() {
         <li>🔗 Public route ve kırık link kontrol listesi netleştirildi.</li>
         <li>🧪 Boş durum, 404 ve local test akışı toparlandı.</li>
         <li>📋 v1.1.0 tamamlananlara taşındı, v1.1.0 ilk Supabase planı sıraya alındı.</li>
-        <li>🚫 Supabase, YouTube API ve admin paneli bu sürümde de eklenmedi.</li>
+        <li>🚫 Admin giriş başlangıcı eklendi; veri yönetimi, YouTube API ve RAWG hâlâ eklenmedi.</li>
       </ul>
     </section>
   );
@@ -951,9 +953,124 @@ function Updates() {
 function NextPlan() {
   return (
     <section id="sonraki" className="next-card">
-      <h2>➡️ Sonraki Plan: v1.1.0</h2>
-      <p>İlk Supabase bağlantısı başlayacak. Sadece seri listesi veritabanından okunacak; YouTube, RAWG, Steam ve admin paneli hâlâ eklenmeyecek.</p>
+      <h2>➡️ Sonraki Plan: v1.1.2</h2>
+      <p>Seri yönetimi başlayacak. Admin panelde seri ekleme, düzenleme ve silme akışı küçük adımlarla eklenecek.</p>
     </section>
+  );
+}
+
+
+function AdminLoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const session = getAdminSession();
+
+  if (session?.access_token) {
+    return <AdminPanelPage />;
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setLoading(true);
+    setMessage('');
+
+    const result = await signInAdminWithPassword(email.trim(), password);
+    setLoading(false);
+
+    if (result.error) {
+      setMessage(result.error);
+      return;
+    }
+
+    window.location.href = '/admin';
+  }
+
+  return (
+    <Layout>
+      <section className="admin-shell">
+        <div className="admin-hero">
+          <div className="version-pill">🔐 {VERSION} • Admin Giriş</div>
+          <h1>Yönetim paneli için güvenli giriş başlangıcı.</h1>
+          <p>Bu sürüm sadece giriş/çıkış ve korumalı admin başlangıç ekranını ekler. Seri ekleme, kategori yönetimi ve YouTube otomasyonu sonraki sürümlerde gelecek.</p>
+        </div>
+
+        <div className="admin-grid">
+          <form className="admin-card login-card" onSubmit={handleSubmit}>
+            <h2>Admin Girişi</h2>
+            <p>Supabase Auth içinde oluşturduğun yetkili kullanıcı e-postası ve şifresiyle giriş yap.</p>
+
+            <label>
+              E-posta
+              <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="admin@ornek.com" required />
+            </label>
+
+            <label>
+              Şifre
+              <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="••••••••" required />
+            </label>
+
+            <button className="primary-btn" type="submit" disabled={loading}>{loading ? 'Kontrol ediliyor...' : 'Giriş Yap'}</button>
+            {message ? <p className="form-message error">{message}</p> : null}
+          </form>
+
+          <aside className="admin-card">
+            <h2>Kurulum Notu</h2>
+            <ul className="check-list compact-list">
+              <li className={supabaseAuthConfig.isReady ? 'ok' : 'warn'}>Supabase env: {supabaseAuthConfig.isReady ? 'hazır' : 'eksik'}</li>
+              <li>GitHub’a gerçek key gönderme. Sadece `.env.example` gider.</li>
+              <li>Local için `.env.local`, Vercel için Environment Variables kullanılacak.</li>
+              <li>Supabase Dashboard → Authentication → Users bölümünden kullanıcı oluştur.</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </Layout>
+  );
+}
+
+function AdminPanelPage() {
+  const session = getAdminSession();
+
+  function handleLogout() {
+    clearAdminSession();
+    window.location.href = '/admin';
+  }
+
+  if (!session?.access_token) {
+    return <AdminLoginPage />;
+  }
+
+  return (
+    <Layout>
+      <section className="admin-shell">
+        <div className="admin-hero">
+          <div className="version-pill">✅ {VERSION} • Korumalı Alan</div>
+          <h1>Admin başlangıç paneli hazır.</h1>
+          <p>Giriş başarılı. Bu panel şimdilik sadece güvenli girişin çalıştığını gösterir; veri yönetimi sonraki sürümlerde parça parça eklenecek.</p>
+          <div className="hero-actions">
+            <button className="ghost-btn" type="button" onClick={handleLogout}>Çıkış Yap</button>
+            <a href="/updates" className="ghost-btn">Sürüm Notları</a>
+          </div>
+        </div>
+
+        <div className="admin-grid three-col">
+          <div className="admin-card">
+            <h2>v1.1.2</h2>
+            <p>Seri yönetimi: ekle, düzenle ve sil.</p>
+          </div>
+          <div className="admin-card">
+            <h2>v1.1.3</h2>
+            <p>Kategori yönetimi: kategori ekleme ve düzenleme.</p>
+          </div>
+          <div className="admin-card">
+            <h2>v1.1.4</h2>
+            <p>Kanal yönetimi: kanal kayıtlarını yönetme.</p>
+          </div>
+        </div>
+      </section>
+    </Layout>
   );
 }
 
@@ -985,6 +1102,7 @@ function AppRouter() {
   if (path === '/channels') return <ChannelsPage />;
   if (path === '/updates') return <UpdatesPage />;
   if (path === '/status') return <StatusPage />;
+  if (path === '/admin') return <AdminLoginPage />;
   if (path.startsWith('/channels/')) return <ChannelDetailPage slug={path.split('/').pop()} />;
 
   return <NotFoundPage />;
