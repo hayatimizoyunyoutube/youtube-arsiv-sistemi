@@ -1,6 +1,7 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const SESSION_KEY = 'hoy_admin_session_v115';
+const SESSION_KEY = 'hoy_user_session_v117';
+const OLD_SESSION_KEYS = ['hoy_admin_session_v115'];
 
 export const supabaseConfig = {
   url: SUPABASE_URL,
@@ -10,10 +11,41 @@ export const supabaseConfig = {
 };
 
 export function getSession() {
-  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; }
+  try {
+    const current = localStorage.getItem(SESSION_KEY);
+    if (current) return JSON.parse(current);
+    for (const key of OLD_SESSION_KEYS) {
+      const old = localStorage.getItem(key);
+      if (old) {
+        localStorage.setItem(SESSION_KEY, old);
+        localStorage.removeItem(key);
+        return JSON.parse(old);
+      }
+    }
+    return null;
+  } catch { return null; }
 }
-export function saveSession(session) { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); }
-export function clearSession() { localStorage.removeItem(SESSION_KEY); }
+export function saveSession(session) { localStorage.setItem(SESSION_KEY, JSON.stringify({ ...session, saved_at: new Date().toISOString() })); }
+export function clearSession() { localStorage.removeItem(SESSION_KEY); OLD_SESSION_KEYS.forEach(k => localStorage.removeItem(k)); }
+
+export function isAdminRole(role) {
+  return ['founder', 'kurucu', 'admin', 'editor', 'moderator', 'moderatör'].includes(String(role || '').toLowerCase());
+}
+
+export async function getCurrentAppUser(session = getSession()) {
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
+  const userId = session?.user?.id;
+  if (!session?.access_token || !userId) return { data: null, error: 'Oturum bilgisi eksik.' };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?auth_user_id=eq.${userId}&select=*&limit=1`, { headers: headers(session) });
+  const json = await res.json().catch(() => []);
+  if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Kullanıcı profili okunamadı: ${res.status}`) };
+  return { data: Array.isArray(json) ? json[0] || null : null, error: null };
+}
+
+export async function refreshSessionIfNeeded(session = getSession()) {
+  if (!supabaseConfig.isReady || !session?.refresh_token) return { data: session, error: null };
+  return { data: session, error: null };
+}
 
 function cleanSupabaseError(json, fallback) {
   return json?.error_description || json?.msg || json?.message || json?.error || fallback;
@@ -29,7 +61,7 @@ function headers(session, prefer = '') {
 }
 
 export async function ensureAppUserProfile(session) {
-  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
   const user = session?.user;
   const email = user?.email || '';
   if (!session?.access_token || !email) return { data: null, error: 'Oturum bilgisi eksik.' };
@@ -54,7 +86,7 @@ export async function ensureAppUserProfile(session) {
 }
 
 export async function signIn(email, password) {
-  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase env eksik. Vercel Environment Variables eklenip Redeploy yapılmalı.' };
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik. Vercel Ortam Değişkenleri eklenip yeniden dağıtım yapılmalı.' };
   const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
     method: 'POST', headers: headers(null), body: JSON.stringify({ email, password })
   });
@@ -62,7 +94,7 @@ export async function signIn(email, password) {
   if (!res.ok) {
     const raw = cleanSupabaseError(json, `Giriş hatası: ${res.status}`);
     const hint = raw.toLowerCase().includes('confirm') || raw.toLowerCase().includes('email')
-      ? ' Supabase Dashboard → Authentication → Providers → Email bölümünde Confirm email kapalı olmalı veya mail onaylanmalı.'
+      ? ' Supabase Paneli → Authentication → Providers → Email bölümünde e-posta onayı kapalı olmalı veya kullanıcı e-postasını onaylamalı.'
       : '';
     return { data: null, error: raw + hint };
   }
@@ -73,7 +105,7 @@ export async function signIn(email, password) {
 }
 
 export async function signUp(email, password) {
-  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase env eksik. Vercel Environment Variables eklenip Redeploy yapılmalı.' };
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik. Vercel Ortam Değişkenleri eklenip yeniden dağıtım yapılmalı.' };
   const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
     method: 'POST', headers: headers(null), body: JSON.stringify({ email, password })
   });
@@ -90,12 +122,12 @@ export async function signUp(email, password) {
   return {
     data: { user: json.user, confirmed: false },
     error: null,
-    notice: 'Kayıt Supabase Auth içine düştü. Giriş için Supabase Email Confirm kapalı olmalı veya kullanıcı mail onayı yapmalı.'
+    notice: 'Kayıt Supabase Auth içine düştü. Giriş için Supabase e-posta onayı kapalı olmalı veya kullanıcı e-postasını onaylamalı.'
   };
 }
 
 export async function listTable(table, session = null, order = 'sort_order.asc') {
-  if (!supabaseConfig.isReady) return { data: [], error: 'Supabase env eksik.' };
+  if (!supabaseConfig.isReady) return { data: [], error: 'Supabase bağlantısı eksik.' };
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=${order}`, { headers: headers(session) });
   const json = await res.json().catch(() => []);
   if (!res.ok) return { data: [], error: cleanSupabaseError(json, `${table} listeleme hatası: ${res.status}`) };
@@ -103,7 +135,7 @@ export async function listTable(table, session = null, order = 'sort_order.asc')
 }
 
 export async function createRow(table, row, session) {
-  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: headers(session, 'return=representation'), body: JSON.stringify([row]) });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) return { data: null, error: cleanSupabaseError(json, `${table} ekleme hatası: ${res.status}`) };
@@ -111,7 +143,7 @@ export async function createRow(table, row, session) {
 }
 
 export async function updateRow(table, id, row, session) {
-  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'PATCH', headers: headers(session, 'return=representation'), body: JSON.stringify({ ...row, updated_at: new Date().toISOString() }) });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) return { data: null, error: cleanSupabaseError(json, `${table} güncelleme hatası: ${res.status}`) };
@@ -119,7 +151,7 @@ export async function updateRow(table, id, row, session) {
 }
 
 export async function deleteRow(table, id, session) {
-  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase env eksik.' };
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: headers(session) });
   if (!res.ok) { const json = await res.json().catch(() => ({})); return { data: null, error: cleanSupabaseError(json, `${table} silme hatası: ${res.status}`) }; }
   return { data: true, error: null };

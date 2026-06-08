@@ -38,7 +38,7 @@ function authHeaders(session, prefer = '') {
 
 export async function signInAdminWithPassword(email, password) {
   if (!supabaseAuthConfig.isReady) {
-    return { data: null, error: 'Supabase env bilgileri tarayıcı build içinde görünmüyor. Vercel > Settings > Environment Variables içine VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ekle, Production/Preview/Development seç, sonra yeni Redeploy yap.' };
+    return { data: null, error: 'Supabase bağlantı bilgileri tarayıcı derlemesinde görünmüyor. Vercel > Settings > Environment Variables içine VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ekle, Production/Preview/Development seç, sonra yeniden dağıtım yap.' };
   }
 
   try {

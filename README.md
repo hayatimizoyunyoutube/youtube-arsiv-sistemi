@@ -1,6 +1,6 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.1.6
+Sürüm: v1.1.7
 
 ## Bu Sürüm
 - PLANLANANLAR klasörü temizlendi.
@@ -14,4 +14,4 @@ Mevcut Supabase ayarları korunur.
 
 ## Vercel
 Kod GitHub'a gönderildikten sonra Vercel otomatik deploy alır.
-Env keyleri GitHub'a gönderilmez.
+Ortam değişkenleri GitHub'a gönderilmez.

@@ -1,14 +1,14 @@
 {
   "status": "ok",
-  "version": "v1.1.6",
-  "releaseName": "Klasör Temizliği ve Plan Düzeni",
-  "supabaseRequired": false,
+  "version": "v1.1.7",
+  "releaseName": "Kullanıcı Yetkisi ve Oturum Koruma",
+  "supabaseRequired": true,
   "sqlRequired": false,
-  "sqlResult": "Bu sürümde Supabase SQL gerekmez.",
+  "sqlResult": "Bu sürümde yeni Supabase SQL gerekmez. app_users.role alanı kullanılır.",
   "features": [
-    "PLANLANANLAR klasörü temizlendi",
-    "Eski sürümler TAMAMLANANLAR klasöründe bırakıldı",
-    "Gelecek planlar v1.1.7 ve sonrasına göre düzenlendi",
-    "Gereksiz kök sürüm notları kaldırıldı"
+    "Normal kullanıcılar yönetim panelini görmez",
+    "Yetkisiz /admin erişimi engellendi",
+    "Oturum kullanıcı çıkış yapana kadar korunur",
+    "İngilizce kalan uyarılar Türkçeleştirildi"
   ]
 }
