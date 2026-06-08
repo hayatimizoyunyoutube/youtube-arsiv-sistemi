@@ -1,12 +1,13 @@
 {
-  "name": "hayatimiz-oyun-youtube-arsivi-v119",
+  "name": "hayatimiz-oyun-youtube-arsivi-v120",
   "private": true,
-  "version": "1.1.9",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "prebuild": "node scripts/update-deploy-info.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

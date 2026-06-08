@@ -342,3 +342,35 @@ select
   'DROP TABLE ve TRUNCATE kullanılmadı; mevcut veriler korundu' as veri_koruma,
   'Eksik tablolar/kolonlar/policyler güvenli şekilde eklendi' as migration_notu,
   now() as calisma_zamani;
+
+-- v1.2.0 - Oyun Yönetimi Merkezi / güvenli migration
+-- KURAL: Veri sıfırlama yok. DROP TABLE yok. TRUNCATE yok.
+
+alter table public.public_games add column if not exists category_slug text default '';
+alter table public.public_games add column if not exists category_title text default '';
+alter table public.public_games add column if not exists channel_slug text default '';
+alter table public.public_games add column if not exists channel_title text default '';
+alter table public.public_games add column if not exists series_slug text default '';
+alter table public.public_games add column if not exists series_title text default '';
+alter table public.public_games add column if not exists release_date date;
+alter table public.public_games add column if not exists cover_url text default '';
+alter table public.public_games add column if not exists banner_url text default '';
+alter table public.public_games add column if not exists status text default 'Planlandı';
+alter table public.public_games add column if not exists is_public boolean default true;
+alter table public.public_games add column if not exists sort_order integer default 100;
+alter table public.public_games add column if not exists updated_at timestamptz default now();
+
+create index if not exists idx_public_games_slug on public.public_games(slug);
+create index if not exists idx_public_games_category on public.public_games(category_slug);
+create index if not exists idx_public_games_channel on public.public_games(channel_slug);
+create index if not exists idx_public_games_status on public.public_games(status);
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.2.0', 'success', 'Oyun Yönetimi Merkezi eklendi; public_games güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı; Vercel deploy sayacı build sırasında güncellenir.');
+
+select
+  'v1.2.0 başarıyla çalıştı' as status,
+  'Oyun Yönetimi Merkezi aktif edildi' as yeni_ozellik,
+  'public_games tablosu veri silmeden güncellendi' as veri_koruma,
+  'Vercel deploy sayacı build sırasında public/deploy-info.json dosyasını günceller' as deploy_sayaci,
+  now() as calisma_zamani;

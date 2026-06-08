@@ -1,11 +1,11 @@
 {
   "status": "ok",
-  "version": "v1.1.9",
-  "releaseName": "Kurucu Yetkisi ve Güvenli SQL Migration",
+  "version": "v1.2.0",
+  "releaseName": "Oyun Yönetimi Merkezi ve Deploy Sayacı",
   "supabaseRequired": true,
   "sqlRequired": true,
   "sqlMode": "migration - mevcut tablolar ve veriler sıfırlanmaz",
-  "sqlResult": "Supabase SQL Results kısmında v1.1.9 başarıyla çalıştı yazmalı.",
+  "sqlResult": "v1.2.0 başarıyla çalıştı",
   "founderEmail": "mertdundaroyunda@gmail.com",
   "features": [
     "mertdundaroyunda@gmail.com hesabı founder/kurucu yapılır",

@@ -30,3 +30,9 @@ VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 ```
 
+
+
+## v1.2.0
+- Oyun Yönetimi Merkezi eklendi.
+- Supabase SQL gereklidir, veri sıfırlamaz.
+- Vercel deploy sayacı build sırasında güncellenir.
