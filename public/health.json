@@ -1,6 +1,6 @@
 {
   "name": "Hayatımız Oyun YouTube Arşivi",
-  "version": "v1.1.2",
+  "version": "v1.1.2-route-fix",
   "release": "Admin Giriş Sistemi",
   "status": "success",
   "features": [
@@ -11,9 +11,5 @@
   "note": "API key ve şifreler repoya eklenmez.",
   "releaseName": "v1.1.2 Fix Supabase Env ve SQL Results",
   "supabaseStatus": "schema.sql sonunda SELECT başarı satırı eklendi: Supabase Results alanında v1.1.2 FIX başarıyla çalıştı yazmalı.",
-  "notes": [
-    "Supabase env uyarısı Vercel Redeploy açıklamasıyla düzeltildi",
-    "SQL Results başarı satırı eklendi",
-    "Versiyon v1.1.2 olarak korundu"
-  ]
+  "notes": "Vercel SPA route 404 düzeltildi. Supabase SQL gerekmez."
 }
