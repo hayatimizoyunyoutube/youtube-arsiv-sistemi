@@ -1,17 +1,17 @@
 {
   "status": "ok",
-  "version": "v1.2.0",
-  "releaseName": "Oyun Yönetimi Merkezi ve Deploy Sayacı",
+  "version": "v1.2.1",
+  "releaseName": "Oyun Kapakları ve Medya Merkezi",
   "supabaseRequired": true,
   "sqlRequired": true,
   "sqlMode": "migration - mevcut tablolar ve veriler sıfırlanmaz",
-  "sqlResult": "v1.2.0 başarıyla çalıştı",
+  "sqlResult": "v1.2.1 başarıyla çalıştı",
   "founderEmail": "mertdundaroyunda@gmail.com",
   "features": [
-    "mertdundaroyunda@gmail.com hesabı founder/kurucu yapılır",
-    "SQL artık DROP TABLE veya TRUNCATE kullanmaz",
-    "Eksik tablolar create table if not exists ile oluşturulur",
-    "Eksik kolonlar alter table add column if not exists ile eklenir",
-    "Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur"
+    "Oyunlara kapak URL alanı korunur",
+    "Oyunlara banner URL alanı korunur",
+    "Oyunlara logo URL ve medya notu alanları eklendi",
+    "Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur",
+    "Vercel/GitHub commit sürüm etiketi v1.2.1 olarak güncellendi"
   ]
 }

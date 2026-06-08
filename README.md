@@ -32,7 +32,7 @@ VITE_SUPABASE_ANON_KEY=
 
 
 
-## v1.2.0
-- Oyun Yönetimi Merkezi eklendi.
-- Supabase SQL gereklidir, veri sıfırlamaz.
-- Vercel deploy sayacı build sırasında güncellenir.
+
+## v1.2.1
+
+Oyun Kapakları ve Medya Merkezi. Supabase SQL gereklidir; veri sıfırlamaz. Vercel/GitHub gönderiminde commit mesajı v1.2.1 olarak güncellendi.

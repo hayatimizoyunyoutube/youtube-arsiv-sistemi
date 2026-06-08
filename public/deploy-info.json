@@ -1,7 +1,7 @@
 {
-  "version": "v1.2.0",
-  "deployNumber": 123,
-  "updatedAt": "2026-06-08T23:18:14.688Z",
+  "version": "v1.2.1",
+  "deployNumber": 124,
+  "updatedAt": "2026-06-08T23:23:19.689Z",
   "commit": "",
   "branch": "",
   "source": "local-build"

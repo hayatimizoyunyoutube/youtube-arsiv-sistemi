@@ -343,7 +343,7 @@ select
   'Eksik tablolar/kolonlar/policyler güvenli şekilde eklendi' as migration_notu,
   now() as calisma_zamani;
 
--- v1.2.0 - Oyun Yönetimi Merkezi / güvenli migration
+-- v1.2.1 - Oyun Yönetimi Merkezi / güvenli migration
 -- KURAL: Veri sıfırlama yok. DROP TABLE yok. TRUNCATE yok.
 
 alter table public.public_games add column if not exists category_slug text default '';
@@ -366,11 +366,27 @@ create index if not exists idx_public_games_channel on public.public_games(chann
 create index if not exists idx_public_games_status on public.public_games(status);
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.2.0', 'success', 'Oyun Yönetimi Merkezi eklendi; public_games güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı; Vercel deploy sayacı build sırasında güncellenir.');
+values ('v1.2.1', 'success', 'Oyun Kapakları ve Medya Merkezi eklendi; public_games medya kolonları güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.');
 
 select
-  'v1.2.0 başarıyla çalıştı' as status,
+  'v1.2.1 başarıyla çalıştı' as status,
   'Oyun Yönetimi Merkezi aktif edildi' as yeni_ozellik,
   'public_games tablosu veri silmeden güncellendi' as veri_koruma,
   'Vercel deploy sayacı build sırasında public/deploy-info.json dosyasını günceller' as deploy_sayaci,
   now() as calisma_zamani;
+
+
+-- v1.2.1 - Oyun Kapakları ve Medya Merkezi / güvenli migration
+-- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
+alter table public.public_games add column if not exists logo_url text default '';
+alter table public.public_games add column if not exists media_note text default '';
+alter table public.public_games add column if not exists media_status text default 'Eksik Kontrol';
+alter table public.public_games add column if not exists updated_at timestamptz default now();
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.2.1', 'success', 'Oyun Kapakları ve Medya Merkezi eklendi; public_games medya kolonları güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
+on conflict do nothing;
+
+select
+  'v1.2.1 başarıyla çalıştı' as status,
+  'Oyun kapak/banner/logo medya alanları eklendi. Mevcut veriler korunur; tablo sıfırlama yoktur.' as detail;

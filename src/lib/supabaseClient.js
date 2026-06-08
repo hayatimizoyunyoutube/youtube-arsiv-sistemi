@@ -1,7 +1,7 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const SESSION_KEY = 'hoy_user_session_v120';
-const OLD_SESSION_KEYS = ['hoy_user_session_v119', 'hoy_user_session_v118', 'hoy_user_session_v117', 'hoy_admin_session_v115'];
+const SESSION_KEY = 'hoy_user_session_v119';
+const OLD_SESSION_KEYS = ['hoy_user_session_v118', 'hoy_user_session_v117', 'hoy_admin_session_v115'];
 
 export const supabaseConfig = {
   url: SUPABASE_URL,
@@ -25,10 +25,7 @@ export function getSession() {
     return null;
   } catch { return null; }
 }
-export function saveSession(session) {
-  const expires_at = session?.expires_at || (session?.expires_in ? Math.floor(Date.now() / 1000) + Number(session.expires_in) : undefined);
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ ...session, expires_at, saved_at: new Date().toISOString() }));
-}
+export function saveSession(session) { localStorage.setItem(SESSION_KEY, JSON.stringify({ ...session, saved_at: new Date().toISOString() })); }
 export function clearSession() { localStorage.removeItem(SESSION_KEY); OLD_SESSION_KEYS.forEach(k => localStorage.removeItem(k)); }
 
 export function isAdminRole(role) {
@@ -41,50 +38,19 @@ export function roleLabel(role) {
   return map[value] || role || 'Kullanıcı';
 }
 
-export async function refreshSessionIfNeeded(session = getSession()) {
-  if (!supabaseConfig.isReady || !session?.refresh_token) return { data: session, error: null };
-  const now = Math.floor(Date.now() / 1000);
-  if (session.expires_at && Number(session.expires_at) > now + 120) return { data: session, error: null };
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
-    method: 'POST',
-    headers: headers(null),
-    body: JSON.stringify({ refresh_token: session.refresh_token })
-  });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) return { data: session, error: cleanSupabaseError(json, 'Oturum yenilenemedi. Tekrar giriş yapman gerekiyor.') };
-  const fresh = {
-    access_token: json.access_token,
-    refresh_token: json.refresh_token || session.refresh_token,
-    expires_at: json.expires_at || (json.expires_in ? Math.floor(Date.now() / 1000) + Number(json.expires_in) : undefined),
-    user: json.user || session.user
-  };
-  saveSession(fresh);
-  return { data: fresh, error: null };
-}
-
 export async function getCurrentAppUser(session = getSession()) {
   if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
-  let activeSession = session;
-  const refreshed = await refreshSessionIfNeeded(session);
-  if (refreshed.data) activeSession = refreshed.data;
-  const userId = activeSession?.user?.id;
-  const email = activeSession?.user?.email || '';
-  if (!activeSession?.access_token || !userId) return { data: null, error: 'Oturum bilgisi eksik.' };
-  let res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?auth_user_id=eq.${userId}&select=*&limit=1`, { headers: headers(activeSession) });
-  let json = await res.json().catch(() => []);
+  const userId = session?.user?.id;
+  if (!session?.access_token || !userId) return { data: null, error: 'Oturum bilgisi eksik.' };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?auth_user_id=eq.${userId}&select=*&limit=1`, { headers: headers(session) });
+  const json = await res.json().catch(() => []);
   if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Kullanıcı profili okunamadı: ${res.status}`) };
-  let row = Array.isArray(json) ? json[0] || null : null;
-  if (!row && email) {
-    res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?email=eq.${encodeURIComponent(email)}&select=*&limit=1`, { headers: headers(activeSession) });
-    json = await res.json().catch(() => []);
-    if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Kullanıcı profili okunamadı: ${res.status}`) };
-    row = Array.isArray(json) ? json[0] || null : null;
-  }
-  if (!row && email) {
-    const created = await ensureAppUserProfile(activeSession);
-    row = created.data || null;
-  }
-  return { data: row, error: refreshed.error };
+  return { data: Array.isArray(json) ? json[0] || null : null, error: null };
+}
+
+export async function refreshSessionIfNeeded(session = getSession()) {
+  if (!supabaseConfig.isReady || !session?.refresh_token) return { data: session, error: null };
+  return { data: session, error: null };
 }
 
 function cleanSupabaseError(json, fallback) {
@@ -106,37 +72,21 @@ export async function ensureAppUserProfile(session) {
   const email = user?.email || '';
   if (!session?.access_token || !email) return { data: null, error: 'Oturum bilgisi eksik.' };
 
-  // ÖNEMLİ: Mevcut kullanıcı varsa rolünü asla user olarak ezme.
-  let res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?or=(auth_user_id.eq.${user.id},email.eq.${encodeURIComponent(email)})&select=*&limit=1`, { headers: headers(session) });
-  let json = await res.json().catch(() => []);
-  if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Profil kaydı okunamadı: ${res.status}`) };
-  const existing = Array.isArray(json) ? json[0] : null;
-  if (existing) {
-    const patch = { auth_user_id: user.id, email, updated_at: new Date().toISOString() };
-    res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?id=eq.${existing.id}`, {
-      method: 'PATCH',
-      headers: headers(session, 'return=representation'),
-      body: JSON.stringify(patch)
-    });
-    json = await res.json().catch(() => ({}));
-    if (!res.ok) return { data: existing, error: cleanSupabaseError(json, `Profil kaydı güncellenemedi: ${res.status}`) };
-    return { data: Array.isArray(json) ? json[0] : existing, error: null };
-  }
-
   const payload = {
     auth_user_id: user.id,
     email,
     display_name: email.split('@')[0],
-    role: email.toLowerCase() === 'mertdundaroyunda@gmail.com' ? 'founder' : 'user',
+    role: 'user',
     status: 'active',
     updated_at: new Date().toISOString()
   };
-  res = await fetch(`${SUPABASE_URL}/rest/v1/app_users`, {
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?on_conflict=auth_user_id`, {
     method: 'POST',
-    headers: headers(session, 'return=representation'),
+    headers: headers(session, 'resolution=merge-duplicates,return=representation'),
     body: JSON.stringify([payload])
   });
-  json = await res.json().catch(() => ({}));
+  const json = await res.json().catch(() => ({}));
   if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Profil kaydı oluşturulamadı: ${res.status}`) };
   return { data: Array.isArray(json) ? json[0] : json, error: null };
 }
