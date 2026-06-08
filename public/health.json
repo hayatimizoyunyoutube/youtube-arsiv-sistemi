@@ -1,15 +1,6 @@
 {
   "status": "ok",
   "version": "v1.1.5",
-  "releaseName": "Auth Stabilizasyon ve Kullanıcı Kayıt Fix",
-  "supabaseRequired": true,
-  "sqlStatusResult": "v1.1.4 başarıyla çalıştı",
-  "features": [
-    "Supabase Auth kayıt/giriş fix",
-    "app_users otomatik profil trigger",
-    "Email Confirm uyarısı",
-    "Status başarı güncellemesi"
-  ],
-  "supabase": "required",
-  "sqlResult": "v1.1.5 başarıyla çalıştı"
+  "fix": "email-confirm",
+  "message": "Email not confirmed fix paketi uygulandı. Supabase schema.sql Results: Email confirm fix çalıştı."
 }
