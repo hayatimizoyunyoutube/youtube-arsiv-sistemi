@@ -1,26 +1,11 @@
--- Hayatımız Oyun YouTube Arşivi
--- v1.1.8 - Kullanıcılar ve Yetkiler Merkezi
--- DİKKAT: Bu dosya aşağıdaki public tabloları silip yeniden oluşturur.
--- Auth > Users tablosunu SİLMEZ. Sadece public app_users profillerini sıfırlar.
+-- Hayatımız Oyun v1.1.9 - Kurucu Yetkisi + Güvenli SQL Migration
+-- ÖNEMLİ: Bu dosya mevcut tabloları/verileri sıfırlamaz.
+-- DROP TABLE / TRUNCATE yoktur. Eksik tablo/kolon/policy/function ekler.
 
 create extension if not exists pgcrypto;
 
--- Eski public tabloları temizle
-DROP TABLE IF EXISTS public.site_status_logs CASCADE;
-DROP TABLE IF EXISTS public.maintenance_settings CASCADE;
-DROP TABLE IF EXISTS public.admin_activity_logs CASCADE;
-DROP TABLE IF EXISTS public.admin_notes CASCADE;
-DROP TABLE IF EXISTS public.publish_calendar CASCADE;
-DROP TABLE IF EXISTS public.public_episodes CASCADE;
-DROP TABLE IF EXISTS public.public_series CASCADE;
-DROP TABLE IF EXISTS public.public_games CASCADE;
-DROP TABLE IF EXISTS public.public_channels CASCADE;
-DROP TABLE IF EXISTS public.public_categories CASCADE;
-DROP TABLE IF EXISTS public.app_users CASCADE;
-DROP TABLE IF EXISTS public.admin_roles CASCADE;
-DROP TABLE IF EXISTS public.site_menu_items CASCADE;
-
-create table public.app_users (
+-- 1) Tablolar: sadece yoksa oluştur
+create table if not exists public.app_users (
   id uuid primary key default gen_random_uuid(),
   auth_user_id uuid unique,
   email text unique,
@@ -35,7 +20,7 @@ create table public.app_users (
   updated_at timestamptz default now()
 );
 
-create table public.admin_roles (
+create table if not exists public.admin_roles (
   id uuid primary key default gen_random_uuid(),
   email text not null unique,
   role text not null default 'admin',
@@ -43,7 +28,7 @@ create table public.admin_roles (
   created_at timestamptz default now()
 );
 
-create table public.public_categories (
+create table if not exists public.public_categories (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -56,7 +41,7 @@ create table public.public_categories (
   updated_at timestamptz default now()
 );
 
-create table public.public_channels (
+create table if not exists public.public_channels (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -70,7 +55,7 @@ create table public.public_channels (
   updated_at timestamptz default now()
 );
 
-create table public.public_games (
+create table if not exists public.public_games (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -91,7 +76,7 @@ create table public.public_games (
   updated_at timestamptz default now()
 );
 
-create table public.public_series (
+create table if not exists public.public_series (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -113,7 +98,7 @@ create table public.public_series (
   updated_at timestamptz default now()
 );
 
-create table public.public_episodes (
+create table if not exists public.public_episodes (
   id uuid primary key default gen_random_uuid(),
   series_slug text default '',
   game_slug text default '',
@@ -129,7 +114,7 @@ create table public.public_episodes (
   updated_at timestamptz default now()
 );
 
-create table public.publish_calendar (
+create table if not exists public.publish_calendar (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   game_slug text default '',
@@ -144,7 +129,7 @@ create table public.publish_calendar (
   updated_at timestamptz default now()
 );
 
-create table public.admin_notes (
+create table if not exists public.admin_notes (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   note text default '',
@@ -154,7 +139,7 @@ create table public.admin_notes (
   updated_at timestamptz default now()
 );
 
-create table public.maintenance_settings (
+create table if not exists public.maintenance_settings (
   id uuid primary key default gen_random_uuid(),
   key text not null unique,
   enabled boolean default false,
@@ -164,7 +149,7 @@ create table public.maintenance_settings (
   updated_at timestamptz default now()
 );
 
-create table public.admin_activity_logs (
+create table if not exists public.admin_activity_logs (
   id uuid primary key default gen_random_uuid(),
   actor_email text default '',
   action text not null,
@@ -172,7 +157,7 @@ create table public.admin_activity_logs (
   created_at timestamptz default now()
 );
 
-create table public.site_status_logs (
+create table if not exists public.site_status_logs (
   id uuid primary key default gen_random_uuid(),
   version text not null,
   status text not null,
@@ -180,7 +165,7 @@ create table public.site_status_logs (
   created_at timestamptz default now()
 );
 
-create table public.site_menu_items (
+create table if not exists public.site_menu_items (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -191,7 +176,35 @@ create table public.site_menu_items (
   created_at timestamptz default now()
 );
 
--- RLS
+-- 2) Eksik kolonlar: sadece yoksa ekle
+alter table public.app_users add column if not exists auth_user_id uuid unique;
+alter table public.app_users add column if not exists email text unique;
+alter table public.app_users add column if not exists display_name text default '';
+alter table public.app_users add column if not exists role text default 'user';
+alter table public.app_users add column if not exists status text default 'active';
+alter table public.app_users add column if not exists is_banned boolean default false;
+alter table public.app_users add column if not exists ban_reason text default '';
+alter table public.app_users add column if not exists last_login_at timestamptz;
+alter table public.app_users add column if not exists avatar_url text default '';
+alter table public.app_users add column if not exists created_at timestamptz default now();
+alter table public.app_users add column if not exists updated_at timestamptz default now();
+
+alter table public.public_categories add column if not exists sort_order integer default 100;
+alter table public.public_categories add column if not exists is_public boolean default true;
+alter table public.public_categories add column if not exists cover_url text default '';
+alter table public.public_channels add column if not exists sort_order integer default 100;
+alter table public.public_channels add column if not exists is_public boolean default true;
+alter table public.public_channels add column if not exists cover_url text default '';
+alter table public.public_games add column if not exists banner_url text default '';
+alter table public.public_games add column if not exists is_public boolean default true;
+alter table public.public_games add column if not exists sort_order integer default 100;
+alter table public.public_series add column if not exists banner_url text default '';
+alter table public.public_series add column if not exists is_public boolean default true;
+alter table public.public_series add column if not exists sort_order integer default 100;
+alter table public.public_episodes add column if not exists is_public boolean default true;
+alter table public.public_episodes add column if not exists sort_order integer default 100;
+
+-- 3) RLS açık kalsın
 alter table public.app_users enable row level security;
 alter table public.admin_roles enable row level security;
 alter table public.public_categories enable row level security;
@@ -206,7 +219,20 @@ alter table public.admin_activity_logs enable row level security;
 alter table public.site_status_logs enable row level security;
 alter table public.site_menu_items enable row level security;
 
--- Public okuma policyleri
+-- 4) Policyleri güvenli şekilde yeniden oluştur
+DO $$
+DECLARE r record;
+BEGIN
+  FOR r IN
+    SELECT schemaname, tablename, policyname
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename IN ('app_users','admin_roles','public_categories','public_channels','public_games','public_series','public_episodes','publish_calendar','admin_notes','maintenance_settings','admin_activity_logs','site_status_logs','site_menu_items')
+  LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
+  END LOOP;
+END $$;
+
 create policy "public read categories" on public.public_categories for select using (is_public = true or auth.role() = 'authenticated');
 create policy "public read channels" on public.public_channels for select using (is_public = true or auth.role() = 'authenticated');
 create policy "public read games" on public.public_games for select using (is_public = true or auth.role() = 'authenticated');
@@ -217,7 +243,6 @@ create policy "public read maintenance" on public.maintenance_settings for selec
 create policy "public read status" on public.site_status_logs for select using (true);
 create policy "public read menu" on public.site_menu_items for select using (is_public = true or auth.role() = 'authenticated');
 
--- Auth kullanıcı yönetim policyleri
 create policy "auth read app users" on public.app_users for select to authenticated using (true);
 create policy "auth write app users" on public.app_users for all to authenticated using (true) with check (true);
 create policy "auth read admin roles" on public.admin_roles for select to authenticated using (true);
@@ -234,8 +259,7 @@ create policy "auth write logs" on public.admin_activity_logs for all to authent
 create policy "auth write status" on public.site_status_logs for all to authenticated using (true) with check (true);
 create policy "auth write menu" on public.site_menu_items for all to authenticated using (true) with check (true);
 
-
--- Auth kayıt olunca public.app_users içine otomatik profil aç
+-- 5) Auth kayıt olunca profil açan trigger
 create or replace function public.handle_new_auth_user()
 returns trigger
 language plpgsql
@@ -244,13 +268,7 @@ set search_path = public
 as $$
 begin
   insert into public.app_users (auth_user_id, email, display_name, role, status)
-  values (
-    new.id,
-    new.email,
-    coalesce(split_part(new.email, '@', 1), ''),
-    'user',
-    'active'
-  )
+  values (new.id, new.email, coalesce(split_part(new.email, '@', 1), ''), 'user', 'active')
   on conflict (auth_user_id) do update set
     email = excluded.email,
     updated_at = now();
@@ -263,7 +281,7 @@ create trigger on_auth_user_created
 after insert on auth.users
 for each row execute function public.handle_new_auth_user();
 
--- Eski auth kullanıcıları varsa app_users içine senkronla
+-- 6) Eski auth kullanıcılarını app_users içine senkronla, mevcut rolleri bozma
 insert into public.app_users (auth_user_id, email, display_name, role, status)
 select id, email, coalesce(split_part(email, '@', 1), ''), 'user', 'active'
 from auth.users
@@ -272,7 +290,28 @@ on conflict (auth_user_id) do update set
   email = excluded.email,
   updated_at = now();
 
--- Fotoğraftaki üst menü sırası
+-- 7) Kurucu hesabı sabitle: mevcut kayıt varsa günceller, yoksa auth.users içinden açar
+insert into public.app_users (auth_user_id, email, display_name, role, status, is_banned, ban_reason)
+select id, email, coalesce(split_part(email, '@', 1), 'mertdundaroyunda'), 'founder', 'active', false, ''
+from auth.users
+where lower(email) = lower('mertdundaroyunda@gmail.com')
+on conflict (auth_user_id) do update set
+  email = excluded.email,
+  role = 'founder',
+  status = 'active',
+  is_banned = false,
+  ban_reason = '',
+  updated_at = now();
+
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com');
+
+insert into public.admin_roles (email, role, status)
+values ('mertdundaroyunda@gmail.com', 'founder', 'active')
+on conflict (email) do update set role = 'founder', status = 'active';
+
+-- 8) Menü ve bakım ayarı: kayıt yoksa ekle, var olanı bozma
 insert into public.site_menu_items (slug, title, href, icon, sort_order) values
 ('ana-sayfa', 'Ana Sayfa', '/', '🏠', 10),
 ('arsiv', 'Arşiv', '/archive', '🎮', 20),
@@ -282,18 +321,24 @@ insert into public.site_menu_items (slug, title, href, icon, sort_order) values
 ('site-durumu', 'Site Durumu', '/status', '🛠️', 60),
 ('site-rehberi', 'Site Rehberi', '/guide', '📘', 70),
 ('yonetim-paneli', 'Yönetim Paneli', '/admin', '🛡️', 80),
-('profil', 'Profil', '/profile', '👤', 90);
+('profil', 'Profil', '/profile', '👤', 90)
+on conflict (slug) do update set
+  title = excluded.title,
+  href = excluded.href,
+  icon = excluded.icon,
+  sort_order = excluded.sort_order;
 
--- Başlangıç ayarı ve status başarı kaydı
 insert into public.maintenance_settings (key, enabled, title, message, progress)
-values ('main', false, 'Site Güncelleniyor', 'Bakım modu kapalı.', 0);
+values ('main', false, 'Site Güncelleniyor', 'Bakım modu kapalı.', 0)
+on conflict (key) do nothing;
 
+-- 9) Status başarı kaydı
 insert into public.site_status_logs (version, status, detail)
-values ('v1.1.8', 'success', 'Kullanıcılar ve yetkiler merkezi tamamlandı: rol değiştirme, banlama, kullanıcı arama ve app_users yetki alanları güncellendi.');
+values ('v1.1.9', 'success', 'Kurucu hesabı founder yapıldı; SQL güvenli migration mantığına taşındı ve mevcut veriler sıfırlanmadı.');
 
 select
-  'v1.1.8 başarıyla çalıştı' as status,
-  'Kullanıcılar ve yetkiler merkezi SQL güncellemesi tamamlandı' as reset_notu,
-  'app_users içine is_banned, ban_reason, last_login_at alanları eklendi; public_games, public_categories, public_channels, public_series, public_episodes, publish_calendar, admin_notes, maintenance_settings, site_status_logs, site_menu_items hazır' as tablolar,
-  'Vercel env: VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY + Redeploy gerekli' as vercel_notu,
+  'v1.1.9 başarıyla çalıştı' as status,
+  'mertdundaroyunda@gmail.com hesabı founder/kurucu yapıldı' as kurucu_notu,
+  'DROP TABLE ve TRUNCATE kullanılmadı; mevcut veriler korundu' as veri_koruma,
+  'Eksik tablolar/kolonlar/policyler güvenli şekilde eklendi' as migration_notu,
   now() as calisma_zamani;

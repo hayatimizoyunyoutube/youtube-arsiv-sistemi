@@ -30,7 +30,8 @@ export const completedUpdates = [
 
 export const plannedUpdates = [
   { version: 'v1.1.7', title: 'Admin Menü İçerikleri', summary: 'Yönetim panelindeki boş buton sayfaları sırayla gerçek içerik alanlarına dönüştürülecek.', items: ['Oyunlar paneli', 'Koleksiyonlar paneli', 'Bölümler paneli', 'Veri sağlığı paneli'] },
-  { version: 'v1.1.8', title: 'Oyun Yönetimi', summary: 'Supabase games tablosu üzerinden oyun ekleme, düzenleme ve silme akışı kurulacak.', items: ['Oyun ekle', 'Oyun düzenle', 'Oyun sil', 'Kategori/kanal/seri bağlama'] },
+  { version: 'v1.1.9', title: 'Kurucu Yetkisi ve Güvenli SQL', summary: 'Kurucu e-posta sabitlendi; SQL tablo sıfırlamadan migration mantığına taşındı.', items: ['Kurucu hesap', 'Veri koruma', 'Güvenli migration', 'Status başarı notu'] },
+  { version: 'v1.2.0', title: 'Oyun Yönetimi', summary: 'Supabase games tablosu üzerinden oyun ekleme, düzenleme ve silme akışı kurulacak.', items: ['Oyun ekle', 'Oyun düzenle', 'Oyun sil', 'Kategori/kanal/seri bağlama'] },
   { version: 'v1.1.9', title: 'Bölüm Sistemi', summary: 'Serilere ve oyunlara bağlı bölüm listesi için manuel ekleme ve sıralama sistemi kurulacak.', items: ['Bölüm ekle', 'Bölüm düzenle', 'Bölüm sıralama', 'Bölüm bağlantısı'] },
   { version: 'v1.2.0', title: 'Dosya Yükleme Sistemi', summary: 'Kapak ve banner görselleri için Supabase Storage hazırlığı yapılacak.', items: ['Kapak yükleme', 'Banner yükleme', 'Storage bucket', 'Görsel önizleme'] },
   { version: 'v1.2.1', title: 'İstatistik Merkezi', summary: 'Toplam seri, bölüm, kategori, kanal, kullanıcı ve oyun metrikleri gerçek veriden hesaplanacak.', items: ['Toplam seri', 'Toplam bölüm', 'Toplam kullanıcı', 'Toplam oyun'] },

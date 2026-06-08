@@ -1,30 +1,32 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.1.8
+Sürüm: v1.1.9
 
-## Bu Sürüm
-- Kullanıcılar ve Yetkiler merkezi eklendi.
-- Kullanıcılar Supabase `app_users` tablosundan listelenir.
-- Panelden rol değiştirme butonları eklendi.
-- Banla / ban kaldır aksiyonları eklendi.
-- Kullanıcı arama ve rol filtresi eklendi.
-- Tüm sürüm etiketleri v1.1.8 olarak güncellendi.
+## Bu sürümde eklenenler
 
-## Supabase
-Bu sürümde SQL gereklidir.
+- `mertdundaroyunda@gmail.com` hesabı kurucu/founder yapılır.
+- Supabase SQL artık tablo sıfırlamaz.
+- Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur.
+- Eksik tablolar `create table if not exists` ile oluşturulur.
+- Eksik kolonlar `alter table ... add column if not exists` ile eklenir.
+- Status ekranı v1.1.9 başarı sonucunu gösterir.
 
-Çalıştırılacak dosya:
+## Supabase gerekli mi?
 
-```text
-supabase/schema.sql
-```
+Evet. `supabase/schema.sql` çalıştırılmalı.
 
-Results kısmında şu yazmalı:
+SQL Results kısmında şu yazmalı:
 
 ```text
-v1.1.8 başarıyla çalıştı
+v1.1.9 başarıyla çalıştı
 ```
 
-## Vercel
-Kod GitHub'a gönderildikten sonra Vercel otomatik deploy alır.
-Ortam değişkenleri GitHub'a gönderilmez.
+## Güvenlik kuralı
+
+`.env.local` GitHub'a gönderilmez. Vercel env tarafında şu iki bilgi yeterlidir:
+
+```env
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
+

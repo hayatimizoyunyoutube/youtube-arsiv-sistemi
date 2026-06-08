@@ -1,15 +1,17 @@
 {
   "status": "ok",
-  "version": "v1.1.8",
-  "releaseName": "Kullanıcılar ve Yetkiler Merkezi",
+  "version": "v1.1.9",
+  "releaseName": "Kurucu Yetkisi ve Güvenli SQL Migration",
   "supabaseRequired": true,
   "sqlRequired": true,
-  "sqlResult": "Supabase SQL Results kısmında v1.1.8 başarıyla çalıştı yazmalı.",
+  "sqlMode": "migration - mevcut tablolar ve veriler sıfırlanmaz",
+  "sqlResult": "Supabase SQL Results kısmında v1.1.9 başarıyla çalıştı yazmalı.",
+  "founderEmail": "mertdundaroyunda@gmail.com",
   "features": [
-    "Kullanıcılar ve Yetkiler merkezi eklendi",
-    "Panelden rol değiştirme başlangıcı eklendi",
-    "Banla / ban kaldır aksiyonları eklendi",
-    "Kullanıcı arama ve rol filtreleme eklendi",
-    "Türkçe rol etiketleri eklendi"
+    "mertdundaroyunda@gmail.com hesabı founder/kurucu yapılır",
+    "SQL artık DROP TABLE veya TRUNCATE kullanmaz",
+    "Eksik tablolar create table if not exists ile oluşturulur",
+    "Eksik kolonlar alter table add column if not exists ile eklenir",
+    "Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur"
   ]
 }
