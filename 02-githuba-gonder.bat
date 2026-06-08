@@ -28,7 +28,7 @@ echo Guvenlik kontrolu: .env.local GitHub'a gonderilmeyecek.
 git rm --cached .env.local >nul 2>&1
 
 git add .
-git commit -m "v1.1.2 seri yonetimi" 
+git commit -m "v1.1.3 supabase kategori auth admin iskeleti" 
 if errorlevel 1 (
   echo Commit olusturulamadi. Degisiklik yoksa bu normal olabilir.
 )

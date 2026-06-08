@@ -1,4 +1,4 @@
-# v1.1.2 Fix - Supabase ve Vercel Kontrolü
+# v1.1.3 Fix - Supabase ve Vercel Kontrolü
 
 ## Supabase env eksik görünüyorsa
 
@@ -23,7 +23,7 @@ VITE_SUPABASE_ANON_KEY=...
 `supabase/schema.sql` dosyasını SQL Editor içinde çalıştırınca en altta şu satır görünmeli:
 
 ```text
-v1.1.2 FIX başarıyla çalıştı
+v1.1.3 FIX başarıyla çalıştı
 ```
 
 Bu görünmüyorsa eski schema dosyası çalıştırılmış demektir.

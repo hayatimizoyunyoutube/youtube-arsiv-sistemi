@@ -1,15 +1,16 @@
 {
   "name": "Hayatımız Oyun YouTube Arşivi",
-  "version": "v1.1.2-route-fix",
-  "release": "Admin Giriş Sistemi",
+  "version": "v1.1.3",
+  "releaseName": "Supabase Kategori/Auth/Admin İskeleti",
   "status": "success",
+  "supabaseRequired": true,
   "features": [
-    "public routes",
-    "supabase public data",
-    "admin login start"
+    "Demo veriler public görünümden kaldırıldı",
+    "Supabase public_categories tablosu eklendi",
+    "Supabase public_channels tablosu eklendi",
+    "Giriş ve kayıt ekranları eklendi",
+    "Admin panel buton route iskeleti kuruldu",
+    "Kategori ekle/düzenle/sil başlangıcı eklendi"
   ],
-  "note": "API key ve şifreler repoya eklenmez.",
-  "releaseName": "v1.1.2 Fix Supabase Env ve SQL Results",
-  "supabaseStatus": "schema.sql sonunda SELECT başarı satırı eklendi: Supabase Results alanında v1.1.2 FIX başarıyla çalıştı yazmalı.",
-  "notes": "Vercel SPA route 404 düzeltildi. Supabase SQL gerekmez."
+  "supabaseResults": "schema.sql çalışınca Results alanında v1.1.3 başarıyla çalıştı yazmalı"
 }
