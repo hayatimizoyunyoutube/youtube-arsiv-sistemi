@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 import { siteConfig } from './config/site.js';
-import { clearSession, createRow, deleteRow, getCurrentAppUser, getSession, isAdminRole, listTable, signIn, signUp, supabaseConfig, updateRow } from './lib/supabaseClient.js';
+import { clearSession, createRow, deleteRow, getCurrentAppUser, getSession, isAdminRole, listTable, roleLabel, signIn, signUp, supabaseConfig, updateAppUser, updateRow } from './lib/supabaseClient.js';
 
 const VERSION = siteConfig.version;
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
@@ -94,7 +94,7 @@ function HomePage() {
   const users = useTable('app_users');
   return <Layout>
     <section className="hero-card showcase-hero">
-      <div className="showcase-copy"><div className="version-pill">✅ {VERSION} • Kullanıcı yetkisi ve oturum koruma</div><h1>Kullanıcı yetkisi ve oturum koruma sistemi eklendi.</h1><p>Normal kullanıcılar yönetim panelini görmez. Oturum, sen çıkış yapana kadar korunur.</p><div className="hero-actions"><a className="primary-btn" href="/admin">Yönetim Paneli</a><a className="ghost-btn" href="/register">Kayıt Ol</a><a className="ghost-btn" href="/status">Durumu Kontrol Et</a></div></div>
+      <div className="showcase-copy"><div className="version-pill">✅ {VERSION} • Kullanıcılar ve yetkiler merkezi</div><h1>Kullanıcı ve yetki yönetimi panele eklendi.</h1><p>Yetkili hesaplar kullanıcıları görebilir, rol verebilir, banlayabilir ve ban kaldırabilir.</p><div className="hero-actions"><a className="primary-btn" href="/admin">Yönetim Paneli</a><a className="ghost-btn" href="/register">Kayıt Ol</a><a className="ghost-btn" href="/status">Durumu Kontrol Et</a></div></div>
       <aside className="showcase-panel"><span>SQL Durumu</span><strong>{supabaseConfig.isReady ? 'Bağlantı hazır' : 'Vercel ortam değişkenlerini kontrol et'}</strong><p>Bu sürümde Supabase gereklidir. schema.sql tabloları sıfırlar.</p><div className="mini-metrics"><b>{games.rows.length} oyun</b><b>{series.rows.length} seri</b><b>{users.rows.length} kullanıcı</b></div></aside>
     </section>
     <section className="beta-stats premium-stats"><article><span>{games.rows.length}</span><p>Oyun</p></article><article><span>{series.rows.length}</span><p>Seri</p></article><article><span>{categories.rows.length}</span><p>Kategori</p></article><article><span>{users.rows.length}</span><p>Kullanıcı</p></article></section>
@@ -130,7 +130,7 @@ function AuthPage({ mode }) {
     setMessage('Başarı: giriş yapıldı, app_users profil kaydı kontrol edildi.');
     setTimeout(() => location.href = '/admin', 600);
   }
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔐 {VERSION} • Kayıt ve giriş</div><h1>{mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</h1><p>v1.1.7 ile kullanıcı yetkisi ve oturum koruma sistemi eklendi.</p></div><section className="status-grid"><article className="status-check-card"><strong>Supabase Bağlantısı</strong><p>{supabaseConfig.isReady ? 'Hazır' : 'Eksik: Vercel ortam değişkenleri ve yeniden dağıtım gerekli.'}</p></article><article className="status-check-card"><strong>E-posta Onayı</strong><p>Test için Supabase Auth → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Kaydı</strong><p>schema.sql içindeki trigger app_users profilini otomatik açar.</p></article></section><form className="admin-card login-card" onSubmit={submit}><h2>{mode === 'register' ? 'Yeni hesap' : 'Hesaba giriş'}</h2><label>E-posta<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label><label>Şifre<input type="password" minLength="6" value={password} onChange={e => setPassword(e.target.value)} required /></label><button className="primary-btn" disabled={loading}>{loading ? 'İşleniyor...' : mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</button>{message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}<div className="hero-actions"><a className="ghost-btn" href={mode === 'register' ? '/login' : '/register'}>{mode === 'register' ? 'Girişe geç' : 'Kayıt ol'}</a><a className="ghost-btn" href="/status">Durumu kontrol et</a></div></form></section></Layout>;
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔐 {VERSION} • Kayıt ve giriş</div><h1>{mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</h1><p>v1.1.8 ile kullanıcılar ve yetkiler merkezi eklendi.</p></div><section className="status-grid"><article className="status-check-card"><strong>Supabase Bağlantısı</strong><p>{supabaseConfig.isReady ? 'Hazır' : 'Eksik: Vercel ortam değişkenleri ve yeniden dağıtım gerekli.'}</p></article><article className="status-check-card"><strong>E-posta Onayı</strong><p>Test için Supabase Auth → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Kaydı</strong><p>schema.sql içindeki trigger app_users profilini otomatik açar.</p></article></section><form className="admin-card login-card" onSubmit={submit}><h2>{mode === 'register' ? 'Yeni hesap' : 'Hesaba giriş'}</h2><label>E-posta<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label><label>Şifre<input type="password" minLength="6" value={password} onChange={e => setPassword(e.target.value)} required /></label><button className="primary-btn" disabled={loading}>{loading ? 'İşleniyor...' : mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</button>{message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}<div className="hero-actions"><a className="ghost-btn" href={mode === 'register' ? '/login' : '/register'}>{mode === 'register' ? 'Girişe geç' : 'Kayıt ol'}</a><a className="ghost-btn" href="/status">Durumu kontrol et</a></div></form></section></Layout>;
 }
 
 function AdminNav() { return <div className="admin-button-bar single-row-admin">{adminButtons.map(([label, href]) => <a key={href} className="ghost-btn admin-mini-btn" href={href}>{label}</a>)}</div>; }
@@ -145,8 +145,8 @@ function AdminPage() {
   }, [session?.access_token]);
   if (!session?.access_token) return <AuthPage mode="login" />;
   if (loading) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
-  if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION} • Normal Kullanıcı</div><h1>Yönetim paneli sadece yetkililere açıktır.</h1><p>Hesabın normal kullanıcı rolünde görünüyor. Bu yüzden yönetim paneli menüde gösterilmez ve bu alana giriş kapalıdır.</p></div><section className="notes-card"><h2>Hesap Bilgisi</h2><p>Rol: <strong>{profile?.role || 'user'}</strong></p><p>{error || 'Yetkili olmak için kurucu hesabından rol verilmesi gerekir.'}</p><a className="primary-btn" href="/profile">Profile Git</a></section></section></Layout>;
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>Normal kullanıcılar bu alanı görmez. Yetkili hesaplar panel butonlarına erişebilir.</p></div><AdminNav /><AdminQuickManager session={session} /></section></Layout>;
+  if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION} • Normal Kullanıcı</div><h1>Yönetim paneli sadece yetkililere açıktır.</h1><p>Hesabın normal kullanıcı rolünde görünüyor. Bu yüzden yönetim paneli menüde gösterilmez ve bu alana giriş kapalıdır.</p></div><section className="notes-card"><h2>Hesap Bilgisi</h2><p>Rol: <strong>{roleLabel(profile?.role)}</strong></p><p>{error || 'Yetkili olmak için kurucu hesabından rol verilmesi gerekir.'}</p><a className="primary-btn" href="/profile">Profile Git</a></section></section></Layout>;
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>v1.1.8 ile kullanıcılar, roller ve ban işlemleri panelden yönetilmeye başladı.</p></div><AdminNav /><AdminQuickManager session={session} /></section></Layout>;
 }
 
 function AdminQuickManager({ session }) {
@@ -160,6 +160,72 @@ function AdminQuickManager({ session }) {
   return <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>Hızlı Kayıt Yönetimi</h2><p>Şimdilik oyun/kategori/kanal/seri tablolarına temel kayıt ekler. Detaylı formlar sonraki sürümlerde gelecek.</p><label>Tablo<select value={table} onChange={e => setTable(e.target.value)}><option value="public_games">Oyunlar</option><option value="public_categories">Kategoriler</option><option value="public_channels">Kanallar</option><option value="public_series">Seriler</option></select></label><div className="form-two-col"><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} required /></label><label>Başlık<input value={form.title} onChange={e => set('title', e.target.value)} required /></label></div><label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label><div className="form-two-col"><label>Durum<select value={form.status} onChange={e => set('status', e.target.value)}><option>Aktif</option><option>Devam Ediyor</option><option>Tamamlandı</option><option>Planlandı</option><option>Gizli</option></select></label><label>Sıra<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label></div><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label><button className="primary-btn">{edit ? 'Güncelle' : 'Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form><div className="admin-card admin-table-card"><h2>Liste</h2><table className="admin-table"><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td>Kayıt yok.</td></tr> : null}</tbody></table></div></section>;
 }
 
+
+function AdminUsersPage() {
+  const session = getSession();
+  const [profile, setProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [rows, setRows] = useState([]);
+  const [query, setQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (session?.access_token) getCurrentAppUser(session).then(r => { setProfile(r.data); setLoadingProfile(false); });
+    else setLoadingProfile(false);
+  }, [session?.access_token]);
+
+  async function loadUsers() {
+    setLoading(true);
+    const r = await listTable('app_users', session);
+    setRows(r.data || []);
+    setMsg(r.error || `Başarı: ${r.data?.length || 0} kullanıcı yüklendi.`);
+    setLoading(false);
+  }
+
+  useEffect(() => { if (session?.access_token) loadUsers(); }, [session?.access_token]);
+
+  if (!session?.access_token) return <AuthPage mode="login" />;
+  if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
+  if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla kullanıcı yönetimi açılamaz.</p></div></section></Layout>;
+
+  const filtered = rows.filter(user => {
+    const text = `${user.email || ''} ${user.display_name || ''} ${user.role || ''}`.toLowerCase();
+    const q = query.trim().toLowerCase();
+    const roleOk = roleFilter === 'all' || String(user.role || 'user').toLowerCase() === roleFilter;
+    return (!q || text.includes(q)) && roleOk;
+  });
+
+  const stats = {
+    total: rows.length,
+    staff: rows.filter(x => isAdminRole(x.role)).length,
+    banned: rows.filter(x => x.is_banned || x.status === 'banned').length,
+    users: rows.filter(x => !isAdminRole(x.role)).length
+  };
+
+  async function changeRole(user, role) {
+    if (!confirm(`${user.email} hesabı ${roleLabel(role)} yapılsın mı?`)) return;
+    const r = await updateAppUser(user.id, { role, status: user.status === 'banned' ? 'banned' : 'active' }, session);
+    setMsg(r.error || `Başarı: ${user.email} rolü ${roleLabel(role)} olarak güncellendi.`);
+    loadUsers();
+  }
+
+  async function setBan(user, banned) {
+    const reason = banned ? prompt('Ban sebebi yaz:', user.ban_reason || 'Yetkili tarafından banlandı.') || 'Yetkili tarafından banlandı.' : '';
+    const r = await updateAppUser(user.id, { is_banned: banned, ban_reason: reason, status: banned ? 'banned' : 'active' }, session);
+    setMsg(r.error || (banned ? `Başarı: ${user.email} banlandı.` : `Başarı: ${user.email} banı kaldırıldı.`));
+    loadUsers();
+  }
+
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👥 {VERSION} • Kullanıcılar ve Yetkiler</div><h1>Kullanıcılar ve Yetkiler Merkezi</h1><p>Rol verme, kullanıcı arama, banlama ve ban kaldırma işlemleri buradan yapılır.</p></div><AdminNav />
+    <section className="beta-stats premium-stats"><article><span>{stats.total}</span><p>Toplam Kullanıcı</p></article><article><span>{stats.staff}</span><p>Yetkili</p></article><article><span>{stats.users}</span><p>Normal Kullanıcı</p></article><article><span>{stats.banned}</span><p>Banlı</p></article></section>
+    <section className="admin-card user-toolbar"><label>Arama<input value={query} onChange={e => setQuery(e.target.value)} placeholder="E-posta, isim veya rol ara" /></label><label>Rol Filtresi<select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}><option value="all">Tümü</option><option value="founder">Kurucu</option><option value="admin">Yönetici</option><option value="editor">Editör</option><option value="moderator">Moderatör</option><option value="user">Kullanıcı</option></select></label><button className="ghost-btn" onClick={loadUsers}>{loading ? 'Yükleniyor...' : 'Yenile'}</button></section>
+    {msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}
+    <section className="admin-card admin-table-card"><h2>Kullanıcı Listesi</h2><table className="admin-table users-table"><thead><tr><th>Kullanıcı</th><th>Rol</th><th>Durum</th><th>Yetki Komutları</th></tr></thead><tbody>{filtered.map(user => <tr key={user.id}><td><strong>{user.display_name || user.email}</strong><small>{user.email}</small></td><td><span className="role-badge">{roleLabel(user.role)}</span></td><td>{user.is_banned || user.status === 'banned' ? <span className="status-badge danger">Banlı</span> : <span className="status-badge ok">Aktif</span>}<small>{user.ban_reason || ''}</small></td><td><div className="user-actions"><button onClick={() => changeRole(user, 'founder')}>👑 Kurucu Yap</button><button onClick={() => changeRole(user, 'admin')}>🛡️ Yönetici Yap</button><button onClick={() => changeRole(user, 'editor')}>✍️ Editör Yap</button><button onClick={() => changeRole(user, 'moderator')}>👮 Moderatör Yap</button><button onClick={() => changeRole(user, 'user')}>👤 Kullanıcı Yap</button>{user.is_banned || user.status === 'banned' ? <button onClick={() => setBan(user, false)}>✅ Ban Kaldır</button> : <button onClick={() => setBan(user, true)}>🚫 Banla</button>}</div></td></tr>)}{!filtered.length ? <tr><td colSpan="4">Kullanıcı bulunamadı.</td></tr> : null}</tbody></table></section>
+  </section></Layout>;
+}
+
 function AdminPlaceholder({ title }) {
   const session = getSession();
   const [profile, setProfile] = useState(null);
@@ -170,9 +236,9 @@ function AdminPlaceholder({ title }) {
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla yönetim sayfaları açılmaz.</p></div><a className="primary-btn" href="/profile">Profile Git</a></section></Layout>;
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🚧 {VERSION}</div><h1>{title}</h1><p>Sayfa yolu kuruldu. İçeriği sonraki sürümlerde doldurulacak.</p></div><AdminNav /><EmptyState title="İskelet hazır" text="Bu buton artık hata vermiyor. İç sistem sonraki sürümde eklenecek." /></section></Layout>;
 }
-function Updates() { return <section className="notes-card"><h2>📌 {VERSION} Tamamlananlar</h2><ul><li>✅ Kayıt ol / giriş yap akışı stabilize edildi.</li><li>✅ Giriş yapan kullanıcı için app_users profili otomatik kontrol ediliyor.</li><li>✅ schema.sql içine auth.users → app_users otomatik profil trigger eklendi.</li><li>✅ Supabase E-posta Onayı ayarı için net uyarı eklendi.</li><li>🟢 Supabase gerekli: schema.sql tekrar çalıştırılmalı.</li></ul></section>; }
-function UpdatesPage() { return <Layout><PageHero icon="📝" title="Güncellemeler" text="v1.1.7 tamamlananlar ve sıradaki plan." /><Updates /><section className="next-card"><h2>➡️ Sonraki Plan: v1.1.8 Admin Menü İçerikleri</h2><p>Yönetim panelindeki oyunlar, kategoriler, kanallar, seriler ve kullanıcılar alanları ayrı ayrı doldurulacak.</p></section></Layout>; }
-function StatusPage() { return <Layout><PageHero icon="✅" title="Site Durumu" text="Klasör temizliği, Supabase Auth ve sayfa yolu kontrol paneli." /><section className="status-grid"><article className="status-check-card"><strong>Supabase gerekli</strong><p>{supabaseConfig.isReady ? 'Bağlantı hazır görünüyor.' : 'Bağlantı eksik veya Vercel yeniden dağıtım yapılmadı.'}</p></article><article className="status-check-card"><strong>SQL Sonucu</strong><p>Bu sürümde yeni Supabase SQL gerekmez. Mevcut app_users rol alanı yeterlidir.</p></article><article className="status-check-card"><strong>Auth Kontrol</strong><p>Kayıt/giriş için Supabase Authentication → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Tetikleyicisi</strong><p>Yeni Auth kullanıcısı oluşunca public.app_users profili otomatik oluşturulur.</p></article></section></Layout>; }
+function Updates() { return <section className="notes-card"><h2>📌 {VERSION} Tamamlananlar</h2><ul><li>✅ Kullanıcılar ve Yetkiler merkezi eklendi.</li><li>✅ Yönetim panelinden rol değiştirme butonları eklendi.</li><li>✅ Banla ve ban kaldır aksiyonları eklendi.</li><li>✅ Kullanıcı arama ve rol filtresi eklendi.</li><li>🟢 Supabase gerekli: schema.sql tekrar çalıştırılmalı.</li></ul></section>; }
+function UpdatesPage() { return <Layout><PageHero icon="📝" title="Güncellemeler" text="v1.1.8 tamamlananlar ve sıradaki plan." /><Updates /><section className="next-card"><h2>➡️ Sonraki Plan: v1.1.9 Oyun Yönetimi Merkezi</h2><p>Oyun ekleme, oyun düzenleme, oyun silme ve oyun detay formu doldurulacak.</p></section></Layout>; }
+function StatusPage() { return <Layout><PageHero icon="✅" title="Site Durumu" text="Kullanıcılar, yetkiler ve ban sistemi kontrol paneli." /><section className="status-grid"><article className="status-check-card"><strong>Supabase gerekli</strong><p>{supabaseConfig.isReady ? 'Bağlantı hazır görünüyor.' : 'Bağlantı eksik veya Vercel yeniden dağıtım yapılmadı.'}</p></article><article className="status-check-card"><strong>SQL Sonucu</strong><p>Supabase Results kısmında <strong>v1.1.8 başarıyla çalıştı</strong> yazmalı.</p></article><article className="status-check-card"><strong>Yetki Kontrolü</strong><p>Roller: Kurucu, Yönetici, Editör, Moderatör ve Kullanıcı olarak Türkçe gösterilir.</p></article><article className="status-check-card"><strong>Ban Kontrolü</strong><p>app_users içinde is_banned, ban_reason ve status alanları kullanılır.</p></article></section></Layout>; }
 function NotFoundPage() { return <Layout><section className="hero-card"><div className="version-pill">404 • {VERSION}</div><h1>Sayfa hazır değil.</h1><p>Bu route henüz planlanmadı veya yanlış yazıldı.</p><div className="hero-actions"><a className="primary-btn" href="/">Ana Sayfa</a><a className="ghost-btn" href="/admin">Admin</a></div></section></Layout>; }
 
 function AppRouter() {
@@ -190,6 +256,7 @@ function AppRouter() {
   if (p === '/login') return <AuthPage mode="login" />;
   if (p === '/register') return <AuthPage mode="register" />;
   if (p === '/admin') return <AdminPage />;
+  if (p === '/admin/users') return <AdminUsersPage />;
   if (p.startsWith('/admin/')) return <AdminPlaceholder title={adminButtons.find(x => x[1] === p)?.[0] || 'Yönetim Alanı'} />;
   return <NotFoundPage />;
 }

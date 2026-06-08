@@ -1,14 +1,15 @@
 {
   "status": "ok",
-  "version": "v1.1.7",
-  "releaseName": "Kullanıcı Yetkisi ve Oturum Koruma",
+  "version": "v1.1.8",
+  "releaseName": "Kullanıcılar ve Yetkiler Merkezi",
   "supabaseRequired": true,
-  "sqlRequired": false,
-  "sqlResult": "Bu sürümde yeni Supabase SQL gerekmez. app_users.role alanı kullanılır.",
+  "sqlRequired": true,
+  "sqlResult": "Supabase SQL Results kısmında v1.1.8 başarıyla çalıştı yazmalı.",
   "features": [
-    "Normal kullanıcılar yönetim panelini görmez",
-    "Yetkisiz /admin erişimi engellendi",
-    "Oturum kullanıcı çıkış yapana kadar korunur",
-    "İngilizce kalan uyarılar Türkçeleştirildi"
+    "Kullanıcılar ve Yetkiler merkezi eklendi",
+    "Panelden rol değiştirme başlangıcı eklendi",
+    "Banla / ban kaldır aksiyonları eklendi",
+    "Kullanıcı arama ve rol filtreleme eklendi",
+    "Türkçe rol etiketleri eklendi"
   ]
 }

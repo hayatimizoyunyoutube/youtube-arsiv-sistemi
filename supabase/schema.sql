@@ -1,5 +1,5 @@
 -- Hayatımız Oyun YouTube Arşivi
--- v1.1.5 - Auth Stabilizasyon + app_users Otomatik Profil
+-- v1.1.8 - Kullanıcılar ve Yetkiler Merkezi
 -- DİKKAT: Bu dosya aşağıdaki public tabloları silip yeniden oluşturur.
 -- Auth > Users tablosunu SİLMEZ. Sadece public app_users profillerini sıfırlar.
 
@@ -27,6 +27,9 @@ create table public.app_users (
   display_name text default '',
   role text default 'user',
   status text default 'active',
+  is_banned boolean default false,
+  ban_reason text default '',
+  last_login_at timestamptz,
   avatar_url text default '',
   created_at timestamptz default now(),
   updated_at timestamptz default now()
@@ -286,11 +289,11 @@ insert into public.maintenance_settings (key, enabled, title, message, progress)
 values ('main', false, 'Site Güncelleniyor', 'Bakım modu kapalı.', 0);
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.1.5', 'success', 'Auth stabilizasyon tamamlandı: app_users otomatik profil trigger, kayıt/giriş fix ve kullanıcı profil akışı güncellendi.');
+values ('v1.1.8', 'success', 'Kullanıcılar ve yetkiler merkezi tamamlandı: rol değiştirme, banlama, kullanıcı arama ve app_users yetki alanları güncellendi.');
 
 select
-  'v1.1.5 başarıyla çalıştı' as status,
-  'Auth stabilizasyon ve SQL güncellemesi tamamlandı' as reset_notu,
-  'public_games, app_users, public_categories, public_channels, public_series, public_episodes, publish_calendar, admin_notes, maintenance_settings, site_status_logs, site_menu_items hazır' as tablolar,
+  'v1.1.8 başarıyla çalıştı' as status,
+  'Kullanıcılar ve yetkiler merkezi SQL güncellemesi tamamlandı' as reset_notu,
+  'app_users içine is_banned, ban_reason, last_login_at alanları eklendi; public_games, public_categories, public_channels, public_series, public_episodes, publish_calendar, admin_notes, maintenance_settings, site_status_logs, site_menu_items hazır' as tablolar,
   'Vercel env: VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY + Redeploy gerekli' as vercel_notu,
   now() as calisma_zamani;

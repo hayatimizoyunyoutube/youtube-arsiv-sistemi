@@ -1,7 +1,7 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const SESSION_KEY = 'hoy_user_session_v117';
-const OLD_SESSION_KEYS = ['hoy_admin_session_v115'];
+const SESSION_KEY = 'hoy_user_session_v118';
+const OLD_SESSION_KEYS = ['hoy_user_session_v117', 'hoy_admin_session_v115'];
 
 export const supabaseConfig = {
   url: SUPABASE_URL,
@@ -30,6 +30,12 @@ export function clearSession() { localStorage.removeItem(SESSION_KEY); OLD_SESSI
 
 export function isAdminRole(role) {
   return ['founder', 'kurucu', 'admin', 'editor', 'moderator', 'moderatör'].includes(String(role || '').toLowerCase());
+}
+
+export function roleLabel(role) {
+  const value = String(role || 'user').toLowerCase();
+  const map = { founder: 'Kurucu', kurucu: 'Kurucu', admin: 'Yönetici', editor: 'Editör', moderator: 'Moderatör', 'moderatör': 'Moderatör', user: 'Kullanıcı' };
+  return map[value] || role || 'Kullanıcı';
 }
 
 export async function getCurrentAppUser(session = getSession()) {
@@ -128,7 +134,8 @@ export async function signUp(email, password) {
 
 export async function listTable(table, session = null, order = 'sort_order.asc') {
   if (!supabaseConfig.isReady) return { data: [], error: 'Supabase bağlantısı eksik.' };
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=${order}`, { headers: headers(session) });
+  const safeOrder = table === 'app_users' ? 'created_at.desc' : order;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=${safeOrder}`, { headers: headers(session) });
   const json = await res.json().catch(() => []);
   if (!res.ok) return { data: [], error: cleanSupabaseError(json, `${table} listeleme hatası: ${res.status}`) };
   return { data: Array.isArray(json) ? json : [], error: null };
@@ -155,4 +162,17 @@ export async function deleteRow(table, id, session) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: headers(session) });
   if (!res.ok) { const json = await res.json().catch(() => ({})); return { data: null, error: cleanSupabaseError(json, `${table} silme hatası: ${res.status}`) }; }
   return { data: true, error: null };
+}
+
+
+export async function updateAppUser(id, payload, session) {
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: headers(session, 'return=representation'),
+    body: JSON.stringify({ ...payload, updated_at: new Date().toISOString() })
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Kullanıcı güncelleme hatası: ${res.status}`) };
+  return { data: Array.isArray(json) ? json[0] : json, error: null };
 }

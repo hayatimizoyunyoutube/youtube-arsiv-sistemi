@@ -1,16 +1,29 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.1.7
+Sürüm: v1.1.8
 
 ## Bu Sürüm
-- PLANLANANLAR klasörü temizlendi.
-- Eski sürümler TAMAMLANANLAR klasöründe bırakıldı.
-- Planlananlar artık sadece gelecek sürümlerden başlıyor.
-- Gereksiz kök sürüm notları kaldırıldı.
+- Kullanıcılar ve Yetkiler merkezi eklendi.
+- Kullanıcılar Supabase `app_users` tablosundan listelenir.
+- Panelden rol değiştirme butonları eklendi.
+- Banla / ban kaldır aksiyonları eklendi.
+- Kullanıcı arama ve rol filtresi eklendi.
+- Tüm sürüm etiketleri v1.1.8 olarak güncellendi.
 
 ## Supabase
-Bu sürümde yeni SQL gerekmez.
-Mevcut Supabase ayarları korunur.
+Bu sürümde SQL gereklidir.
+
+Çalıştırılacak dosya:
+
+```text
+supabase/schema.sql
+```
+
+Results kısmında şu yazmalı:
+
+```text
+v1.1.8 başarıyla çalıştı
+```
 
 ## Vercel
 Kod GitHub'a gönderildikten sonra Vercel otomatik deploy alır.
