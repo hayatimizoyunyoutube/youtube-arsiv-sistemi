@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: 'Hayatımız Oyun',
   subtitle: 'YouTube Oynatma Listesi Arşivi',
-  version: 'v1.1.3',
-  releaseName: 'v1.1.3 Supabase Kategori/Auth/Admin İskeleti',
+  version: 'v1.1.4',
+  releaseName: 'v1.1.4 SQL Reset + Menü Kategori Düzeni',
   releaseDate: '2026-06-08',
-  description: 'Hayatımız Oyun YouTube oynatma listesi arşivi için Supabase tabanlı kategori, kanal, seri ve admin başlangıç sistemi.',
+  description: 'Supabase tablolarını temiz başlangıca alan, oyun/kullanıcı/bölüm/takvim/not/bakım tablolarını ekleyen ve menüleri tek sıra düzenleyen sürüm.',
   url: 'https://hayatimiz-oyun.vercel.app'
 };
