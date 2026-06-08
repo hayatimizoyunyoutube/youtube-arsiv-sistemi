@@ -1,14 +1,15 @@
 {
   "status": "ok",
-  "version": "v1.1.4",
-  "releaseName": "SQL Reset + Menü Kategori Düzeni",
+  "version": "v1.1.5",
+  "releaseName": "Auth Stabilizasyon ve Kullanıcı Kayıt Fix",
   "supabaseRequired": true,
   "sqlStatusResult": "v1.1.4 başarıyla çalıştı",
   "features": [
-    "SQL reset schema",
-    "Oyunlar ve kullanıcı profilleri tabloları",
-    "Kategori/kanal/seri/bölüm/takvim/not/bakım tabloları",
-    "Üst menü fotoğraftaki kategori sırası",
-    "Yönetim paneli tek satır buton düzeni"
-  ]
+    "Supabase Auth kayıt/giriş fix",
+    "app_users otomatik profil trigger",
+    "Email Confirm uyarısı",
+    "Status başarı güncellemesi"
+  ],
+  "supabase": "required",
+  "sqlResult": "v1.1.5 başarıyla çalıştı"
 }

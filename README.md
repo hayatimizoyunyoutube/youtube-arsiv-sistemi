@@ -57,3 +57,7 @@ VERCEL-KURULUM-REHBERI.md
 ## v1.1.1
 
 Admin giriş sistemi eklendi. `/admin` sayfası Supabase Auth ile giriş denemesi yapar. Gerçek keyler `.env.local` ve Vercel Environment Variables içinde tutulmalıdır.
+
+
+## v1.1.5 Auth Fix
+Supabase schema.sql tekrar çalıştırılmalı. Results kısmında `v1.1.5 başarıyla çalıştı` görünmeli. Test için Email Confirm kapalı olmalı.

@@ -1,5 +1,5 @@
 -- Hayatımız Oyun YouTube Arşivi
--- v1.1.4 - SQL RESET + Temel Admin Tabloları
+-- v1.1.5 - Auth Stabilizasyon + app_users Otomatik Profil
 -- DİKKAT: Bu dosya aşağıdaki public tabloları silip yeniden oluşturur.
 -- Auth > Users tablosunu SİLMEZ. Sadece public app_users profillerini sıfırlar.
 
@@ -231,6 +231,44 @@ create policy "auth write logs" on public.admin_activity_logs for all to authent
 create policy "auth write status" on public.site_status_logs for all to authenticated using (true) with check (true);
 create policy "auth write menu" on public.site_menu_items for all to authenticated using (true) with check (true);
 
+
+-- Auth kayıt olunca public.app_users içine otomatik profil aç
+create or replace function public.handle_new_auth_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.app_users (auth_user_id, email, display_name, role, status)
+  values (
+    new.id,
+    new.email,
+    coalesce(split_part(new.email, '@', 1), ''),
+    'user',
+    'active'
+  )
+  on conflict (auth_user_id) do update set
+    email = excluded.email,
+    updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+after insert on auth.users
+for each row execute function public.handle_new_auth_user();
+
+-- Eski auth kullanıcıları varsa app_users içine senkronla
+insert into public.app_users (auth_user_id, email, display_name, role, status)
+select id, email, coalesce(split_part(email, '@', 1), ''), 'user', 'active'
+from auth.users
+where email is not null
+on conflict (auth_user_id) do update set
+  email = excluded.email,
+  updated_at = now();
+
 -- Fotoğraftaki üst menü sırası
 insert into public.site_menu_items (slug, title, href, icon, sort_order) values
 ('ana-sayfa', 'Ana Sayfa', '/', '🏠', 10),
@@ -248,11 +286,11 @@ insert into public.maintenance_settings (key, enabled, title, message, progress)
 values ('main', false, 'Site Güncelleniyor', 'Bakım modu kapalı.', 0);
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.1.4', 'success', 'SQL reset tamamlandı: oyunlar, kullanıcılar, kategoriler, kanallar, seriler, bölümler, takvim, notlar, bakım, status ve menü tabloları oluşturuldu.');
+values ('v1.1.5', 'success', 'Auth stabilizasyon tamamlandı: app_users otomatik profil trigger, kayıt/giriş fix ve kullanıcı profil akışı güncellendi.');
 
 select
-  'v1.1.4 başarıyla çalıştı' as status,
-  'SQL reset tamamlandı' as reset_notu,
+  'v1.1.5 başarıyla çalıştı' as status,
+  'Auth stabilizasyon ve SQL güncellemesi tamamlandı' as reset_notu,
   'public_games, app_users, public_categories, public_channels, public_series, public_episodes, publish_calendar, admin_notes, maintenance_settings, site_status_logs, site_menu_items hazır' as tablolar,
   'Vercel env: VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY + Redeploy gerekli' as vercel_notu,
   now() as calisma_zamani;
