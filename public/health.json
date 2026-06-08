@@ -1,6 +1,14 @@
 {
   "status": "ok",
-  "version": "v1.1.5",
-  "fix": "email-confirm",
-  "message": "Email not confirmed fix paketi uygulandı. Supabase schema.sql Results: Email confirm fix çalıştı."
+  "version": "v1.1.6",
+  "releaseName": "Klasör Temizliği ve Plan Düzeni",
+  "supabaseRequired": false,
+  "sqlRequired": false,
+  "sqlResult": "Bu sürümde Supabase SQL gerekmez.",
+  "features": [
+    "PLANLANANLAR klasörü temizlendi",
+    "Eski sürümler TAMAMLANANLAR klasöründe bırakıldı",
+    "Gelecek planlar v1.1.7 ve sonrasına göre düzenlendi",
+    "Gereksiz kök sürüm notları kaldırıldı"
+  ]
 }

@@ -1,63 +1,17 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.1.1 Fix
+Sürüm: v1.1.6
 
-Bu paket Supabase public veri başlangıcı sonrası güvenli GitHub/Vercel hazırlığı içerir.
+## Bu Sürüm
+- PLANLANANLAR klasörü temizlendi.
+- Eski sürümler TAMAMLANANLAR klasöründe bırakıldı.
+- Planlananlar artık sadece gelecek sürümlerden başlıyor.
+- Gereksiz kök sürüm notları kaldırıldı.
 
-## Önemli Güvenlik Kuralı
-
-Gerçek API keyler GitHub'a gönderilmez.
-
-Local dosya:
-
-```text
-.env.local
-```
-
-GitHub'a gidebilecek örnek dosya:
-
-```text
-.env.example
-```
-
-## Local test
-
-```powershell
-npm install
-npm run dev
-```
-
-Adres:
-
-```text
-http://localhost:5173
-```
-
-## GitHub'a gönderme
-
-```powershell
-.\02-githuba-gonder.ps1
-```
-
-Repo:
-
-```text
-https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi
-```
+## Supabase
+Bu sürümde yeni SQL gerekmez.
+Mevcut Supabase ayarları korunur.
 
 ## Vercel
-
-Detaylı anlatım için:
-
-```text
-VERCEL-KURULUM-REHBERI.md
-```
-
-
-## v1.1.1
-
-Admin giriş sistemi eklendi. `/admin` sayfası Supabase Auth ile giriş denemesi yapar. Gerçek keyler `.env.local` ve Vercel Environment Variables içinde tutulmalıdır.
-
-
-## v1.1.5 Auth Fix
-Supabase schema.sql tekrar çalıştırılmalı. Results kısmında `v1.1.5 başarıyla çalıştı` görünmeli. Test için Email Confirm kapalı olmalı.
+Kod GitHub'a gönderildikten sonra Vercel otomatik deploy alır.
+Env keyleri GitHub'a gönderilmez.

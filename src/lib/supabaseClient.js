@@ -1,6 +1,6 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const SESSION_KEY = 'hoy_admin_session_v115_email_confirm_fix';
+const SESSION_KEY = 'hoy_admin_session_v115';
 
 export const supabaseConfig = {
   url: SUPABASE_URL,
@@ -62,7 +62,7 @@ export async function signIn(email, password) {
   if (!res.ok) {
     const raw = cleanSupabaseError(json, `Giriş hatası: ${res.status}`);
     const hint = raw.toLowerCase().includes('confirm') || raw.toLowerCase().includes('email')
-      ? ' Bu fix paketindeki supabase/schema.sql dosyasını Supabase SQL Editor içinde tekrar çalıştır. Results kısmında Email confirm fix çalıştı yazmalı.'
+      ? ' Supabase Dashboard → Authentication → Providers → Email bölümünde Confirm email kapalı olmalı veya mail onaylanmalı.'
       : '';
     return { data: null, error: raw + hint };
   }
@@ -90,7 +90,7 @@ export async function signUp(email, password) {
   return {
     data: { user: json.user, confirmed: false },
     error: null,
-    notice: 'Kayıt Supabase Auth içine düştü. Giriş için bu fix paketindeki schema.sql çalıştırılmalı; Email confirm fix çalıştı sonucunu görmelisin.'
+    notice: 'Kayıt Supabase Auth içine düştü. Giriş için Supabase Email Confirm kapalı olmalı veya kullanıcı mail onayı yapmalı.'
   };
 }
 

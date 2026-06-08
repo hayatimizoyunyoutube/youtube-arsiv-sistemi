@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: 'Hayatımız Oyun',
   subtitle: 'YouTube Oynatma Listesi Arşivi',
-  version: 'v1.1.5',
-  releaseName: 'v1.1.5 Auth Stabilizasyon ve Kullanıcı Kayıt Fix',
+  version: 'v1.1.6',
+  releaseName: 'v1.1.6 Klasör Temizliği ve Plan Düzeni',
   releaseDate: '2026-06-08',
-  description: 'Supabase Auth kayıt/giriş akışı, app_users otomatik profil kaydı ve status başarı notu düzeltilen sürüm.',
+  description: 'Güncellemeler klasörü temizlendi, eski sürümler tamamlananlarda bırakıldı ve planlananlar gelecek sürümlerle sınırlandı.',
   url: 'https://hayatimiz-oyun.vercel.app'
 };
