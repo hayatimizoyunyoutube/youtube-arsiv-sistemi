@@ -319,7 +319,7 @@ insert into public.site_menu_items (slug, title, href, icon, sort_order) values
 ('seriler', 'Seriler', '/series', '🎬', 40),
 ('yayin-takvimi', 'Yayın Takvimi', '/calendar', '🗓️', 50),
 ('site-durumu', 'Site Durumu', '/status', '🛠️', 60),
-('site-rehberi', 'Site Rehberi', '/guide', '📘', 70),
+('site-rehberi', 'YouTube Playlist Altyapısı', '/guide', '📘', 70),
 ('yonetim-paneli', 'Yönetim Paneli', '/admin', '🛡️', 80),
 ('profil', 'Profil', '/profile', '👤', 90)
 on conflict (slug) do update set
@@ -766,7 +766,7 @@ begin
 end $$;
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.2.8', 'success', 'Dashboard ve veri sağlığı merkezi eklendi; bu sürüm için yeni SQL gerekmez, mevcut veriler ve kullanıcı yetkileri sıfırlanmadı.')
+values ('v1.2.8', 'success', 'Dashboard ve veri sağlığı merkezi eklendi; bu sürüm için yeni SQL gerekli, mevcut veriler ve kullanıcı yetkileri sıfırlanmadı.')
 on conflict do nothing;
 
 update public.app_users
@@ -780,4 +780,81 @@ select
   'Kullanıcı yetkileri, oyunlar, seriler, kategoriler, kanallar, bölümler ve takvim verileri sıfırlanmadı' as veri_koruma,
   'Yeni .env gerekli değil; mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterli' as env_notu,
   'Vercel/GitHub commit sürüm etiketi v1.2.8 olarak güncellendi' as deploy_notu,
+  now() as calisma_zamani;
+
+-- v1.3.0 - YouTube Playlist Altyapısı
+-- Güvenli migration: tablo/veri/yetki sıfırlamaz. DROP TABLE/TRUNCATE yoktur.
+create table if not exists public.youtube_playlists (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  playlist_id text default '',
+  playlist_url text default '',
+  game_slug text default '',
+  game_title text default '',
+  series_slug text default '',
+  series_title text default '',
+  channel_slug text default '',
+  channel_title text default '',
+  status text default 'Hazır',
+  sync_status text default 'Bekliyor',
+  last_sync_note text default '',
+  episode_count integer default 0,
+  cover_url text default '',
+  is_public boolean default true,
+  sort_order integer default 100,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.youtube_playlists add column if not exists slug text;
+alter table public.youtube_playlists add column if not exists title text;
+alter table public.youtube_playlists add column if not exists playlist_id text default '';
+alter table public.youtube_playlists add column if not exists playlist_url text default '';
+alter table public.youtube_playlists add column if not exists game_slug text default '';
+alter table public.youtube_playlists add column if not exists game_title text default '';
+alter table public.youtube_playlists add column if not exists series_slug text default '';
+alter table public.youtube_playlists add column if not exists series_title text default '';
+alter table public.youtube_playlists add column if not exists channel_slug text default '';
+alter table public.youtube_playlists add column if not exists channel_title text default '';
+alter table public.youtube_playlists add column if not exists status text default 'Hazır';
+alter table public.youtube_playlists add column if not exists sync_status text default 'Bekliyor';
+alter table public.youtube_playlists add column if not exists last_sync_note text default '';
+alter table public.youtube_playlists add column if not exists episode_count integer default 0;
+alter table public.youtube_playlists add column if not exists cover_url text default '';
+alter table public.youtube_playlists add column if not exists is_public boolean default true;
+alter table public.youtube_playlists add column if not exists sort_order integer default 100;
+alter table public.youtube_playlists add column if not exists created_at timestamptz default now();
+alter table public.youtube_playlists add column if not exists updated_at timestamptz default now();
+
+create unique index if not exists youtube_playlists_slug_key on public.youtube_playlists(slug);
+create index if not exists youtube_playlists_playlist_id_idx on public.youtube_playlists(playlist_id);
+create index if not exists youtube_playlists_game_slug_idx on public.youtube_playlists(game_slug);
+create index if not exists youtube_playlists_series_slug_idx on public.youtube_playlists(series_slug);
+
+alter table public.youtube_playlists enable row level security;
+do $$
+begin
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='youtube_playlists' and policyname='public read youtube playlists v130') then
+    create policy "public read youtube playlists v130" on public.youtube_playlists for select using (is_public = true or auth.role() = 'authenticated');
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='youtube_playlists' and policyname='auth write youtube playlists v130') then
+    create policy "auth write youtube playlists v130" on public.youtube_playlists for all to authenticated using (true) with check (true);
+  end if;
+end $$;
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.3.0', 'success', 'YouTube playlist kayıt altyapısı eklendi. youtube_playlists tablosu oluşturuldu/güncellendi. Mevcut veriler ve yetkiler sıfırlanmadı.')
+on conflict do nothing;
+
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com') and role is distinct from 'founder';
+
+select
+  'v1.3.0 başarıyla çalıştı' as status,
+  'YouTube playlist kayıt altyapısı eklendi.' as yeni_ozellik,
+  'youtube_playlists tablosu, playlist_id, playlist_url, oyun/seri/kanal bağlantı alanları, sync_status ve indexler eklendi.' as sql_eklenenler,
+  'DROP TABLE/TRUNCATE yok; kullanıcı yetkileri ve mevcut içerikler sıfırlanmadı.' as veri_koruma,
+  'Yeni .env gerekmez. YouTube API anahtarı v1.3.1 bölüm çekme sürümünde istenecek.' as env_notu,
   now() as calisma_zamani;

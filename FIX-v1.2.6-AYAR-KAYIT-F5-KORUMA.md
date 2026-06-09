@@ -11,7 +11,7 @@ Bu paket sürüm değildir, v1.2.6 üzerine fix paketidir.
 
 ## Supabase SQL
 
-Yeni SQL gerekmez.
+Supabase SQL gerekli.
 
 ## Yeni .env
 

@@ -14,7 +14,7 @@ Bu paket sürüm değildir, v1.2.6 için fix paketidir.
 
 Yeni tablo/kolon eklenmediği için normalde gerekmez.
 
-Eğer v1.2.6 `schema.sql` daha önce çalıştırılmadıysa çalıştırılmalı. Daha önce çalıştırıldıysa bu fix için ekstra SQL gerekmez.
+Eğer v1.2.6 `schema.sql` daha önce çalıştırılmadıysa çalıştırılmalı. Daha önce çalıştırıldıysa bu fix için ekstra SQL gerekli.
 
 ## Veri koruma
 

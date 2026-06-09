@@ -1,15 +1,15 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.2.9
+Sürüm: v1.3.0
 
 ## Bu sürüm
-Site Rehberi ve Kurulum Merkezi eklendi.
+YouTube Playlist Altyapısı.
 
 ## Supabase SQL gerekli mi?
-Hayır.
+Evet. `youtube_playlists` tablosu eklenir.
 
 ## Yeni .env gerekli mi?
 Hayır.
 
-## Güvenlik
-Gerçek API key ve şifreler GitHub'a gönderilmez. `.env.local` sadece local bilgisayarda kalır; Vercel keyleri Vercel Environment Variables alanında tutulur.
+## Veri koruma
+SQL mevcut tabloları ve yetkileri sıfırlamaz.

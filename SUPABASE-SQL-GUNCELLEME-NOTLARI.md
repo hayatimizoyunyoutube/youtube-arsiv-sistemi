@@ -1,17 +1,29 @@
-# Supabase SQL Güncelleme Notları - v1.2.9
+# Supabase SQL Güncelleme Notları - v1.3.0
 
 ## Supabase SQL gerekli mi?
-Hayır.
+Evet.
 
-## Tablolara ne eklendi?
-Hiçbir tabloya yeni kolon veya veri eklenmedi.
+## Ne eklendi?
+- `youtube_playlists` tablosu
+- `playlist_id`
+- `playlist_url`
+- `game_slug`, `game_title`
+- `series_slug`, `series_title`
+- `channel_slug`, `channel_title`
+- `sync_status`
+- `last_sync_note`
+- `episode_count`
+- RLS policyleri ve indexler
 
-## Veri/yetki sıfırlama var mı?
-Hayır. Bu sürüm SQL çalıştırmaz; mevcut kullanıcı, rol, oyun, kategori, kanal, seri, bölüm ve bakım ayarları korunur.
+## Ne yapılmadı?
+- Tablo sıfırlanmadı.
+- Kullanıcı yetkileri silinmedi.
+- Oyun, kategori, kanal, seri ve bölüm verileri silinmedi.
+- Demo veri zorla eklenmedi.
 
-## Sonraki SQL kuralı
-Bundan sonraki SQL dosyaları migration mantığında olacak:
-- `DROP TABLE` yok
-- `TRUNCATE` yok
-- Mevcut rol/yetki overwrite yok
-- Sadece eksik tablo/kolon/policy ekleme var
+## Results
+SQL sonunda şu sonuç dönmelidir:
+
+```sql
+v1.3.0 başarıyla çalıştı
+```

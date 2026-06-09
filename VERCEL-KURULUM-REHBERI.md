@@ -1,22 +1,44 @@
-# Vercel Kurulum Rehberi - v1.2.9
+# Vercel Kurulum Rehberi - v1.3.0
 
-## Yeni .env gerekli mi?
-Hayır. Bu sürümde yeni environment variable eklenmedi.
+## Bu sürümde yeni .env gerekli mi?
+Hayır.
 
-Vercel'de mevcut kalacak değerler:
+Mevcut Vercel Environment Variables yeterli:
 
 ```env
 VITE_SUPABASE_URL=Supabase Project URL
 VITE_SUPABASE_ANON_KEY=Supabase anon public key
 ```
 
+## YouTube API key gerekli mi?
+Hayır, v1.3.0 sadece playlist kayıt altyapısıdır.
+
+YouTube API key v1.3.1 sürümünde, playlistten bölüm çekme aktif edilirken eklenecek.
+
 ## Supabase SQL gerekli mi?
-Hayır. v1.2.9 sadece site rehberi, yetkili rehberi, sürüm ve deploy notlarını günceller.
+Evet.
 
-## Deploy kontrolü
-1. GitHub'a `02-githuba-gonder.bat` ile gönder.
-2. Vercel Deployments ekranında commit adının `v1.2.9 site rehberi ve kurulum merkezi` olduğunu kontrol et.
-3. Env değişmediği için ekstra Redeploy gerekmez; GitHub push otomatik deploy başlatır.
+`supabase/schema.sql` çalıştırılmalı.
 
-## Güvenlik kuralı
-`.env`, `.env.local`, `.env.production` GitHub'a gönderilmez.
+## SQL ne ekledi?
+- `youtube_playlists` tablosu
+- Playlist başlığı, URL ve ID alanları
+- Oyun/seri/kanal bağlantı alanları
+- Senkron durumu ve son not alanı
+- Public okuma ve authenticated yazma policyleri
+- Indexler
+
+## Veri ve yetki sıfırlanır mı?
+Hayır.
+
+Bu SQL:
+- `DROP TABLE` kullanmaz
+- `TRUNCATE` kullanmaz
+- Mevcut kullanıcı yetkilerini sıfırlamaz
+- Oyun/seri/kategori/kanal/bölüm kayıtlarını silmez
+
+## Deploy sonrası
+1. GitHub'a gönder.
+2. Vercel otomatik deploy alır.
+3. Supabase SQL Editor içinde `supabase/schema.sql` çalıştır.
+4. Site menüsünden Yönetim Paneli → YouTube Playlist alanını kontrol et.

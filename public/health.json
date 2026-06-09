@@ -1,8 +1,8 @@
 {
   "ok": true,
-  "version": "v1.2.9",
-  "releaseName": "Site Rehberi ve Kurulum Merkezi",
+  "version": "v1.3.0",
+  "releaseName": "YouTube Playlist Altyapısı",
   "sqlRequired": false,
   "newEnvRequired": false,
-  "notes": "Yeni SQL gerekmez. Yeni .env gerekmez. Rehber ve kontrol sayfaları güncellendi; veri/yetki sıfırlanmaz."
+  "notes": "Supabase SQL gerekli. Yeni .env gerekmez. Rehber ve kontrol sayfaları güncellendi; veri/yetki sıfırlanmaz."
 }

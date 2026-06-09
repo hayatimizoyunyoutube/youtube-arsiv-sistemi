@@ -9,7 +9,7 @@ if (existsSync(file)) {
 }
 const next = Number(current.deployNumber || 0) + 1;
 const info = {
-  version: 'v1.2.9',
+  version: 'v1.3.0',
   deployNumber: next,
   updatedAt: new Date().toISOString(),
   commit: process.env.VERCEL_GIT_COMMIT_SHA || '',
@@ -17,4 +17,4 @@ const info = {
   source: process.env.VERCEL ? 'vercel-build' : 'local-build'
 };
 writeFileSync(file, JSON.stringify(info, null, 2) + '\n');
-console.log(`Deploy bilgisi güncellendi: v1.2.9 #${next}`);
+console.log(`Deploy bilgisi güncellendi: v1.3.0 #${next}`);
