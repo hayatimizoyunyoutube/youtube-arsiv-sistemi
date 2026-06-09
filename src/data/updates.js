@@ -31,19 +31,22 @@ export const completedUpdates = [
   { version: 'v1.1.8', title: 'Kullanıcılar ve Yetkiler', date: '2026-06-08', summary: 'Kullanıcılar ve yetkiler merkezi, rol değiştirme, banlama ve arama/filtreleme akışı eklendi.', items: ['Kullanıcı listesi', 'Rol değiştirme', 'Ban/kaldır', 'Türkçe rol etiketleri'] },
   { version: 'v1.1.9', title: 'Kurucu ve Güvenli SQL', date: '2026-06-08', summary: 'mertdundaroyunda@gmail.com kurucu yapıldı ve SQL dosyası veri sıfırlamayan migration mantığına taşındı.', items: ['Kurucu hesap', 'DROP/TRUNCATE yok', 'Veri koruma', 'Güvenli migration'] },
   { version: 'v1.2.0', title: 'Oyun Yönetimi ve Deploy Sayacı', date: '2026-06-09', summary: 'Oyun ekle, düzenle, sil akışı ve Vercel build sırasında güncellenen deploy sayacı eklendi.', items: ['Oyun ekle', 'Oyun düzenle', 'Oyun sil', 'Deploy sayacı'] },
-  { version: 'v1.2.1', title: 'Oyun Kapakları ve Medya Merkezi', date: '2026-06-09', summary: 'Oyun kapak, banner, logo ve medya notu alanları eklendi; SQL mevcut verileri sıfırlamadan çalışır.', items: ['Kapak URL', 'Banner URL', 'Logo URL', 'Medya önizleme'] }
+  { version: 'v1.2.1', title: 'Oyun Kapakları ve Medya Merkezi', date: '2026-06-09', summary: 'Oyun kapak, banner, logo ve medya notu alanları eklendi; SQL mevcut verileri sıfırlamadan çalışır.', items: ['Kapak URL', 'Banner URL', 'Logo URL', 'Medya önizleme'] },
+  { version: 'v1.2.2', title: 'Bölüm Yönetimi Merkezi', date: '2026-06-09', summary: 'Oyun seçerek bölüm ekleme, düzenleme, silme, YouTube URL ve yayın durumu alanları eklendi.', items: ['Bölüm ekle', 'Bölüm düzenle', 'Oyun bağlantısı', 'Yayın/taslak durumu'] },
+  { version: 'v1.2.3', title: 'Seri Yönetimi Merkezi', date: '2026-06-09', summary: 'Seri ekleme, düzenleme, silme ve oyunları seriye bağlama akışı eklendi.', items: ['Seri ekle', 'Seri düzenle', 'Oyun-seri bağlantısı', 'Seri medya alanları'] },
+  { version: 'v1.2.4', title: 'Kanal Yönetimi Gelişmiş', date: '2026-06-09', summary: 'Kanal ekle/düzenle/sil akışı ve SQL name kolon fix notları eklendi.', items: ['Kanal yönetimi', 'SQL güvenliği', 'Veri koruma', 'Env rehberi'] },
+  { version: 'v1.2.5', title: 'Yayın Takvimi 2.0', date: '2026-06-09', summary: 'Yayın takvimi ekranı ve planlama iskeleti güçlendirildi.', items: ['Takvim yönetimi', 'Yayın günü/saat', 'Oyun bağlantısı', 'SQL notları'] },
+  { version: 'v1.2.6', title: 'Bakım Modu ve Site Ayarları', date: '2026-06-09', summary: 'Bakım modu, site ayarları ve F5 sonrası kayıt koruma fixleri tamamlandı.', items: ['Bakım aç/kapat', 'Yetkili bypass', 'Ayar kaydı', 'F5 koruması'] },
+  { version: 'v1.2.7', title: 'Dashboard ve Veri Sağlığı', date: '2026-06-09', summary: 'Admin dashboard istatistikleri ve veri sağlığı merkezi eklendi.', items: ['Dashboard metrikleri', 'Medya kontrolü', 'Yetki kontrolü', 'Veri sağlığı'] },
+  { version: 'v1.2.8', title: 'Profil Merkezi', date: '2026-06-09', summary: 'Profil ekranı kullanıcı bilgileri, rol görünümü ve hesap düzenleme alanıyla dolduruldu.', items: ['Profil bilgisi', 'Rol görünümü', 'Görünen ad', 'Oturum bilgisi'] },
+  { version: 'v1.2.9', title: 'Site Rehberi ve Kurulum Merkezi', date: '2026-06-09', summary: 'Public rehber, yetkili rehberi, Vercel kurulum notları ve SQL/.env kontrol bilgileri güncellendi.', items: ['Site rehberi', 'Yetkili rehberi', 'Vercel rehberi', 'SQL gerekli değil notu'] }
 ];
 
 
 export const plannedUpdates = [
-  { version: 'v1.2.4', title: 'Bölüm Yönetimi', summary: 'Oyunlara ve serilere bağlı bölüm ekleme, düzenleme, silme ve sıralama ekranı kurulacak.', items: ['Bölüm ekle', 'Bölüm düzenle', 'Bölüm sil', 'Bölüm sıralama'] },
-  { version: 'v1.2.4', title: 'Seri Yönetimi Gelişmiş', summary: 'Seri oluşturma, oyunları seriye bağlama ve seri kapak/banner alanları geliştirilecek.', items: ['Seri oluştur', 'Oyunu seriye bağla', 'Seri medya alanları', 'Seri detay yönetimi'] },
-  { version: 'v1.2.4', title: 'Kanal Yönetimi Gelişmiş', summary: 'Kanalların içerik bağlantıları, kanal medya alanları ve kanal detayları güçlendirilecek.', items: ['Kanal ekle', 'Kanal düzenle', 'Kanal medya', 'Bağlı içerikler'] },
-  { version: 'v1.2.5', title: 'Yayın Takvimi', summary: 'Takvim görünümü, oyun kapaklı yayın planı ve admin takvim yönetimi hazırlanacak.', items: ['Takvim görünümü', 'Yayın ekle', 'Saat/gün alanı', 'Public takvim'] },
-  { version: 'v1.2.6', title: 'Bakım Modu', summary: 'Yetkililere açık, normal kullanıcılara bakım ekranı gösteren site bakım sistemi kurulacak.', items: ['Bakım aç/kapat', 'Bakım mesajı', 'Yetkili bypass', 'Public bakım ekranı'] },
-  { version: 'v1.2.8', title: 'Site Ayarları', summary: 'Site başlığı, açıklama, sosyal linkler ve genel ayarlar panelden yönetilecek.', items: ['Site ayarları', 'Sosyal linkler', 'SEO metinleri', 'Footer ayarları'] },
-  { version: 'v1.2.8', title: 'Dashboard İstatistikleri', summary: 'Admin ana panelinde kullanıcı, oyun, seri, bölüm ve kategori metrikleri gösterilecek.', items: ['Toplam oyun', 'Toplam bölüm', 'Toplam kullanıcı', 'Son aktiviteler'] },
-  { version: 'v1.2.9', title: 'Veri Sağlığı Merkezi', summary: 'Eksik kapak, eksik banner, bağlantısız seri ve veri sorunları için kontrol ekranı eklenecek.', items: ['Eksik kapak', 'Eksik banner', 'Bağlantısız kayıtlar', 'Veri kontrolü'] },
   { version: 'v1.3.0', title: 'YouTube Playlist Altyapısı', summary: 'YouTube API anahtarı, playlist ID alanları ve bölüm çekme hazırlığı yapılacak.', items: ['YOUTUBE_API_KEY', 'Playlist alanları', 'Video ön izleme', 'API kontrolü'] },
-  { version: 'v1.3.1', title: 'YouTube Bölüm Çekme', summary: 'Playlist videolarını bölümlere aktarma ve sonuç tablosu kurulacak.', items: ['Playlist çek', 'Bölüm oluştur', 'Sonuç tablosu', 'Hata mesajları'] }
+  { version: 'v1.3.1', title: 'YouTube Bölüm Çekme', summary: 'Playlist videolarını bölümlere aktarma ve sonuç tablosu kurulacak.', items: ['Playlist çek', 'Bölüm oluştur', 'Sonuç tablosu', 'Hata mesajları'] },
+  { version: 'v1.3.2', title: 'RAWG Oyun Bilgisi Hazırlığı', summary: 'RAWG API ile oyun kapak/meta bilgisi çekme altyapısı hazırlanacak.', items: ['RAWG_API_KEY', 'Oyun arama', 'Kapak/meta önizleme', 'Güvenli env'] },
+  { version: 'v1.3.3', title: 'Steam Bilgi Hazırlığı', summary: 'Steam sayfaları için ID ve kapak bağlantı hazırlığı yapılacak.', items: ['Steam ID', 'Kapak bağlantısı', 'Oyun eşleştirme', 'Kontrol notları'] },
+  { version: 'v1.3.4', title: 'Public Arşiv Cila', summary: 'Public arşiv, koleksiyon, seri ve takvim sayfaları daha profesyonel hale getirilecek.', items: ['Public kartlar', 'Arama/filtre', 'Mobil düzen', 'Boş durumlar'] }
 ];

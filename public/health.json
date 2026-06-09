@@ -1,8 +1,8 @@
 {
   "ok": true,
-  "version": "v1.2.8",
-  "releaseName": "Profil Merkezi",
+  "version": "v1.2.9",
+  "releaseName": "Site Rehberi ve Kurulum Merkezi",
   "sqlRequired": false,
   "newEnvRequired": false,
-  "notes": "Yeni SQL gerekmez. Mevcut Supabase tabloları okunarak dashboard ve veri sağlığı kartları gösterilir."
+  "notes": "Yeni SQL gerekmez. Yeni .env gerekmez. Rehber ve kontrol sayfaları güncellendi; veri/yetki sıfırlanmaz."
 }

@@ -1,12 +1,17 @@
-# Supabase SQL Güncelleme Notları - v1.2.8
+# Supabase SQL Güncelleme Notları - v1.2.9
 
 ## Supabase SQL gerekli mi?
 Hayır.
 
-Bu sürüm sadece mevcut `app_users` tablosunu okur ve kullanıcının `display_name` alanını günceller.
-Yeni tablo veya kolon eklenmedi.
+## Tablolara ne eklendi?
+Hiçbir tabloya yeni kolon veya veri eklenmedi.
 
-## Veri Koruma
-- Yetkiler sıfırlanmaz.
-- Kullanıcı kayıtları silinmez.
-- Oyun, seri, kategori, kanal, bölüm ve takvim verileri korunur.
+## Veri/yetki sıfırlama var mı?
+Hayır. Bu sürüm SQL çalıştırmaz; mevcut kullanıcı, rol, oyun, kategori, kanal, seri, bölüm ve bakım ayarları korunur.
+
+## Sonraki SQL kuralı
+Bundan sonraki SQL dosyaları migration mantığında olacak:
+- `DROP TABLE` yok
+- `TRUNCATE` yok
+- Mevcut rol/yetki overwrite yok
+- Sadece eksik tablo/kolon/policy ekleme var
