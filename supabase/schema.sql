@@ -766,7 +766,7 @@ begin
 end $$;
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.2.6', 'success', 'Bakım modu ve site ayarları eklendi; mevcut veriler ve kullanıcı yetkileri sıfırlanmadı.')
+values ('v1.2.7', 'success', 'Dashboard ve veri sağlığı merkezi eklendi; bu sürüm için yeni SQL gerekmez, mevcut veriler ve kullanıcı yetkileri sıfırlanmadı.')
 on conflict do nothing;
 
 update public.app_users
@@ -774,10 +774,10 @@ set role = 'founder', status = 'active', is_banned = false, ban_reason = '', upd
 where lower(email) = lower('mertdundaroyunda@gmail.com');
 
 select
-  'v1.2.6 başarıyla çalıştı' as status,
-  'Bakım modu ve site ayarları yönetimi eklendi.' as yeni_ozellik,
-  'site_runtime_config ve site_settings tabloları/kolonları veri silmeden güncellendi' as sql_eklenenler,
+  'v1.2.7 başarıyla çalıştı' as status,
+  'Dashboard istatistikleri ve veri sağlığı merkezi eklendi.' as yeni_ozellik,
+  'Yeni tablo/kolon eklenmedi; mevcut tablolar okunur. SQL çalıştırılırsa veri silmez.' as sql_eklenenler,
   'Kullanıcı yetkileri, oyunlar, seriler, kategoriler, kanallar, bölümler ve takvim verileri sıfırlanmadı' as veri_koruma,
   'Yeni .env gerekli değil; mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterli' as env_notu,
-  'Vercel/GitHub commit sürüm etiketi v1.2.6 olarak güncellendi' as deploy_notu,
+  'Vercel/GitHub commit sürüm etiketi v1.2.7 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;

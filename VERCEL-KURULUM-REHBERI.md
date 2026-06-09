@@ -16,3 +16,10 @@ GitHub'a gerçek `.env.local` gönderilmez. Sadece `.env.example` gidebilir.
 ZIP'i projeye çıkar, GitHub'a gönder ve Vercel otomatik deploy alır.
 
 Bu sürümde Vercel/GitHub sürüm etiketi: `v1.2.6 bakim modu site ayarlari`.
+
+
+## v1.2.7 Notu
+- Yeni .env gerekli değil.
+- Supabase SQL gerekli değil.
+- Mevcut veriler ve yetkiler sıfırlanmaz.
+- Dashboard ve Veri Sağlığı ekranları mevcut tabloları okur.

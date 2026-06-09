@@ -1,10 +1,8 @@
 {
-  "status": "ok",
-  "version": "v1.2.6",
-  "releaseName": "v1.2.6 Bakım Modu ve Site Ayarları",
-  "supabaseSqlGerekli": true,
-  "yeniEnvGerekli": false,
-  "sqlNotu": "site_runtime_config ve site_settings tabloları güvenli migration ile eklenir/güncellenir. DROP/TRUNCATE yok; yetkiler ve veriler korunur.",
-  "envNotu": "Yeni .env gerekmez. Mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterlidir.",
-  "updatedAt": "2026-06-09T00:00:00.000Z"
+  "ok": true,
+  "version": "v1.2.7",
+  "releaseName": "Dashboard ve Veri Sağlığı Merkezi",
+  "sqlRequired": false,
+  "newEnvRequired": false,
+  "notes": "Yeni SQL gerekmez. Mevcut Supabase tabloları okunarak dashboard ve veri sağlığı kartları gösterilir."
 }

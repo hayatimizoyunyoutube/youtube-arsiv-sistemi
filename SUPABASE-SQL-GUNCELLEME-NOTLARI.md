@@ -24,3 +24,10 @@ Hayır. Mevcut Vercel env yeterli:
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 ```
+
+
+## v1.2.7 Notu
+- Yeni .env gerekli değil.
+- Supabase SQL gerekli değil.
+- Mevcut veriler ve yetkiler sıfırlanmaz.
+- Dashboard ve Veri Sağlığı ekranları mevcut tabloları okur.

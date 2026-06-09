@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: 'Hayatımız Oyun',
   subtitle: 'YouTube Oynatma Listesi Arşivi',
-  version: 'v1.2.6',
-  releaseName: 'v1.2.6 Bakım Modu ve Site Ayarları',
+  version: 'v1.2.7',
+  releaseName: 'v1.2.7 Dashboard ve Veri Sağlığı Merkezi',
   releaseDate: '2026-06-09',
-  description: 'Bakım modu ve site ayarları yönetimi eklendi. SQL mevcut verileri, kullanıcıları ve yetkileri sıfırlamaz; sadece eksik ayar tablolarını/kolonlarını ekler.',
+  description: 'Yönetim paneli dashboard istatistikleri, veri sağlığı merkezi ve hızlı kontrol kartları eklendi. Yeni Supabase SQL gerekmez; mevcut tablolar okunur, veri ve yetkiler sıfırlanmaz.',
   url: 'https://hayatimiz-oyun.vercel.app'
 };

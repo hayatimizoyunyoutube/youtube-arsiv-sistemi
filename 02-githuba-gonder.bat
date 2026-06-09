@@ -28,7 +28,7 @@ echo Guvenlik kontrolu: .env.local GitHub'a gonderilmeyecek.
 git rm --cached .env.local >nul 2>&1
 
 git add .
-git commit -m "v1.2.6 bakim modu site ayarlari" 
+git commit -m "v1.2.7 dashboard ve veri sagligi merkezi" 
 if errorlevel 1 (
   echo Commit olusturulamadi. Degisiklik yoksa bu normal olabilir.
 )
