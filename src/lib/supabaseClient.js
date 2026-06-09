@@ -190,8 +190,18 @@ export async function signUp(email, password) {
 
 export async function listTable(table, session = null, order = 'sort_order.asc') {
   if (!supabaseConfig.isReady) return { data: [], error: 'Supabase bağlantısı eksik.' };
-  const safeOrder = table === 'app_users' ? 'created_at.desc' : order;
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=${safeOrder}`, { headers: headers(session) });
+
+  // Bazı tek kayıt ayar tablolarında sort_order kolonu yoktur.
+  // Bu yüzden varsayılan sort_order sorgusu bu tablolarda kullanılmaz.
+  const orderMap = {
+    app_users: 'created_at.desc',
+    site_runtime_config: 'id.asc',
+    site_settings: 'id.asc',
+    site_status_logs: 'created_at.desc'
+  };
+  const safeOrder = orderMap[table] || order;
+  const orderQuery = safeOrder ? `&order=${safeOrder}` : '';
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*${orderQuery}`, { headers: headers(session) });
   const json = await res.json().catch(() => []);
   if (!res.ok) return { data: [], error: cleanSupabaseError(json, `${table} listeleme hatası: ${res.status}`) };
   return { data: Array.isArray(json) ? json : [], error: null };
