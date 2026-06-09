@@ -1,7 +1,7 @@
 {
-  "name": "hayatimiz-oyun-youtube-arsivi-v127",
+  "name": "hayatimiz-oyun-youtube-arsivi-v128",
   "private": true,
-  "version": "1.2.7",
+  "version": "1.2.8",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
@@ -16,5 +16,5 @@
     "react-dom": "latest"
   },
   "devDependencies": {},
-  "description": "Hayatımız Oyun v1.2.7 Dashboard ve Veri Sağlığı Merkezi"
+  "description": "Hayatımız Oyun v1.2.8 Profil Merkezi"
 }

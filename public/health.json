@@ -1,7 +1,7 @@
 {
   "ok": true,
-  "version": "v1.2.7",
-  "releaseName": "Dashboard ve Veri Sağlığı Merkezi",
+  "version": "v1.2.8",
+  "releaseName": "Profil Merkezi",
   "sqlRequired": false,
   "newEnvRequired": false,
   "notes": "Yeni SQL gerekmez. Mevcut Supabase tabloları okunarak dashboard ve veri sağlığı kartları gösterilir."

@@ -1,4 +1,4 @@
-# v1.2.7 Dashboard ve Veri Sağlığı Merkezi
+# v1.2.8 Profil Merkezi
 
 ## Eklenenler
 - Yönetim paneli dashboard istatistikleri geliştirildi.
@@ -6,7 +6,7 @@
 - Oyun/seri/bölüm/kategori/kanal/kullanıcı/takvim sayıları gösterilir.
 - Kapaksız, bannersız, logosuz oyun kontrol kartları eklendi.
 - Bölümü olmayan oyun kontrolü eklendi.
-- GitHub/Vercel commit ve deploy bilgisi v1.2.7 olarak güncellendi.
+- GitHub/Vercel commit ve deploy bilgisi v1.2.8 olarak güncellendi.
 
 ## Supabase SQL gerekli mi?
 Hayır. Bu sürüm için yeni SQL gerekli değil.

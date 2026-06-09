@@ -24,7 +24,7 @@ Sürüm: **v1.2.5 Yayın Takvimi 2.0**
 Evet. SQL tablo sıfırlamaz, veri silmez, kullanıcı yetkilerini bozmaz.
 
 
-## v1.2.7 Notu
+## v1.2.8 Notu
 - Yeni .env gerekli değil.
 - Supabase SQL gerekli değil.
 - Mevcut veriler ve yetkiler sıfırlanmaz.
