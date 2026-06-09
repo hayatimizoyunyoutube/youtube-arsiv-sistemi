@@ -2650,3 +2650,36 @@ a { color: inherit; }
   margin-top: 8px;
 }
 @media (max-width: 800px) { .media-preview-grid { grid-template-columns: 1fr; } }
+
+/* v1.2.5 Yayın Takvimi 2.0 */
+.calendar-board {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+}
+.calendar-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(16,20,38,.92), rgba(12,14,28,.88));
+}
+.calendar-card h3 { margin: 10px 0 8px; font-size: 1.35rem; }
+.calendar-card p { margin: 0; color: rgba(255,255,255,.76); }
+.today-card { border-color: rgba(46, 255, 148, .5); box-shadow: 0 0 0 1px rgba(46,255,148,.14); }
+.calendar-meta {
+  min-width: 170px;
+  text-align: right;
+  display: grid;
+  gap: 4px;
+}
+.calendar-meta strong { font-size: 1.2rem; }
+.calendar-meta span { color: #ffd166; }
+.calendar-meta small { color: rgba(255,255,255,.66); }
+@media (max-width: 760px) {
+  .calendar-card { flex-direction: column; align-items: flex-start; }
+  .calendar-meta { text-align: left; min-width: 0; }
+}

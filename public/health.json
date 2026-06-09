@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "version": "v1.2.4",
-  "releaseName": "v1.2.4 Kanal Yönetimi Gelişmiş",
+  "version": "v1.2.5",
+  "releaseName": "v1.2.5 Yayın Takvimi 2.0",
   "supabaseRequired": true,
   "sqlRequired": true,
   "sqlMode": "migration - mevcut tablolar ve veriler sıfırlanmaz",

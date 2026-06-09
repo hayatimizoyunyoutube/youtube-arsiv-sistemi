@@ -600,3 +600,96 @@ select
   'Yeni .env gerekli değil; mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterli' as env_notu,
   'Vercel/GitHub commit sürüm etiketi v1.2.4 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;
+
+-- v1.2.5 Yayın Takvimi 2.0 - güvenli migration
+-- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
+-- Mevcut kullanıcı yetkileri, oyunlar, kategoriler, kanallar, seriler ve bölümler korunur.
+
+create table if not exists public.publish_calendar (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  game_slug text default '',
+  game_title text default '',
+  series_slug text default '',
+  series_title text default '',
+  episode_id uuid,
+  episode_title text default '',
+  publish_date date,
+  publish_time time,
+  status text default 'Planlandı',
+  note text default '',
+  is_public boolean default true,
+  sort_order integer default 100,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.publish_calendar add column if not exists title text;
+alter table public.publish_calendar add column if not exists game_slug text default '';
+alter table public.publish_calendar add column if not exists game_title text default '';
+alter table public.publish_calendar add column if not exists series_slug text default '';
+alter table public.publish_calendar add column if not exists series_title text default '';
+alter table public.publish_calendar add column if not exists episode_id uuid;
+alter table public.publish_calendar add column if not exists episode_title text default '';
+alter table public.publish_calendar add column if not exists publish_date date;
+alter table public.publish_calendar add column if not exists publish_time time;
+alter table public.publish_calendar add column if not exists status text default 'Planlandı';
+alter table public.publish_calendar add column if not exists note text default '';
+alter table public.publish_calendar add column if not exists is_public boolean default true;
+alter table public.publish_calendar add column if not exists sort_order integer default 100;
+alter table public.publish_calendar add column if not exists created_at timestamptz default now();
+alter table public.publish_calendar add column if not exists updated_at timestamptz default now();
+
+update public.publish_calendar
+set title = coalesce(nullif(title, ''), 'Planlanmış Yayın')
+where title is null or title = '';
+
+create index if not exists idx_publish_calendar_date_v125 on public.publish_calendar(publish_date);
+create index if not exists idx_publish_calendar_status_v125 on public.publish_calendar(status);
+create index if not exists idx_publish_calendar_public_v125 on public.publish_calendar(is_public);
+create index if not exists idx_publish_calendar_sort_v125 on public.publish_calendar(sort_order);
+
+alter table public.publish_calendar enable row level security;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'publish_calendar'
+      and policyname = 'public read publish calendar v125'
+  ) then
+    create policy "public read publish calendar v125" on public.publish_calendar
+    for select using (is_public = true or auth.role() = 'authenticated');
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'publish_calendar'
+      and policyname = 'auth write publish calendar v125'
+  ) then
+    create policy "auth write publish calendar v125" on public.publish_calendar
+    for all to authenticated using (true) with check (true);
+  end if;
+end $$;
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.2.5', 'success', 'Yayın Takvimi 2.0 eklendi; publish_calendar güvenli migration ile güncellendi; mevcut veriler ve yetkiler sıfırlanmadı.')
+on conflict do nothing;
+
+-- Sadece belirtilen mevcut hesabın kurucu rolünü korur. Diğer kullanıcıların yetkilerine dokunmaz.
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com');
+
+select
+  'v1.2.5 başarıyla çalıştı' as status,
+  'Yayın takvimi ekleme, düzenleme, silme ve public takvim görünümü eklendi.' as yeni_ozellik,
+  'publish_calendar tablosu veri silmeden güncellendi; kullanıcı yetkileri sıfırlanmadı' as veri_koruma,
+  'Yeni .env gerekli değil; mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterli' as env_notu,
+  'Vercel/GitHub commit sürüm etiketi v1.2.5 olarak güncellendi' as deploy_notu,
+  now() as calisma_zamani;

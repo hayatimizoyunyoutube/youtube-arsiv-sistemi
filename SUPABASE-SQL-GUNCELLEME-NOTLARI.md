@@ -1,27 +1,28 @@
 # Supabase SQL Güncelleme Notları
 
-## Fix: v1.2.4 kanal SQL hatası
+## v1.2.5 Yayın Takvimi 2.0
 
 Supabase SQL gerekli: **Evet**
 
-### Ne düzeltildi?
-- `public_channels` tablosunda `name` kolonu olmayan projelerde oluşan hata düzeltildi.
-- Hatalı satır artık güvenli `DO $$ ... $$` bloğu ile çalışır.
-- `title` boşsa önce `name` varsa onu, yoksa `slug` değerini kullanır.
-
 ### Ne eklendi/güncellendi?
-- `public_channels.title`
-- `public_channels.description`
-- `public_channels.channel_type`
-- `public_channels.youtube_channel_id`
-- `public_channels.external_url`
-- `public_channels.logo_url`
-- `public_channels.banner_url`
-- `public_channels.status`
-- `public_channels.sort_order`
-- `public_channels.is_public`
-- `public_channels.updated_at`
-- Kanal indexleri
+- `publish_calendar` tablosu yoksa oluşturulur.
+- `publish_calendar.title`
+- `publish_calendar.game_slug`
+- `publish_calendar.game_title`
+- `publish_calendar.series_slug`
+- `publish_calendar.series_title`
+- `publish_calendar.episode_id`
+- `publish_calendar.episode_title`
+- `publish_calendar.publish_date`
+- `publish_calendar.publish_time`
+- `publish_calendar.status`
+- `publish_calendar.note`
+- `publish_calendar.is_public`
+- `publish_calendar.sort_order`
+- `publish_calendar.created_at`
+- `publish_calendar.updated_at`
+- Takvim indexleri
+- Public okuma / yetkili yazma policy kontrolü
 
 ### Veri koruma
 - Kullanıcı yetkileri sıfırlanmaz.
@@ -33,5 +34,5 @@ Supabase SQL gerekli: **Evet**
 
 ### Results beklenen çıktı
 ```sql
-status: v1.2.4 kanal SQL fix başarıyla çalıştı
+status: v1.2.5 başarıyla çalıştı
 ```

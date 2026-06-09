@@ -1,15 +1,15 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: **v1.2.4 Kanal Yönetimi Gelişmiş**
+Sürüm: **v1.2.5 Yayın Takvimi 2.0**
 
 ## Bu sürümde eklenenler
 
-- Kanal ekle/düzenle/sil ekranı
-- Kanal kapak/banner/logo URL alanları
-- YouTube kanal ID alanı
-- Kanal bağlantısı alanı
+- Public yayın takvimi görünümü
+- Admin panelden takvim kaydı ekleme/düzenleme/silme
+- Oyun, seri ve bölüm seçerek yayın planlama
+- Yayın tarihi, saat, durum, not ve görünürlük alanları
 - Güvenli Supabase SQL migration
-- Vercel kurulum rehberi env kontrolü
+- Vercel/GitHub sürüm etiketi v1.2.5
 
 ## Supabase SQL gerekli mi?
 
@@ -21,4 +21,4 @@ Sürüm: **v1.2.4 Kanal Yönetimi Gelişmiş**
 
 ## Veri korunur mu?
 
-Evet. SQL tablo sıfırlamaz, veri silmez.
+Evet. SQL tablo sıfırlamaz, veri silmez, kullanıcı yetkilerini bozmaz.
