@@ -40,6 +40,9 @@ export function roleLabel(role) {
 
 export async function getCurrentAppUser(session = getSession()) {
   if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
+  const refreshed = await refreshSessionIfNeeded(session);
+  if (refreshed.error) return { data: null, error: refreshed.error };
+  session = refreshed.data;
   const userId = session?.user?.id;
   const email = session?.user?.email || '';
   if (!session?.access_token || (!userId && !email)) return { data: null, error: 'Oturum bilgisi eksik.' };
@@ -68,7 +71,28 @@ export async function getCurrentAppUser(session = getSession()) {
 
 export async function refreshSessionIfNeeded(session = getSession()) {
   if (!supabaseConfig.isReady || !session?.refresh_token) return { data: session, error: null };
-  return { data: session, error: null };
+  const expiresAt = Number(session.expires_at || 0);
+  const now = Math.floor(Date.now() / 1000);
+  if (expiresAt && expiresAt > now + 60) return { data: session, error: null };
+
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+    method: 'POST',
+    headers: headers(null),
+    body: JSON.stringify({ refresh_token: session.refresh_token })
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    clearSession();
+    return { data: null, error: cleanSupabaseError(json, 'Oturum süresi doldu. Lütfen yeniden giriş yap.') };
+  }
+  const nextSession = {
+    access_token: json.access_token,
+    refresh_token: json.refresh_token || session.refresh_token,
+    expires_at: json.expires_at,
+    user: json.user || session.user
+  };
+  saveSession(nextSession);
+  return { data: nextSession, error: null };
 }
 
 function cleanSupabaseError(json, fallback) {
@@ -136,7 +160,7 @@ export async function signIn(email, password) {
       : '';
     return { data: null, error: raw + hint };
   }
-  const session = { access_token: json.access_token, refresh_token: json.refresh_token, user: json.user };
+  const session = { access_token: json.access_token, refresh_token: json.refresh_token, expires_at: json.expires_at, user: json.user };
   saveSession(session);
   await ensureAppUserProfile(session);
   return { data: session, error: null };
@@ -151,7 +175,7 @@ export async function signUp(email, password) {
   if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Kayıt hatası: ${res.status}`) };
 
   if (json.access_token) {
-    const session = { access_token: json.access_token, refresh_token: json.refresh_token, user: json.user };
+    const session = { access_token: json.access_token, refresh_token: json.refresh_token, expires_at: json.expires_at, user: json.user };
     saveSession(session);
     await ensureAppUserProfile(session);
     return { data: { session, confirmed: true }, error: null };
@@ -178,6 +202,19 @@ export async function createRow(table, row, session) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: headers(session, 'return=representation'), body: JSON.stringify([row]) });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) return { data: null, error: cleanSupabaseError(json, `${table} ekleme hatası: ${res.status}`) };
+  return { data: Array.isArray(json) ? json[0] : json, error: null };
+}
+
+
+export async function upsertRow(table, row, session, conflictKey = 'id') {
+  if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?on_conflict=${conflictKey}`, {
+    method: 'POST',
+    headers: headers(session, 'resolution=merge-duplicates,return=representation'),
+    body: JSON.stringify([{ ...row, updated_at: new Date().toISOString() }])
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) return { data: null, error: cleanSupabaseError(json, `${table} kayıt/güncelleme hatası: ${res.status}`) };
   return { data: Array.isArray(json) ? json[0] : json, error: null };
 }
 

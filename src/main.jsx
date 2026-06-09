@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 import { siteConfig } from './config/site.js';
-import { clearSession, createRow, deleteRow, getCurrentAppUser, getSession, isAdminRole, listTable, roleLabel, signIn, signUp, supabaseConfig, updateAppUser, updateRow } from './lib/supabaseClient.js';
+import { clearSession, createRow, deleteRow, getCurrentAppUser, getSession, isAdminRole, listTable, roleLabel, signIn, signUp, supabaseConfig, updateAppUser, updateRow, upsertRow } from './lib/supabaseClient.js';
 
 const VERSION = siteConfig.version;
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
@@ -692,9 +692,17 @@ function AdminMaintenancePage() {
       instagram_url: form.instagram_url,
       tiktok_url: form.tiktok_url
     };
-    const rr = runtimeId ? await updateRow('site_runtime_config', runtimeId, runtimePayload, session) : await createRow('site_runtime_config', runtimePayload, session);
-    const sr = settingsId ? await updateRow('site_settings', settingsId, settingsPayload, session) : await createRow('site_settings', settingsPayload, session);
-    setMessage(rr.error || sr.error || 'Başarıyla kaydedildi. Public sayfalar bakım bilgisini sonraki sürümlerde daha görünür kullanacak.');
+    const rr = await upsertRow('site_runtime_config', { ...runtimePayload, id: 'main' }, session);
+    const sr = await upsertRow('site_settings', { ...settingsPayload, id: 'main' }, session);
+    if (!rr.error && !sr.error) {
+      setRuntimeId('main');
+      setSettingsId('main');
+      localStorage.setItem('hoy_runtime_config_cache', JSON.stringify({ ...runtimePayload, id: 'main', saved_at: new Date().toISOString() }));
+      setMessage('Başarıyla kaydedildi. Bakım modu artık F5 sonrası sıfırlanmaz ve normal kullanıcı/ziyaretçilere bakım ekranı gösterilir.');
+      await load();
+      return;
+    }
+    setMessage(rr.error || sr.error || 'Ayarlar kaydedilemedi.');
   }
 
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
@@ -727,6 +735,45 @@ function UpdatesPage() { return <Layout><PageHero icon="📝" title="Güncelleme
 function StatusPage() { return <Layout><PageHero icon="✅" title="Site Durumu" text="Bakım Modu ve Site Ayarları migration kontrol paneli." /><section className="status-grid"><article className="status-check-card"><strong>Supabase SQL gerekli</strong><p>{supabaseConfig.isReady ? 'Bağlantı hazır görünüyor.' : 'Bağlantı eksik veya Vercel yeniden dağıtım yapılmadı.'}</p></article><article className="status-check-card"><strong>SQL Sonucu</strong><p>Supabase Results kısmında <strong>v1.2.6 başarıyla çalıştı</strong> yazmalı. Bu SQL veri sıfırlamaz; sadece publish_calendar alanlarını ekler/günceller.</p></article><article className="status-check-card"><strong>Takvim Tablosu</strong><p>publish_calendar tablosuna oyun, seri, bölüm, yayın tarihi, saat, durum, not, görünürlük ve sıra alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>DROP TABLE / TRUNCATE yoktur. Mevcut kullanıcı yetkileri, oyunlar, kategoriler, kanallar, seriler ve bölümler korunur.</p></article></section></Layout>; }
 function NotFoundPage() { return <Layout><section className="hero-card"><div className="version-pill">404 • {VERSION}</div><h1>Sayfa hazır değil.</h1><p>Bu route henüz planlanmadı veya yanlış yazıldı.</p><div className="hero-actions"><a className="primary-btn" href="/">Ana Sayfa</a><a className="ghost-btn" href="/admin">Admin</a></div></section></Layout>; }
 
+
+function MaintenanceScreen({ config }) {
+  return <main className="page-shell maintenance-page">
+    <section className="maintenance-card">
+      <div className="version-pill">🛠️ {VERSION} • Bakım Modu</div>
+      <h1>{config?.maintenance_title || 'Site Güncelleniyor'}</h1>
+      <p>{config?.maintenance_message || 'Hayatımız Oyun arşivi kısa süreli bakımda.'}</p>
+      {config?.maintenance_notes ? <div className="maintenance-notes"><strong>Güncelleme Notları</strong><p>{config.maintenance_notes}</p></div> : null}
+      {config?.maintenance_estimated_end ? <p className="maintenance-time">Tahmini açılış: <b>{config.maintenance_estimated_end}</b></p> : null}
+      <div className="hero-actions"><a className="primary-btn" href="/login">Yetkili Girişi</a><a className="ghost-btn" href="/status">Site Durumu</a></div>
+    </section>
+  </main>;
+}
+
+function useMaintenanceGate() {
+  const [state, setState] = useState({ loading: true, enabled: false, allowed: false, config: null });
+  useEffect(() => {
+    let active = true;
+    async function run() {
+      const session = getSession();
+      const publicRoutes = ['/login', '/register', '/status'];
+      const currentPath = location.pathname.replace(/\/$/, '') || '/';
+      const runtime = await listTable('site_runtime_config');
+      const config = runtime.data?.[0] || null;
+      const cache = config || (() => { try { return JSON.parse(localStorage.getItem('hoy_runtime_config_cache') || 'null'); } catch { return null; } })();
+      const enabled = Boolean(cache?.maintenance_enabled);
+      let allowed = publicRoutes.includes(currentPath) || currentPath.startsWith('/admin');
+      if (enabled && session?.access_token) {
+        const profile = await getCurrentAppUser(session);
+        allowed = allowed || isAdminRole(profile.data?.role);
+      }
+      if (active) setState({ loading: false, enabled, allowed, config: cache });
+    }
+    run();
+    return () => { active = false; };
+  }, []);
+  return state;
+}
+
 function AppRouter() {
   const p = location.pathname.replace(/\/$/, '') || '/';
   if (p === '/') return <HomePage />;
@@ -753,4 +800,12 @@ function AppRouter() {
   return <NotFoundPage />;
 }
 
-createRoot(document.getElementById('root')).render(<AppRouter />);
+
+function RootApp() {
+  const gate = useMaintenanceGate();
+  if (gate.loading) return <main className="page-shell"><section className="notes-card"><h2>Site kontrol ediliyor...</h2><p>Bakım modu ve oturum bilgisi denetleniyor.</p></section></main>;
+  if (gate.enabled && !gate.allowed) return <MaintenanceScreen config={gate.config} />;
+  return <AppRouter />;
+}
+
+createRoot(document.getElementById('root')).render(<RootApp />);
