@@ -390,3 +390,70 @@ on conflict do nothing;
 select
   'v1.2.1 başarıyla çalıştı' as status,
   'Oyun kapak/banner/logo medya alanları eklendi. Mevcut veriler korunur; tablo sıfırlama yoktur.' as detail;
+
+-- v1.2.2 - Bölüm Yönetimi Merkezi / güvenli migration
+-- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
+create table if not exists public.public_episodes (
+  id uuid primary key default gen_random_uuid(),
+  series_slug text default '',
+  series_title text default '',
+  game_slug text default '',
+  game_title text default '',
+  title text not null,
+  episode_no integer default 1,
+  youtube_url text default '',
+  thumbnail_url text default '',
+  duration text default '',
+  status text default 'Taslak',
+  published_at timestamptz,
+  is_public boolean default true,
+  sort_order integer default 100,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.public_episodes add column if not exists series_slug text default '';
+alter table public.public_episodes add column if not exists series_title text default '';
+alter table public.public_episodes add column if not exists game_slug text default '';
+alter table public.public_episodes add column if not exists game_title text default '';
+alter table public.public_episodes add column if not exists title text default '';
+alter table public.public_episodes add column if not exists episode_no integer default 1;
+alter table public.public_episodes add column if not exists youtube_url text default '';
+alter table public.public_episodes add column if not exists thumbnail_url text default '';
+alter table public.public_episodes add column if not exists duration text default '';
+alter table public.public_episodes add column if not exists status text default 'Taslak';
+alter table public.public_episodes add column if not exists published_at timestamptz;
+alter table public.public_episodes add column if not exists is_public boolean default true;
+alter table public.public_episodes add column if not exists sort_order integer default 100;
+alter table public.public_episodes add column if not exists updated_at timestamptz default now();
+
+create index if not exists idx_public_episodes_game_slug on public.public_episodes(game_slug);
+create index if not exists idx_public_episodes_series_slug on public.public_episodes(series_slug);
+create index if not exists idx_public_episodes_status on public.public_episodes(status);
+create index if not exists idx_public_episodes_sort_order on public.public_episodes(sort_order);
+
+alter table public.public_episodes enable row level security;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'public_episodes'
+      and policyname = 'public read episodes v122'
+  ) then
+    create policy "public read episodes v122" on public.public_episodes
+    for select using (is_public = true or auth.role() = 'authenticated');
+  end if;
+end $$;
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.2.2', 'success', 'Bölüm Yönetimi Merkezi eklendi; public_episodes güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
+on conflict do nothing;
+
+select
+  'v1.2.2 başarıyla çalıştı' as status,
+  'Bölüm ekleme, düzenleme, silme, yayın durumu ve YouTube URL alanları eklendi.' as yeni_ozellik,
+  'public_episodes tablosu veri silmeden güncellendi' as veri_koruma,
+  'Vercel/GitHub commit sürüm etiketi v1.2.2 olarak güncellendi' as deploy_notu,
+  now() as calisma_zamani;

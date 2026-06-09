@@ -33,6 +33,6 @@ VITE_SUPABASE_ANON_KEY=
 
 
 
-## v1.2.1
+## v1.2.2
 
-Oyun Kapakları ve Medya Merkezi. Supabase SQL gereklidir; veri sıfırlamaz. Vercel/GitHub gönderiminde commit mesajı v1.2.1 olarak güncellendi.
+Bölüm Yönetimi Merkezi. Supabase SQL gereklidir; veri sıfırlamaz. Vercel/GitHub gönderiminde commit mesajı v1.2.2 olarak güncellendi.

@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: 'Hayatımız Oyun',
   subtitle: 'YouTube Oynatma Listesi Arşivi',
-  version: 'v1.2.1',
-  releaseName: 'v1.2.1 Oyun Kapakları ve Medya Merkezi',
+  version: 'v1.2.2',
+  releaseName: 'v1.2.2 Bölüm Yönetimi Merkezi',
   releaseDate: '2026-06-09',
-  description: 'Oyun kapak, banner ve logo medya alanları eklendi; Vercel/GitHub commit sürüm etiketi v1.2.1 olarak güncellendi; SQL mevcut verileri sıfırlamadan güvenli migration mantığıyla çalışır.',
+  description: 'Oyunlara bağlı bölüm ekleme, düzenleme, silme, durum değiştirme ve bölüm sıralama ekranı eklendi. SQL güvenli migration mantığıyla çalışır; mevcut veriler sıfırlanmaz.',
   url: 'https://hayatimiz-oyun.vercel.app'
 };

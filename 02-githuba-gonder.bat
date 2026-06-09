@@ -3,7 +3,7 @@ chcp 65001 >nul
 setlocal
 
 echo ========================================
-echo Hayatimiz Oyun - GitHub'a Gonder - v1.2.1
+echo Hayatimiz Oyun - GitHub'a Gonder - v1.2.2
 echo Repo: https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
 echo ========================================
 echo.
@@ -28,7 +28,7 @@ echo Guvenlik kontrolu: .env.local GitHub'a gonderilmeyecek.
 git rm --cached .env.local >nul 2>&1
 
 git add .
-git commit -m "v1.2.1 oyun kapaklari medya merkezi" 
+git commit -m "v1.2.2 bolum yonetimi merkezi" 
 if errorlevel 1 (
   echo Commit olusturulamadi. Degisiklik yoksa bu normal olabilir.
 )

@@ -1,17 +1,18 @@
 {
   "status": "ok",
-  "version": "v1.2.1",
-  "releaseName": "Oyun Kapakları ve Medya Merkezi",
+  "version": "v1.2.2",
+  "releaseName": "Bölüm Yönetimi Merkezi",
   "supabaseRequired": true,
   "sqlRequired": true,
   "sqlMode": "migration - mevcut tablolar ve veriler sıfırlanmaz",
-  "sqlResult": "v1.2.1 başarıyla çalıştı",
+  "sqlResult": "v1.2.2 başarıyla çalıştı",
   "founderEmail": "mertdundaroyunda@gmail.com",
   "features": [
-    "Oyunlara kapak URL alanı korunur",
-    "Oyunlara banner URL alanı korunur",
-    "Oyunlara logo URL ve medya notu alanları eklendi",
+    "Admin panelde bölüm ekleme aktif edildi",
+    "Bölüm düzenleme ve silme eklendi",
+    "Bölüm durumu, yayın tarihi, süre ve YouTube URL alanları eklendi",
+    "public_episodes tablosu güvenli migration ile güncellendi",
     "Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur",
-    "Vercel/GitHub commit sürüm etiketi v1.2.1 olarak güncellendi"
+    "Vercel/GitHub commit sürüm etiketi v1.2.2 olarak güncellendi"
   ]
 }
