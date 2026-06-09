@@ -1,25 +1,10 @@
 {
   "status": "ok",
-  "version": "v1.2.5",
-  "releaseName": "v1.2.5 Yayın Takvimi 2.0",
-  "supabaseRequired": true,
-  "sqlRequired": true,
-  "sqlMode": "migration - mevcut tablolar ve veriler sıfırlanmaz",
-  "sqlResult": "v1.2.4 başarıyla çalıştı",
-  "founderEmail": "mertdundaroyunda@gmail.com",
-  "features": [
-    "Admin panelde bölüm ekleme aktif edildi",
-    "Bölüm düzenleme ve silme eklendi",
-    "Bölüm durumu, yayın tarihi, süre ve YouTube URL alanları eklendi",
-    "public_episodes tablosu güvenli migration ile güncellendi",
-    "Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur",
-    "Vercel/GitHub commit sürüm etiketi v1.2.4 olarak güncellendi"
-  ],
-  "supabaseSqlRequired": true,
-  "newEnvRequired": false,
-  "envRequired": [
-    "VITE_SUPABASE_URL",
-    "VITE_SUPABASE_ANON_KEY"
-  ],
+  "version": "v1.2.6",
+  "releaseName": "v1.2.6 Bakım Modu ve Site Ayarları",
+  "supabaseSqlGerekli": true,
+  "yeniEnvGerekli": false,
+  "sqlNotu": "site_runtime_config ve site_settings tabloları güvenli migration ile eklenir/güncellenir. DROP/TRUNCATE yok; yetkiler ve veriler korunur.",
+  "envNotu": "Yeni .env gerekmez. Mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterlidir.",
   "updatedAt": "2026-06-09T00:00:00.000Z"
 }

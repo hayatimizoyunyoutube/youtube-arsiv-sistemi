@@ -1,38 +1,26 @@
-# Supabase SQL Güncelleme Notları
+# Supabase SQL Güncelleme Notları - v1.2.6
 
-## v1.2.5 Yayın Takvimi 2.0
+## Supabase SQL gerekli mi?
+Evet, gerekli.
 
-Supabase SQL gerekli: **Evet**
+## Ne eklendi/güncellendi?
+- `site_runtime_config` tablosu yoksa oluşturulur.
+- `site_settings` tablosu yoksa oluşturulur.
+- Bakım modu alanları eklenir: `maintenance_enabled`, `maintenance_title`, `maintenance_message`, `maintenance_notes`, `maintenance_estimated_end`, `updated_at`.
+- Site ayarları alanları eklenir: `site_title`, `site_subtitle`, `discord_url`, `youtube_url`, `kick_url`, `instagram_url`, `tiktok_url`.
+- `site_status_logs` içine v1.2.6 başarı kaydı eklenir.
+- `mertdundaroyunda@gmail.com` kurucu koruması devam eder.
 
-### Ne eklendi/güncellendi?
-- `publish_calendar` tablosu yoksa oluşturulur.
-- `publish_calendar.title`
-- `publish_calendar.game_slug`
-- `publish_calendar.game_title`
-- `publish_calendar.series_slug`
-- `publish_calendar.series_title`
-- `publish_calendar.episode_id`
-- `publish_calendar.episode_title`
-- `publish_calendar.publish_date`
-- `publish_calendar.publish_time`
-- `publish_calendar.status`
-- `publish_calendar.note`
-- `publish_calendar.is_public`
-- `publish_calendar.sort_order`
-- `publish_calendar.created_at`
-- `publish_calendar.updated_at`
-- Takvim indexleri
-- Public okuma / yetkili yazma policy kontrolü
+## Veri koruma
+- `DROP TABLE` yok.
+- `TRUNCATE` yok.
+- Kullanıcı rolleri/yetkileri sıfırlanmaz.
+- Oyun, seri, kategori, kanal, bölüm ve takvim verileri silinmez.
 
-### Veri koruma
-- Kullanıcı yetkileri sıfırlanmaz.
-- `app_users.role` değerleri korunur.
-- Tablo silme yoktur.
-- `DROP TABLE` yoktur.
-- `TRUNCATE` yoktur.
-- Demo veriyle overwrite yoktur.
+## Yeni .env gerekli mi?
+Hayır. Mevcut Vercel env yeterli:
 
-### Results beklenen çıktı
-```sql
-status: v1.2.5 başarıyla çalıştı
+```env
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
 ```

@@ -693,3 +693,91 @@ select
   'Yeni .env gerekli değil; mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterli' as env_notu,
   'Vercel/GitHub commit sürüm etiketi v1.2.5 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;
+
+
+-- =====================================================
+-- v1.2.6 Bakım Modu ve Site Ayarları - Güvenli Migration
+-- Bu bölüm tablo/veri/yetki sıfırlamaz. DROP/TRUNCATE kullanılmaz.
+-- =====================================================
+
+create table if not exists public.site_runtime_config (
+  id text primary key default 'main',
+  maintenance_enabled boolean default false,
+  maintenance_title text default 'Site Güncelleniyor',
+  maintenance_message text default 'Hayatımız Oyun arşivi kısa süreli bakımda.',
+  maintenance_notes text default '',
+  maintenance_estimated_end text default '',
+  updated_at timestamptz default now()
+);
+
+alter table public.site_runtime_config add column if not exists maintenance_enabled boolean default false;
+alter table public.site_runtime_config add column if not exists maintenance_title text default 'Site Güncelleniyor';
+alter table public.site_runtime_config add column if not exists maintenance_message text default 'Hayatımız Oyun arşivi kısa süreli bakımda.';
+alter table public.site_runtime_config add column if not exists maintenance_notes text default '';
+alter table public.site_runtime_config add column if not exists maintenance_estimated_end text default '';
+alter table public.site_runtime_config add column if not exists updated_at timestamptz default now();
+
+insert into public.site_runtime_config (id, maintenance_enabled, maintenance_title, maintenance_message, maintenance_notes, maintenance_estimated_end)
+values ('main', false, 'Site Güncelleniyor', 'Hayatımız Oyun arşivi kısa süreli bakımda.', '', '')
+on conflict (id) do nothing;
+
+create table if not exists public.site_settings (
+  id text primary key default 'main',
+  site_title text default 'Hayatımız Oyun',
+  site_subtitle text default 'YouTube Oynatma Listesi Arşivi',
+  discord_url text default '',
+  youtube_url text default '',
+  kick_url text default '',
+  instagram_url text default '',
+  tiktok_url text default '',
+  updated_at timestamptz default now()
+);
+
+alter table public.site_settings add column if not exists site_title text default 'Hayatımız Oyun';
+alter table public.site_settings add column if not exists site_subtitle text default 'YouTube Oynatma Listesi Arşivi';
+alter table public.site_settings add column if not exists discord_url text default '';
+alter table public.site_settings add column if not exists youtube_url text default '';
+alter table public.site_settings add column if not exists kick_url text default '';
+alter table public.site_settings add column if not exists instagram_url text default '';
+alter table public.site_settings add column if not exists tiktok_url text default '';
+alter table public.site_settings add column if not exists updated_at timestamptz default now();
+
+insert into public.site_settings (id, site_title, site_subtitle)
+values ('main', 'Hayatımız Oyun', 'YouTube Oynatma Listesi Arşivi')
+on conflict (id) do nothing;
+
+alter table public.site_runtime_config enable row level security;
+alter table public.site_settings enable row level security;
+
+do $$
+begin
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='site_runtime_config' and policyname='public read runtime config v126') then
+    create policy "public read runtime config v126" on public.site_runtime_config for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='site_runtime_config' and policyname='auth write runtime config v126') then
+    create policy "auth write runtime config v126" on public.site_runtime_config for all to authenticated using (true) with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='site_settings' and policyname='public read site settings v126') then
+    create policy "public read site settings v126" on public.site_settings for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='site_settings' and policyname='auth write site settings v126') then
+    create policy "auth write site settings v126" on public.site_settings for all to authenticated using (true) with check (true);
+  end if;
+end $$;
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.2.6', 'success', 'Bakım modu ve site ayarları eklendi; mevcut veriler ve kullanıcı yetkileri sıfırlanmadı.')
+on conflict do nothing;
+
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com');
+
+select
+  'v1.2.6 başarıyla çalıştı' as status,
+  'Bakım modu ve site ayarları yönetimi eklendi.' as yeni_ozellik,
+  'site_runtime_config ve site_settings tabloları/kolonları veri silmeden güncellendi' as sql_eklenenler,
+  'Kullanıcı yetkileri, oyunlar, seriler, kategoriler, kanallar, bölümler ve takvim verileri sıfırlanmadı' as veri_koruma,
+  'Yeni .env gerekli değil; mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterli' as env_notu,
+  'Vercel/GitHub commit sürüm etiketi v1.2.6 olarak güncellendi' as deploy_notu,
+  now() as calisma_zamani;
