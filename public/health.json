@@ -1,11 +1,11 @@
 {
   "status": "ok",
-  "version": "v1.2.3",
-  "releaseName": "Seri Yönetimi Merkezi",
+  "version": "v1.2.4",
+  "releaseName": "v1.2.4 Kanal Yönetimi Gelişmiş",
   "supabaseRequired": true,
   "sqlRequired": true,
   "sqlMode": "migration - mevcut tablolar ve veriler sıfırlanmaz",
-  "sqlResult": "v1.2.3 başarıyla çalıştı",
+  "sqlResult": "v1.2.4 başarıyla çalıştı",
   "founderEmail": "mertdundaroyunda@gmail.com",
   "features": [
     "Admin panelde bölüm ekleme aktif edildi",
@@ -13,6 +13,13 @@
     "Bölüm durumu, yayın tarihi, süre ve YouTube URL alanları eklendi",
     "public_episodes tablosu güvenli migration ile güncellendi",
     "Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur",
-    "Vercel/GitHub commit sürüm etiketi v1.2.3 olarak güncellendi"
-  ]
+    "Vercel/GitHub commit sürüm etiketi v1.2.4 olarak güncellendi"
+  ],
+  "supabaseSqlRequired": true,
+  "newEnvRequired": false,
+  "envRequired": [
+    "VITE_SUPABASE_URL",
+    "VITE_SUPABASE_ANON_KEY"
+  ],
+  "updatedAt": "2026-06-09T00:00:00.000Z"
 }

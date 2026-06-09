@@ -1,7 +1,7 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const SESSION_KEY = 'hoy_user_session_v123';
-const OLD_SESSION_KEYS = ['hoy_user_session_v119', 'hoy_user_session_v118', 'hoy_user_session_v117', 'hoy_admin_session_v115'];
+const SESSION_KEY = 'hoy_user_session_v124';
+const OLD_SESSION_KEYS = ['hoy_user_session_v123', 'hoy_user_session_v119', 'hoy_user_session_v118', 'hoy_user_session_v117', 'hoy_admin_session_v115'];
 
 export const supabaseConfig = {
   url: SUPABASE_URL,

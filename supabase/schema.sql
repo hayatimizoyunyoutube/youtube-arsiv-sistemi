@@ -391,7 +391,7 @@ select
   'v1.2.1 başarıyla çalıştı' as status,
   'Oyun kapak/banner/logo medya alanları eklendi. Mevcut veriler korunur; tablo sıfırlama yoktur.' as detail;
 
--- v1.2.3 - Seri Yönetimi Merkezi / güvenli migration
+-- v1.2.4 - Kanal Yönetimi Gelişmiş / güvenli migration
 -- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
 create table if not exists public.public_episodes (
   id uuid primary key default gen_random_uuid(),
@@ -448,14 +448,14 @@ begin
 end $$;
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.2.3', 'success', 'Seri Yönetimi Merkezi eklendi; public_episodes güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
+values ('v1.2.4', 'success', 'Kanal Yönetimi Gelişmiş eklendi; public_episodes güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
 on conflict do nothing;
 
 select
-  'v1.2.3 başarıyla çalıştı' as status,
+  'v1.2.4 başarıyla çalıştı' as status,
   'Bölüm ekleme, düzenleme, silme, yayın durumu ve YouTube URL alanları eklendi.' as yeni_ozellik,
   'public_episodes tablosu veri silmeden güncellendi' as veri_koruma,
-  'Vercel/GitHub commit sürüm etiketi v1.2.3 olarak güncellendi' as deploy_notu,
+  'Vercel/GitHub commit sürüm etiketi v1.2.4 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;
 
 -- FIX: Kurucu yetkisi girişte user olarak görünmesin. Veri sıfırlamaz.
@@ -470,7 +470,7 @@ on conflict (email) do update set role = 'founder', status = 'active';
 select 'Kurucu yetki fix çalıştı' as result;
 
 
--- v1.2.3 - Seri Yönetimi Merkezi / güvenli migration
+-- v1.2.4 - Kanal Yönetimi Gelişmiş / güvenli migration
 -- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
 create table if not exists public.public_series (
   id uuid primary key default gen_random_uuid(),
@@ -535,7 +535,7 @@ begin
 end $$;
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.2.3', 'success', 'Seri Yönetimi Merkezi eklendi; public_series güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
+values ('v1.2.4', 'success', 'Kanal Yönetimi Gelişmiş eklendi; public_series güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
 on conflict do nothing;
 
 update public.app_users
@@ -543,8 +543,60 @@ set role = 'founder', status = 'active', is_banned = false, ban_reason = '', upd
 where lower(email) = lower('mertdundaroyunda@gmail.com');
 
 select
-  'v1.2.3 başarıyla çalıştı' as status,
+  'v1.2.4 başarıyla çalıştı' as status,
   'Seri ekleme, düzenleme, silme ve oyunları seriye bağlama eklendi.' as yeni_ozellik,
   'public_series tablosu veri silmeden güncellendi' as veri_koruma,
-  'Vercel/GitHub commit sürüm etiketi v1.2.3 olarak güncellendi' as deploy_notu,
+  'Vercel/GitHub commit sürüm etiketi v1.2.4 olarak güncellendi' as deploy_notu,
+  now() as calisma_zamani;
+
+
+-- v1.2.4 Kanal Yönetimi Gelişmiş - güvenli migration
+-- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
+
+alter table public.public_channels add column if not exists title text;
+alter table public.public_channels add column if not exists description text default '';
+alter table public.public_channels add column if not exists channel_type text default 'YouTube';
+alter table public.public_channels add column if not exists youtube_channel_id text default '';
+alter table public.public_channels add column if not exists external_url text default '';
+alter table public.public_channels add column if not exists logo_url text default '';
+alter table public.public_channels add column if not exists banner_url text default '';
+alter table public.public_channels add column if not exists status text default 'Aktif';
+alter table public.public_channels add column if not exists sort_order integer default 100;
+alter table public.public_channels add column if not exists is_public boolean default true;
+alter table public.public_channels add column if not exists updated_at timestamptz default now();
+
+-- Fix: Bazı projelerde public_channels içinde name kolonu yoktu.
+-- Bu blok mevcut veriyi silmeden title alanını güvenli doldurur.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'public_channels' and column_name = 'name'
+  ) then
+    execute 'update public.public_channels set title = coalesce(nullif(title, ''''), nullif(name, ''''), slug) where title is null or title = ''''';
+  else
+    update public.public_channels
+    set title = coalesce(nullif(title, ''), slug)
+    where title is null or title = '';
+  end if;
+end $$;
+
+create index if not exists idx_public_channels_slug_v124 on public.public_channels(slug);
+create index if not exists idx_public_channels_status_v124 on public.public_channels(status);
+create index if not exists idx_public_channels_sort_order_v124 on public.public_channels(sort_order);
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.2.4', 'success', 'Kanal Yönetimi Gelişmiş eklendi; public_channels güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
+on conflict do nothing;
+
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com');
+
+select
+  'v1.2.4 kanal SQL fix başarıyla çalıştı' as status,
+  'public_channels title/name kolon hatası düzeltildi; kanal ekleme, düzenleme, silme alanları korunur.' as yeni_ozellik,
+  'public_channels ve app_users dahil hiçbir tablo/veri/yetki sıfırlanmadı' as veri_koruma,
+  'Yeni .env gerekli değil; mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY yeterli' as env_notu,
+  'Vercel/GitHub commit sürüm etiketi v1.2.4 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;

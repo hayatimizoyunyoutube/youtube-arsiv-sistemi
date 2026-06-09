@@ -36,8 +36,8 @@ export const completedUpdates = [
 
 
 export const plannedUpdates = [
-  { version: 'v1.2.3', title: 'Bölüm Yönetimi', summary: 'Oyunlara ve serilere bağlı bölüm ekleme, düzenleme, silme ve sıralama ekranı kurulacak.', items: ['Bölüm ekle', 'Bölüm düzenle', 'Bölüm sil', 'Bölüm sıralama'] },
-  { version: 'v1.2.3', title: 'Seri Yönetimi Gelişmiş', summary: 'Seri oluşturma, oyunları seriye bağlama ve seri kapak/banner alanları geliştirilecek.', items: ['Seri oluştur', 'Oyunu seriye bağla', 'Seri medya alanları', 'Seri detay yönetimi'] },
+  { version: 'v1.2.4', title: 'Bölüm Yönetimi', summary: 'Oyunlara ve serilere bağlı bölüm ekleme, düzenleme, silme ve sıralama ekranı kurulacak.', items: ['Bölüm ekle', 'Bölüm düzenle', 'Bölüm sil', 'Bölüm sıralama'] },
+  { version: 'v1.2.4', title: 'Seri Yönetimi Gelişmiş', summary: 'Seri oluşturma, oyunları seriye bağlama ve seri kapak/banner alanları geliştirilecek.', items: ['Seri oluştur', 'Oyunu seriye bağla', 'Seri medya alanları', 'Seri detay yönetimi'] },
   { version: 'v1.2.4', title: 'Kanal Yönetimi Gelişmiş', summary: 'Kanalların içerik bağlantıları, kanal medya alanları ve kanal detayları güçlendirilecek.', items: ['Kanal ekle', 'Kanal düzenle', 'Kanal medya', 'Bağlı içerikler'] },
   { version: 'v1.2.5', title: 'Yayın Takvimi', summary: 'Takvim görünümü, oyun kapaklı yayın planı ve admin takvim yönetimi hazırlanacak.', items: ['Takvim görünümü', 'Yayın ekle', 'Saat/gün alanı', 'Public takvim'] },
   { version: 'v1.2.6', title: 'Bakım Modu', summary: 'Yetkililere açık, normal kullanıcılara bakım ekranı gösteren site bakım sistemi kurulacak.', items: ['Bakım aç/kapat', 'Bakım mesajı', 'Yetkili bypass', 'Public bakım ekranı'] },

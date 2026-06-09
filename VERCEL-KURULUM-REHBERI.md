@@ -1,73 +1,94 @@
-# Vercel Kurulum Rehberi - v1.1.0 Fix
+# Vercel Kurulum Rehberi - v1.2.4
 
-Bu projede gizli keyler GitHub'a gönderilmez.
+Bu dosya her sürümde güncellenecek. Gizli keyler GitHub'a gönderilmez.
 
-## 1. GitHub'a gönder
+## GitHub / Vercel Sürüm Notu
 
-Proje klasöründe PowerShell aç:
+Bu paket: **v1.2.4 Kanal Yönetimi Gelişmiş**
 
-```powershell
-.\02-githuba-gonder.ps1
-```
+`02-githuba-gonder.bat` commit mesajını v1.2.4 olarak gönderir. Vercel deploy ekranında yeni commit mesajı v1.2.4 olarak görünmelidir.
 
-Repo:
+## Environment Variables
 
-```text
-https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi
-```
+### Gerekli
 
-## 2. Vercel'de proje aç
-
-1. Vercel hesabına gir.
-2. Add New Project seç.
-3. GitHub reposu olarak `youtube-arsiv-sistemi` seç.
-4. Framework Preset: `Vite`
-5. Build Command: `npm run build`
-6. Output Directory: `dist`
-7. Install Command: `npm install`
-
-## 3. Environment Variables
-
-Vercel'de şu iki değişkeni ekle:
+Vercel → Project → Settings → Environment Variables içine şunlar ekli olmalı:
 
 ```env
 VITE_SUPABASE_URL=Supabase Project URL
 VITE_SUPABASE_ANON_KEY=Supabase anon public key
 ```
 
-Bunları Supabase içinde şu menüden alacaksın:
+### Bu sürümde yeni .env gerekli mi?
 
-```text
-Supabase Dashboard > Project Settings > Data API
-```
+**Hayır.** v1.2.4 için yeni API key yok. Mevcut Supabase URL ve anon key yeterli.
 
-## 4. Local test için .env.local
-
-Bilgisayardaki proje klasörüne `.env.local` dosyası aç:
+### Henüz eklenmeyecekler
 
 ```env
-VITE_SUPABASE_URL=Supabase Project URL
-VITE_SUPABASE_ANON_KEY=Supabase anon public key
+YOUTUBE_API_KEY
+RAWG_API_KEY
+STEAM_API_KEY
+SUPABASE_SERVICE_ROLE_KEY
 ```
 
-`.env.local` GitHub'a gönderilmez.
+Bunlar ileride ilgili sürüm geldiğinde eklenecek. Şimdilik Vercel'e ekleme.
 
-## 5. Supabase SQL
+## Supabase SQL gerekli mi?
 
-ZIP içindeki dosya:
+**Evet, gerekli.**
+
+Çalıştırılacak dosya:
 
 ```text
 supabase/schema.sql
 ```
 
-Supabase SQL Editor içinde çalıştırılır.
+### Bu SQL ne ekliyor?
 
-## Şimdilik eklenmeyecekler
+- `public_channels` tablosuna eksik kolonları ekler.
+- Kanal adı/açıklaması/türü alanlarını hazırlar.
+- YouTube kanal ID alanı ekler.
+- Kanal bağlantısı alanı ekler.
+- Kapak/banner/logo URL alanlarını hazırlar.
+- Sıralama ve görünürlük alanlarını günceller.
+- `mertdundaroyunda@gmail.com` hesabını kurucu olarak korur.
 
-- YouTube API key
-- RAWG API key
-- Steam API
-- Admin şifresi
-- Gizli service role key
+### Veri sıfırlanır mı?
 
-Bunlar ileride ayrı sürümlerde eklenecek.
+**Hayır.** Bu SQL veri silmez.
+
+Kullanılmayanlar:
+
+```sql
+DROP TABLE
+TRUNCATE
+```
+
+Results kısmında şunu görmelisin:
+
+```text
+v1.2.4 başarıyla çalıştı
+```
+
+## Deploy sonrası
+
+Vercel'de env zaten varsa sadece GitHub'a gönder ve deploy bekle. Env yeni eklenirse veya değişirse:
+
+```text
+Deployments → Redeploy
+```
+
+
+## v1.2.4 Kanal SQL Fix Notu
+
+Yeni `.env` gerekli değil. Mevcut değerler yeterli:
+
+```env
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+```
+
+Supabase SQL gerekli: **Evet**.
+
+Bu SQL kullanıcı yetkilerini sıfırlamaz ve mevcut verileri silmez.

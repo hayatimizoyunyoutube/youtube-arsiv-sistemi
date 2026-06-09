@@ -24,6 +24,7 @@ const adminButtons = [
   ['➕ Oyun Ekle', '/admin/games/new'],
   ['🎮 Oyunlar', '/admin/games'],
   ['🎬 Seriler', '/admin/series'],
+  ['📺 Kanallar', '/admin/channels'],
   ['▶️ Bölümler', '/admin/episodes'],
   ['🗓️ Takvim', '/admin/calendar'],
   ['📝 Notlar', '/admin/notes'],
@@ -41,7 +42,7 @@ function Layout({ children }) {
   const visibleMenu = topMenu.filter(([, href]) => href !== '/admin' || canSeeAdmin);
   return <main className="page-shell">
     <header className="site-header compact-header">
-      <a className="brand compact-brand" href="/"><span className="brand-mark">HO</span><span><strong>{siteConfig.name}</strong><small>{VERSION} • Bölüm Yönetimi</small></span></a>
+      <a className="brand compact-brand" href="/"><span className="brand-mark">HO</span><span><strong>{siteConfig.name}</strong><small>{VERSION} • Kanal Yönetimi</small></span></a>
       <nav className="nav one-line-nav">
         {visibleMenu.map(([label, href]) => <a key={href} href={href}>{label}</a>)}
         {session?.access_token
@@ -107,8 +108,8 @@ function HomePage() {
   const users = useTable('app_users');
   return <Layout>
     <section className="hero-card showcase-hero">
-      <div className="showcase-copy"><div className="version-pill">✅ {VERSION} • Seri yönetimi merkezi</div><h1>Oyunları serilere bağlayan seri yönetimi merkezi hazırlandı.</h1><p>Yönetim panelinden seri ekle, düzenle, sil ve oyunları seriye bağla; SQL mevcut verileri sıfırlamadan eksikleri ekler.</p><div className="hero-actions"><a className="primary-btn" href="/admin">Yönetim Paneli</a><a className="ghost-btn" href="/register">Kayıt Ol</a><a className="ghost-btn" href="/status">Durumu Kontrol Et</a></div></div>
-      <aside className="showcase-panel"><span>SQL Durumu</span><strong>{supabaseConfig.isReady ? 'Bağlantı hazır' : 'Vercel ortam değişkenlerini kontrol et'}</strong><p>Bu sürümde Supabase gereklidir. Seri tablosu ve oyun-seri bağlantıları güvenli migration ile güncellenir; Vercel build sırasında deploy-info.json yenilenir.</p><div className="mini-metrics"><b>{games.rows.length} oyun</b><b>{series.rows.length} seri</b><b>{users.rows.length} kullanıcı</b><b>Deploy #{deployInfo?.deployNumber || '—'}</b></div></aside>
+      <div className="showcase-copy"><div className="version-pill">✅ {VERSION} • Kanal yönetimi gelişmiş</div><h1>Oyunları serilere bağlayan kanal yönetimi gelişmiş hazırlandı.</h1><p>Yönetim panelinden kanal ekle, düzenle, sil ve kanal medya/bağlantı bilgilerini yönet; SQL mevcut verileri sıfırlamadan eksikleri ekler.</p><div className="hero-actions"><a className="primary-btn" href="/admin">Yönetim Paneli</a><a className="ghost-btn" href="/register">Kayıt Ol</a><a className="ghost-btn" href="/status">Durumu Kontrol Et</a></div></div>
+      <aside className="showcase-panel"><span>SQL Durumu</span><strong>{supabaseConfig.isReady ? 'Bağlantı hazır' : 'Vercel ortam değişkenlerini kontrol et'}</strong><p>Bu sürümde Supabase gereklidir. public_channels tablosu güvenli migration ile güncellenir; Vercel build sırasında deploy-info.json yenilenir.</p><div className="mini-metrics"><b>{games.rows.length} oyun</b><b>{series.rows.length} seri</b><b>{users.rows.length} kullanıcı</b><b>Deploy #{deployInfo?.deployNumber || '—'}</b></div></aside>
     </section>
     <section className="beta-stats premium-stats"><article><span>{games.rows.length}</span><p>Oyun</p></article><article><span>{series.rows.length}</span><p>Seri</p></article><article><span>{categories.rows.length}</span><p>Kategori</p></article><article><span>{users.rows.length}</span><p>Kullanıcı</p></article></section>
     <Updates />
@@ -143,7 +144,7 @@ function AuthPage({ mode }) {
     setMessage('Başarı: giriş yapıldı, app_users profil kaydı kontrol edildi.');
     setTimeout(() => location.href = '/admin', 600);
   }
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔐 {VERSION} • Kayıt ve giriş</div><h1>{mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</h1><p>v1.2.3 ile seri yönetimi ve güvenli SQL migration eklendi.</p></div><section className="status-grid"><article className="status-check-card"><strong>Supabase Bağlantısı</strong><p>{supabaseConfig.isReady ? 'Hazır' : 'Eksik: Vercel ortam değişkenleri ve yeniden dağıtım gerekli.'}</p></article><article className="status-check-card"><strong>E-posta Onayı</strong><p>Test için Supabase Auth → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Kaydı</strong><p>schema.sql içindeki trigger app_users profilini otomatik açar.</p></article></section><form className="admin-card login-card" onSubmit={submit}><h2>{mode === 'register' ? 'Yeni hesap' : 'Hesaba giriş'}</h2><label>E-posta<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label><label>Şifre<input type="password" minLength="6" value={password} onChange={e => setPassword(e.target.value)} required /></label><button className="primary-btn" disabled={loading}>{loading ? 'İşleniyor...' : mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</button>{message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}<div className="hero-actions"><a className="ghost-btn" href={mode === 'register' ? '/login' : '/register'}>{mode === 'register' ? 'Girişe geç' : 'Kayıt ol'}</a><a className="ghost-btn" href="/status">Durumu kontrol et</a></div></form></section></Layout>;
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔐 {VERSION} • Kayıt ve giriş</div><h1>{mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</h1><p>v1.2.4 ile kanal yönetimi ve güvenli SQL migration eklendi.</p></div><section className="status-grid"><article className="status-check-card"><strong>Supabase Bağlantısı</strong><p>{supabaseConfig.isReady ? 'Hazır' : 'Eksik: Vercel ortam değişkenleri ve yeniden dağıtım gerekli.'}</p></article><article className="status-check-card"><strong>E-posta Onayı</strong><p>Test için Supabase Auth → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Kaydı</strong><p>schema.sql içindeki trigger app_users profilini otomatik açar.</p></article></section><form className="admin-card login-card" onSubmit={submit}><h2>{mode === 'register' ? 'Yeni hesap' : 'Hesaba giriş'}</h2><label>E-posta<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label><label>Şifre<input type="password" minLength="6" value={password} onChange={e => setPassword(e.target.value)} required /></label><button className="primary-btn" disabled={loading}>{loading ? 'İşleniyor...' : mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</button>{message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}<div className="hero-actions"><a className="ghost-btn" href={mode === 'register' ? '/login' : '/register'}>{mode === 'register' ? 'Girişe geç' : 'Kayıt ol'}</a><a className="ghost-btn" href="/status">Durumu kontrol et</a></div></form></section></Layout>;
 }
 
 function AdminNav() { return <div className="admin-button-bar single-row-admin">{adminButtons.map(([label, href]) => <a key={href} className="ghost-btn admin-mini-btn" href={href}>{label}</a>)}</div>; }
@@ -159,7 +160,7 @@ function AdminPage() {
   if (!session?.access_token) return <AuthPage mode="login" />;
   if (loading) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION} • Normal Kullanıcı</div><h1>Yönetim paneli sadece yetkililere açıktır.</h1><p>Hesabın normal kullanıcı rolünde görünüyor. Bu yüzden yönetim paneli menüde gösterilmez ve bu alana giriş kapalıdır.</p></div><section className="notes-card"><h2>Hesap Bilgisi</h2><p>Rol: <strong>{roleLabel(profile?.role)}</strong></p><p>{error || 'Yetkili olmak için kurucu hesabından rol verilmesi gerekir.'}</p><a className="primary-btn" href="/profile">Profile Git</a></section></section></Layout>;
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>v1.2.3 ile bölüm yönetimi merkezi aktif edildi; SQL mevcut verileri sıfırlamaz.</p></div><AdminNav /><AdminQuickManager session={session} /></section></Layout>;
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>v1.2.4 ile kanal yönetimi gelişmiş ekranı aktif edildi; SQL mevcut verileri sıfırlamaz.</p></div><AdminNav /><AdminQuickManager session={session} /></section></Layout>;
 }
 
 function AdminQuickManager({ session }) {
@@ -215,7 +216,7 @@ function AdminQuickManager({ session }) {
     load();
   }
 
-  return <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>🎮 Oyun Yönetimi</h2><p>v1.2.3 ile kapak, banner ve logo medya alanları eklendi. Bu sürümde URL alanları kullanılır; dosya yükleme sonraki sürüme bırakıldı.</p>
+  return <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>🎮 Oyun Yönetimi</h2><p>v1.2.4 ile kapak, banner ve logo medya alanları eklendi. Bu sürümde URL alanları kullanılır; dosya yükleme sonraki sürüme bırakıldı.</p>
     <div className="form-two-col"><label>Oyun Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
     <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
     <div className="form-two-col"><label>Kategori Başlığı<input value={form.category_title} onChange={e => set('category_title', e.target.value)} placeholder="Korku" /></label><label>Kategori Slug<input value={form.category_slug} onChange={e => set('category_slug', e.target.value)} placeholder="korku" /></label></div>
@@ -301,7 +302,7 @@ function AdminSeriesPage() {
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla seri yönetimi açılamaz.</p></div></section></Layout>;
 
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🎬 {VERSION} • Seri Yönetimi</div><h1>Seri Yönetimi Merkezi</h1><p>Seri ekle, düzenle, sil ve oyunları seçili seriye bağla. SQL veri sıfırlamaz.</p></div><AdminNav />
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🎬 {VERSION} • Seri Yönetimi</div><h1>Kanal Yönetimi Gelişmiş</h1><p>Seri ekle, düzenle, sil ve oyunları seçili seriye bağla. SQL veri sıfırlamaz.</p></div><AdminNav />
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Seri Düzenle' : 'Seri Ekle'}</h2>
       <div className="form-two-col"><label>Seri Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
       <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
@@ -377,7 +378,7 @@ function AdminEpisodesPage() {
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla bölüm yönetimi açılamaz.</p></div></section></Layout>;
 
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">▶️ {VERSION} • Bölüm Yönetimi</div><h1>Seri Yönetimi Merkezi</h1><p>Oyunlara bağlı bölüm ekle, YouTube bağlantısı gir, yayın durumunu ve bölüm sırasını yönet.</p></div><AdminNav />
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">▶️ {VERSION} • Kanal Yönetimi</div><h1>Kanal Yönetimi Gelişmiş</h1><p>Oyunlara bağlı bölüm ekle, YouTube bağlantısı gir, yayın durumunu ve bölüm sırasını yönet.</p></div><AdminNav />
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Bölüm Düzenle' : 'Bölüm Ekle'}</h2>
       <div className="form-two-col"><label>Oyun<select value={form.game_slug} onChange={e => pickGame(e.target.value)}><option value="">Oyun seç</option>{games.map(g => <option key={g.id} value={g.slug}>{g.title}</option>)}</select></label><label>Oyun Başlığı<input value={form.game_title} onChange={e => set('game_title', e.target.value)} placeholder="Oyun adı" /></label></div>
       <div className="form-two-col"><label>Seri Slug<input value={form.series_slug} onChange={e => set('series_slug', e.target.value)} /></label><label>Seri Başlığı<input value={form.series_title} onChange={e => set('series_title', e.target.value)} /></label></div>
@@ -457,6 +458,67 @@ function AdminUsersPage() {
   </section></Layout>;
 }
 
+
+function AdminChannelsPage() {
+  const session = getSession();
+  const [profile, setProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [rows, setRows] = useState([]);
+  const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+  const empty = {
+    title: '', slug: '', description: '', channel_type: 'YouTube', youtube_channel_id: '', external_url: '',
+    cover_url: '', banner_url: '', logo_url: '', status: 'Aktif', sort_order: 100, is_public: true
+  };
+  const [form, setForm] = useState(empty);
+  const [edit, setEdit] = useState(null);
+
+  useEffect(() => { if (session?.access_token) getCurrentAppUser(session).then(r => { setProfile(r.data); setLoadingProfile(false); }); else setLoadingProfile(false); }, [session?.access_token]);
+  async function load() {
+    setLoading(true);
+    const r = await listTable('public_channels', session);
+    setRows(r.data || []);
+    setMsg(r.error || `Başarı: ${(r.data || []).length} kanal yüklendi.`);
+    setLoading(false);
+  }
+  useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
+  function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
+  function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
+  async function submit(e) {
+    e.preventDefault();
+    const payload = { ...form, slug: makeSlug(form.slug || form.title), sort_order: Number(form.sort_order) || 100 };
+    const r = edit ? await updateRow('public_channels', edit, payload, session) : await createRow('public_channels', payload, session);
+    if (r.error) return setMsg(r.error);
+    setMsg(edit ? 'Başarı: kanal güncellendi.' : 'Başarı: kanal eklendi.');
+    setEdit(null); setForm(empty); load();
+  }
+  async function del(row) {
+    if (!confirm(`${row.title || row.name} kanalı silinsin mi? Seri ve oyun kayıtları silinmez.`)) return;
+    const r = await deleteRow('public_channels', row.id, session);
+    setMsg(r.error || 'Başarı: kanal silindi. Seri ve oyun kayıtları korunur.');
+    load();
+  }
+  if (!session?.access_token) return <AuthPage mode="login" />;
+  if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
+  if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla kanal yönetimi açılamaz.</p></div></section></Layout>;
+
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">📺 {VERSION} • Kanal Yönetimi</div><h1>Kanal Yönetimi Gelişmiş</h1><p>Kanal ekle, düzenle, sil; logo, kapak, banner, bağlantı ve YouTube kanal ID bilgilerini yönet. SQL veri sıfırlamaz.</p></div><AdminNav />
+    <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Kanal Düzenle' : 'Kanal Ekle'}</h2>
+      <div className="form-two-col"><label>Kanal Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
+      <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
+      <div className="form-two-col"><label>Kanal Türü<select value={form.channel_type} onChange={e => set('channel_type', e.target.value)}><option>YouTube</option><option>Twitch</option><option>Kick</option><option>Arşiv</option></select></label><label>Durum<select value={form.status} onChange={e => set('status', e.target.value)}><option>Aktif</option><option>Planlandı</option><option>Gizli</option></select></label></div>
+      <label>YouTube Kanal ID<input value={form.youtube_channel_id} onChange={e => set('youtube_channel_id', e.target.value)} placeholder="UC..." /></label>
+      <label>Kanal Bağlantısı<input value={form.external_url} onChange={e => set('external_url', e.target.value)} placeholder="https://..." /></label>
+      <label>Kapak URL<input value={form.cover_url} onChange={e => set('cover_url', e.target.value)} placeholder="https://..." /></label>
+      <label>Banner URL<input value={form.banner_url} onChange={e => set('banner_url', e.target.value)} placeholder="https://..." /></label>
+      <label>Logo URL<input value={form.logo_url} onChange={e => set('logo_url', e.target.value)} placeholder="https://..." /></label>
+      <div className="media-preview-grid"><article><strong>Kapak</strong><img src={form.cover_url || PLACEHOLDER} alt="Kapak" /></article><article><strong>Banner</strong><img src={form.banner_url || PLACEHOLDER} alt="Banner" /></article><article><strong>Logo</strong><img src={form.logo_url || PLACEHOLDER} alt="Logo" /></article></div>
+      <div className="form-two-col"><label>Sıra<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
+      <button className="primary-btn">{edit ? 'Kanalı Güncelle' : 'Kanalı Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
+      <div className="admin-card admin-table-card"><h2>Kanal Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Kanal</th><th>Tür</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title || r.name}</strong><small>{r.slug}</small></td><td>{r.channel_type || 'YouTube'}</td><td>{r.status || 'Aktif'}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, title: r.title || r.name || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz kanal yok.</td></tr> : null}</tbody></table></div></section>
+  </section></Layout>;
+}
+
 function AdminPlaceholder({ title }) {
   const session = getSession();
   const [profile, setProfile] = useState(null);
@@ -467,9 +529,9 @@ function AdminPlaceholder({ title }) {
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla yönetim sayfaları açılmaz.</p></div><a className="primary-btn" href="/profile">Profile Git</a></section></Layout>;
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🚧 {VERSION}</div><h1>{title}</h1><p>Sayfa yolu kuruldu. İçeriği sonraki sürümlerde doldurulacak.</p></div><AdminNav /><EmptyState title="İskelet hazır" text="Bu buton artık hata vermiyor. İç sistem sonraki sürümde eklenecek." /></section></Layout>;
 }
-function Updates() { return <section className="notes-card"><h2>📌 {VERSION} Tamamlananlar</h2><ul><li>✅ Seri Yönetimi Merkezi eklendi.</li><li>✅ Admin panelden seri ekleme/düzenleme/silme aktif edildi.</li><li>✅ Oyunları seriye bağlama alanı eklendi.</li><li>✅ Seri kapak, banner, logo ve istatistik alanları eklendi.</li><li>✅ public_series tablosu güvenli migration ile genişletildi.</li><li>✅ Vercel/GitHub sürüm etiketi v1.2.3 olarak güncellendi.</li><li>🟢 Supabase gerekli: schema.sql tekrar çalıştırılmalı.</li></ul></section>; }
-function UpdatesPage() { return <Layout><PageHero icon="📝" title="Güncellemeler" text="v1.2.3 tamamlananlar ve sıradaki plan." /><Updates /><section className="next-card"><h2>➡️ Sonraki Plan: v1.2.4 Kanal Yönetimi Gelişmiş</h2><p>Kanal ekleme/düzenleme, kanal-seri bağlantısı ve kanal medya alanları geliştirilecek.</p></section></Layout>; }
-function StatusPage() { return <Layout><PageHero icon="✅" title="Site Durumu" text="Seri yönetimi merkezi migration kontrol paneli." /><section className="status-grid"><article className="status-check-card"><strong>Supabase gerekli</strong><p>{supabaseConfig.isReady ? 'Bağlantı hazır görünüyor.' : 'Bağlantı eksik veya Vercel yeniden dağıtım yapılmadı.'}</p></article><article className="status-check-card"><strong>SQL Sonucu</strong><p>Supabase Results kısmında <strong>v1.2.3 başarıyla çalıştı</strong> yazmalı. Bu SQL veri sıfırlamaz; sadece eksik seri kolonlarını ekler.</p></article><article className="status-check-card"><strong>Seri Tablosu</strong><p>public_series tablosuna medya, kategori, kanal, oyun sayısı, bölüm sayısı ve sıra alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>DROP TABLE / TRUNCATE yoktur. Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur.</p></article></section></Layout>; }
+function Updates() { return <section className="notes-card"><h2>📌 {VERSION} Tamamlananlar</h2><ul><li>✅ Kanal Yönetimi Gelişmiş eklendi.</li><li>✅ Admin panelden seri ekleme/düzenleme/silme aktif edildi.</li><li>✅ Oyunları seriye bağlama alanı eklendi.</li><li>✅ Seri kapak, banner, logo ve istatistik alanları eklendi.</li><li>✅ public_series tablosu güvenli migration ile genişletildi.</li><li>✅ Vercel/GitHub sürüm etiketi v1.2.4 olarak güncellendi.</li><li>🟢 Supabase gerekli: schema.sql tekrar çalıştırılmalı.</li></ul></section>; }
+function UpdatesPage() { return <Layout><PageHero icon="📝" title="Güncellemeler" text="v1.2.4 tamamlananlar ve sıradaki plan." /><Updates /><section className="next-card"><h2>➡️ Sonraki Plan: v1.2.5 Yayın Takvimi 2.0</h2><p>Yayın takvimi yönetimi, takvim kayıtları ve public takvim görünümü geliştirilecek.</p></section></Layout>; }
+function StatusPage() { return <Layout><PageHero icon="✅" title="Site Durumu" text="Kanal yönetimi gelişmiş migration kontrol paneli." /><section className="status-grid"><article className="status-check-card"><strong>Supabase gerekli</strong><p>{supabaseConfig.isReady ? 'Bağlantı hazır görünüyor.' : 'Bağlantı eksik veya Vercel yeniden dağıtım yapılmadı.'}</p></article><article className="status-check-card"><strong>SQL Sonucu</strong><p>Supabase Results kısmında <strong>v1.2.4 başarıyla çalıştı</strong> yazmalı. Bu SQL veri sıfırlamaz; sadece eksik kanal kolonlarını ekler.</p></article><article className="status-check-card"><strong>Kanal Tablosu</strong><p>public_channels tablosuna medya, bağlantı, YouTube kanal ID, açıklama, sıra ve görünürlük alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>DROP TABLE / TRUNCATE yoktur. Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur.</p></article></section></Layout>; }
 function NotFoundPage() { return <Layout><section className="hero-card"><div className="version-pill">404 • {VERSION}</div><h1>Sayfa hazır değil.</h1><p>Bu route henüz planlanmadı veya yanlış yazıldı.</p><div className="hero-actions"><a className="primary-btn" href="/">Ana Sayfa</a><a className="ghost-btn" href="/admin">Admin</a></div></section></Layout>; }
 
 function AppRouter() {
@@ -489,6 +551,7 @@ function AppRouter() {
   if (p === '/admin') return <AdminPage />;
   if (p === '/admin/users') return <AdminUsersPage />;
   if (p === '/admin/series') return <AdminSeriesPage />;
+  if (p === '/admin/channels') return <AdminChannelsPage />;
   if (p === '/admin/episodes') return <AdminEpisodesPage />;
   if (p === '/admin/games' || p === '/admin/games/new') return <AdminPage />;
   if (p.startsWith('/admin/')) return <AdminPlaceholder title={adminButtons.find(x => x[1] === p)?.[0] || 'Yönetim Alanı'} />;

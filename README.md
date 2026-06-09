@@ -1,38 +1,24 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.1.9
+Sürüm: **v1.2.4 Kanal Yönetimi Gelişmiş**
 
 ## Bu sürümde eklenenler
 
-- `mertdundaroyunda@gmail.com` hesabı kurucu/founder yapılır.
-- Supabase SQL artık tablo sıfırlamaz.
-- Mevcut kullanıcı, oyun, kategori, kanal, seri ve bölüm verileri korunur.
-- Eksik tablolar `create table if not exists` ile oluşturulur.
-- Eksik kolonlar `alter table ... add column if not exists` ile eklenir.
-- Status ekranı v1.1.9 başarı sonucunu gösterir.
+- Kanal ekle/düzenle/sil ekranı
+- Kanal kapak/banner/logo URL alanları
+- YouTube kanal ID alanı
+- Kanal bağlantısı alanı
+- Güvenli Supabase SQL migration
+- Vercel kurulum rehberi env kontrolü
 
-## Supabase gerekli mi?
+## Supabase SQL gerekli mi?
 
-Evet. `supabase/schema.sql` çalıştırılmalı.
+**Evet.** `supabase/schema.sql` çalıştırılmalı.
 
-SQL Results kısmında şu yazmalı:
+## Yeni .env gerekli mi?
 
-```text
-v1.1.9 başarıyla çalıştı
-```
+**Hayır.** Mevcut `VITE_SUPABASE_URL` ve `VITE_SUPABASE_ANON_KEY` yeterli.
 
-## Güvenlik kuralı
+## Veri korunur mu?
 
-`.env.local` GitHub'a gönderilmez. Vercel env tarafında şu iki bilgi yeterlidir:
-
-```env
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-```
-
-
-
-
-## v1.2.3
-
-Seri Yönetimi Merkezi. Supabase SQL gereklidir; veri sıfırlamaz. Vercel/GitHub gönderiminde commit mesajı v1.2.3 olarak güncellendi.
+Evet. SQL tablo sıfırlamaz, veri silmez.
