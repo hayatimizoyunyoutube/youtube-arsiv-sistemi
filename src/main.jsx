@@ -861,15 +861,16 @@ function useMaintenanceGate() {
 
 function GuidePage() {
   return <Layout>
-    <PageHero icon="📘" title="Site Rehberi ve Kurulum Merkezi" text="GitHub, Vercel, Supabase ve güvenli .env akışı tek yerde. Bu sürüm SQL istemez ve yeni .env gerekmez." />
+    <PageHero icon="📘" title="Kullanıcı Rehberi" text="Hayatımız Oyun arşivini nasıl kullanacağını anlatan basit kullanıcı yardım sayfası. Bu sayfada yönetim ekibi, GitHub, Vercel veya Supabase kurulum adımları gösterilmez." />
     <section className="status-grid">
-      <article className="status-check-card"><strong>1. GitHub Gönderimi</strong><p><code>02-githuba-gonder.bat</code> artık v1.2.9 commit mesajı kullanır. Gerçek key dosyaları GitHub'a gönderilmez.</p></article>
-      <article className="status-check-card"><strong>2. Vercel Deploy</strong><p>GitHub main branch güncellenince Vercel otomatik deploy alır. Environment Variables değişirse mutlaka Redeploy yapılır.</p></article>
-      <article className="status-check-card"><strong>3. Supabase SQL</strong><p>Bu sürümde SQL gerekmez. Sonraki SQL dosyaları veri/yetki sıfırlamayacak şekilde migration mantığında hazırlanır.</p></article>
-      <article className="status-check-card"><strong>4. .env Durumu</strong><p>Yeni .env yok. Gerekli anahtarlar aynı kalır: VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY.</p></article>
+      <article className="status-check-card"><strong>1. Arşivi Keşfet</strong><p>Ana sayfadan öne çıkan serileri, son eklenenleri ve hızlı keşif alanlarını görebilirsin.</p></article>
+      <article className="status-check-card"><strong>2. Serileri İncele</strong><p>Seriler sayfasında oyun arşivlerini listeleyebilir, kategoriye veya duruma göre filtreleyebilirsin.</p></article>
+      <article className="status-check-card"><strong>3. Bölümleri İzle</strong><p>Bir seriye veya oyuna girdiğinde eklenen bölümler, yayın durumu ve YouTube bağlantıları burada gösterilir.</p></article>
+      <article className="status-check-card"><strong>4. Profilini Kontrol Et</strong><p>Giriş yaptıysan profil sayfandan hesabını, rolünü ve hesap durumunu görebilirsin.</p></article>
     </section>
-    <section className="admin-card"><h2>Güvenli Güncelleme Sırası</h2><ol className="guide-list"><li>ZIP'i proje klasörüne temiz çıkar.</li><li><code>01-projeyi-temizle-git-koru.bat</code> ile eski dosyaları temizle.</li><li>Yeni dosyaları proje klasörüne kopyala.</li><li><code>02-githuba-gonder.bat</code> ile GitHub'a gönder.</li><li>Vercel Deployments ekranında yeni sürüm adını kontrol et.</li></ol></section>
-    <section className="admin-card"><h2>Bu Sürümde SQL Gerekli mi?</h2><p><strong>Hayır.</strong> v1.2.9 sadece rehber, versiyon ve kurulum kontrol alanlarını günceller. Supabase tablolarına yeni kolon eklemez.</p></section>
+    <section className="admin-card"><h2>Siteyi Nasıl Kullanırım?</h2><ol className="guide-list"><li><strong>Ana Sayfa:</strong> Öne çıkan içerikleri ve site duyurularını gösterir.</li><li><strong>Arşiv:</strong> Oyun, seri, kategori ve kanal içeriklerine ulaşmanı sağlar.</li><li><strong>Koleksiyonlar:</strong> İçerikleri kategori ve seri mantığıyla gezmeni sağlar.</li><li><strong>Seriler:</strong> Tamamlanan, devam eden ve planlanan serileri gösterir.</li><li><strong>Yayın Takvimi:</strong> Yaklaşan yayınları ve planlanan bölümleri takip etmek içindir.</li><li><strong>Site Durumu:</strong> Sitenin bakımda olup olmadığını ve bağlantı durumunu gösterir.</li></ol></section>
+    <section className="admin-card"><h2>Hesap ve Giriş Bilgisi</h2><p>Kayıt olup giriş yaptığında profil sayfana ulaşabilirsin. Normal kullanıcılar yönetim panelini göremez; yönetim paneli sadece yetkili hesaplara açıktır.</p></section>
+    <section className="admin-card"><h2>Bakım Modu Ne Demek?</h2><p>Site bakım modundayken normal kullanıcılar bakım ekranını görür. Bu sırada yetkili ekip siteyi düzenlemeye devam edebilir.</p></section>
   </Layout>;
 }
 
