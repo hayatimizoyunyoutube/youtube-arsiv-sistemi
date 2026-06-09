@@ -391,7 +391,7 @@ select
   'v1.2.1 başarıyla çalıştı' as status,
   'Oyun kapak/banner/logo medya alanları eklendi. Mevcut veriler korunur; tablo sıfırlama yoktur.' as detail;
 
--- v1.2.2 - Bölüm Yönetimi Merkezi / güvenli migration
+-- v1.2.3 - Seri Yönetimi Merkezi / güvenli migration
 -- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
 create table if not exists public.public_episodes (
   id uuid primary key default gen_random_uuid(),
@@ -448,14 +448,14 @@ begin
 end $$;
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.2.2', 'success', 'Bölüm Yönetimi Merkezi eklendi; public_episodes güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
+values ('v1.2.3', 'success', 'Seri Yönetimi Merkezi eklendi; public_episodes güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
 on conflict do nothing;
 
 select
-  'v1.2.2 başarıyla çalıştı' as status,
+  'v1.2.3 başarıyla çalıştı' as status,
   'Bölüm ekleme, düzenleme, silme, yayın durumu ve YouTube URL alanları eklendi.' as yeni_ozellik,
   'public_episodes tablosu veri silmeden güncellendi' as veri_koruma,
-  'Vercel/GitHub commit sürüm etiketi v1.2.2 olarak güncellendi' as deploy_notu,
+  'Vercel/GitHub commit sürüm etiketi v1.2.3 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;
 
 -- FIX: Kurucu yetkisi girişte user olarak görünmesin. Veri sıfırlamaz.
@@ -468,3 +468,83 @@ values ('mertdundaroyunda@gmail.com', 'founder', 'active')
 on conflict (email) do update set role = 'founder', status = 'active';
 
 select 'Kurucu yetki fix çalıştı' as result;
+
+
+-- v1.2.3 - Seri Yönetimi Merkezi / güvenli migration
+-- Veri sıfırlama yoktur. DROP TABLE / TRUNCATE kullanılmaz.
+create table if not exists public.public_series (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  title text not null,
+  description text default '',
+  category_slug text default '',
+  category_title text default '',
+  channel_slug text default '',
+  channel_title text default '',
+  status text default 'Devam Ediyor',
+  cover_url text default '',
+  banner_url text default '',
+  logo_url text default '',
+  game_count integer default 0,
+  episode_count integer default 0,
+  is_public boolean default true,
+  sort_order integer default 100,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.public_series add column if not exists slug text;
+alter table public.public_series add column if not exists title text default '';
+alter table public.public_series add column if not exists description text default '';
+alter table public.public_series add column if not exists category_slug text default '';
+alter table public.public_series add column if not exists category_title text default '';
+alter table public.public_series add column if not exists channel_slug text default '';
+alter table public.public_series add column if not exists channel_title text default '';
+alter table public.public_series add column if not exists status text default 'Devam Ediyor';
+alter table public.public_series add column if not exists cover_url text default '';
+alter table public.public_series add column if not exists banner_url text default '';
+alter table public.public_series add column if not exists logo_url text default '';
+alter table public.public_series add column if not exists game_count integer default 0;
+alter table public.public_series add column if not exists episode_count integer default 0;
+alter table public.public_series add column if not exists is_public boolean default true;
+alter table public.public_series add column if not exists sort_order integer default 100;
+alter table public.public_series add column if not exists updated_at timestamptz default now();
+
+alter table public.public_games add column if not exists series_slug text default '';
+alter table public.public_games add column if not exists series_title text default '';
+alter table public.public_episodes add column if not exists series_slug text default '';
+alter table public.public_episodes add column if not exists series_title text default '';
+
+create index if not exists idx_public_series_slug on public.public_series(slug);
+create index if not exists idx_public_series_status on public.public_series(status);
+create index if not exists idx_public_series_sort_order on public.public_series(sort_order);
+
+alter table public.public_series enable row level security;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'public_series'
+      and policyname = 'public read series v123'
+  ) then
+    create policy "public read series v123" on public.public_series
+    for select using (is_public = true or auth.role() = 'authenticated');
+  end if;
+end $$;
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.2.3', 'success', 'Seri Yönetimi Merkezi eklendi; public_series güvenli migration ile güncellendi; mevcut veriler sıfırlanmadı.')
+on conflict do nothing;
+
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com');
+
+select
+  'v1.2.3 başarıyla çalıştı' as status,
+  'Seri ekleme, düzenleme, silme ve oyunları seriye bağlama eklendi.' as yeni_ozellik,
+  'public_series tablosu veri silmeden güncellendi' as veri_koruma,
+  'Vercel/GitHub commit sürüm etiketi v1.2.3 olarak güncellendi' as deploy_notu,
+  now() as calisma_zamani;
