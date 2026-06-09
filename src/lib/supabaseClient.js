@@ -1,7 +1,7 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const SESSION_KEY = 'hoy_user_session_v119';
-const OLD_SESSION_KEYS = ['hoy_user_session_v118', 'hoy_user_session_v117', 'hoy_admin_session_v115'];
+const SESSION_KEY = 'hoy_user_session_v122';
+const OLD_SESSION_KEYS = ['hoy_user_session_v119', 'hoy_user_session_v118', 'hoy_user_session_v117', 'hoy_admin_session_v115'];
 
 export const supabaseConfig = {
   url: SUPABASE_URL,
@@ -41,11 +41,29 @@ export function roleLabel(role) {
 export async function getCurrentAppUser(session = getSession()) {
   if (!supabaseConfig.isReady) return { data: null, error: 'Supabase bağlantısı eksik.' };
   const userId = session?.user?.id;
-  if (!session?.access_token || !userId) return { data: null, error: 'Oturum bilgisi eksik.' };
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?auth_user_id=eq.${userId}&select=*&limit=1`, { headers: headers(session) });
-  const json = await res.json().catch(() => []);
+  const email = session?.user?.email || '';
+  if (!session?.access_token || (!userId && !email)) return { data: null, error: 'Oturum bilgisi eksik.' };
+
+  // Önce auth_user_id ile oku. Eski kayıtlarda auth_user_id boşsa e-posta ile tekrar dene.
+  let res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?auth_user_id=eq.${userId}&select=*&limit=1`, { headers: headers(session) });
+  let json = await res.json().catch(() => []);
   if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Kullanıcı profili okunamadı: ${res.status}`) };
-  return { data: Array.isArray(json) ? json[0] || null : null, error: null };
+  let row = Array.isArray(json) ? json[0] || null : null;
+
+  if (!row && email) {
+    res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?email=eq.${encodeURIComponent(email)}&select=*&limit=1`, { headers: headers(session) });
+    json = await res.json().catch(() => []);
+    if (!res.ok) return { data: null, error: cleanSupabaseError(json, `Kullanıcı profili e-posta ile okunamadı: ${res.status}`) };
+    row = Array.isArray(json) ? json[0] || null : null;
+
+    // E-posta ile bulunan kaydın auth_user_id alanı boşsa bağla; rolünü asla bozma.
+    if (row?.id && userId && !row.auth_user_id) {
+      await updateAppUser(row.id, { auth_user_id: userId }, session);
+      row.auth_user_id = userId;
+    }
+  }
+
+  return { data: row, error: null };
 }
 
 export async function refreshSessionIfNeeded(session = getSession()) {
@@ -72,11 +90,25 @@ export async function ensureAppUserProfile(session) {
   const email = user?.email || '';
   if (!session?.access_token || !email) return { data: null, error: 'Oturum bilgisi eksik.' };
 
+  const existing = await getCurrentAppUser(session);
+  if (existing.data) {
+    // ÖNEMLİ: Girişte rolü user olarak ezme. Sadece temel profil alanlarını tazele.
+    const patch = {
+      auth_user_id: user.id,
+      email,
+      display_name: existing.data.display_name || email.split('@')[0],
+      status: existing.data.status || 'active',
+      updated_at: new Date().toISOString()
+    };
+    const updated = await updateAppUser(existing.data.id, patch, session);
+    return { data: updated.data || existing.data, error: updated.error };
+  }
+
   const payload = {
     auth_user_id: user.id,
     email,
     display_name: email.split('@')[0],
-    role: 'user',
+    role: email.toLowerCase() === 'mertdundaroyunda@gmail.com' ? 'founder' : 'user',
     status: 'active',
     updated_at: new Date().toISOString()
   };

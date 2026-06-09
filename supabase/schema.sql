@@ -457,3 +457,14 @@ select
   'public_episodes tablosu veri silmeden güncellendi' as veri_koruma,
   'Vercel/GitHub commit sürüm etiketi v1.2.2 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;
+
+-- FIX: Kurucu yetkisi girişte user olarak görünmesin. Veri sıfırlamaz.
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com');
+
+insert into public.admin_roles (email, role, status)
+values ('mertdundaroyunda@gmail.com', 'founder', 'active')
+on conflict (email) do update set role = 'founder', status = 'active';
+
+select 'Kurucu yetki fix çalıştı' as result;
