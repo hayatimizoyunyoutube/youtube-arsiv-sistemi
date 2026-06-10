@@ -976,3 +976,45 @@ select
   'game_episodes/youtube_playlists için YouTube video ve playlist indexleri eklendi; thumbnail_url korunur.' as youtube_bolumleri,
   'DROP TABLE/TRUNCATE yok; kullanıcı yetkileri ve mevcut veriler sıfırlanmadı.' as veri_koruma,
   now() as calisma_zamani;
+
+-- =========================================================
+-- FIX v1.3.2 - Oyun tarih/kapak + YouTube playlist bölüm çekme
+-- Güvenli migration: DROP/TRUNCATE yok, mevcut veri/yetki korunur.
+-- =========================================================
+
+alter table public.public_games add column if not exists release_date date;
+alter table public.public_games add column if not exists rawg_id text default '';
+alter table public.public_games add column if not exists steam_appid text default '';
+alter table public.public_games add column if not exists metacritic text default '';
+alter table public.public_games add column if not exists rating text default '';
+alter table public.public_games add column if not exists genres text default '';
+alter table public.public_games add column if not exists tags text default '';
+alter table public.public_games add column if not exists playlist_url text default '';
+alter table public.public_games add column if not exists playlist_id text default '';
+alter table public.public_games add column if not exists media_note text default '';
+
+alter table public.public_episodes add column if not exists youtube_video_id text;
+alter table public.public_episodes add column if not exists youtube_url text default '';
+alter table public.public_episodes add column if not exists thumbnail_url text default '';
+alter table public.public_episodes add column if not exists episode_number integer default 0;
+alter table public.public_episodes add column if not exists episode_no integer default 0;
+alter table public.public_episodes add column if not exists game_slug text default '';
+alter table public.public_episodes add column if not exists game_title text default '';
+alter table public.public_episodes add column if not exists series_slug text default '';
+alter table public.public_episodes add column if not exists series_title text default '';
+alter table public.public_episodes add column if not exists published_at timestamptz;
+alter table public.public_episodes add column if not exists is_public boolean default true;
+alter table public.public_episodes add column if not exists sort_order integer default 100;
+
+create unique index if not exists public_episodes_youtube_video_id_unique_fix_v132b
+on public.public_episodes(youtube_video_id) where youtube_video_id is not null and youtube_video_id <> '';
+
+insert into public.site_status_logs(version, status, message)
+values ('v1.3.2-fix', 'success', 'Oyun tarih/kapak otomatik çekme ve YouTube playlist bölüm/thumbnail çekme düzeltildi. public_episodes alanları eklendi. Veri/yetki sıfırlanmadı.')
+on conflict do nothing;
+
+select
+  'v1.3.2 otomatik çekme tarih/kapak + YouTube playlist fix başarıyla çalıştı' as result,
+  'public_games: release_date/rawg_id/steam_appid/metacritic/rating/genres/tags/playlist alanları güvenli kontrol edildi.' as oyun_tablosu,
+  'public_episodes: youtube_video_id, youtube_url, thumbnail_url, episode_number, game/series bağlantı alanları eklendi.' as bolum_tablosu,
+  'Yetkiler ve mevcut veriler korunur; DROP TABLE/TRUNCATE yok.' as veri_koruma;
