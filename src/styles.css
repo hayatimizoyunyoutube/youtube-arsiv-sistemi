@@ -2990,3 +2990,82 @@ textarea {
   .search-pill { max-width: none; }
   .top-actions { overflow-x: auto; padding-bottom: 4px; }
 }
+
+/* FIX: Oynatma listeleri alta alındı, üst sağ aksiyonlar tam sağa taşındı */
+.cinema-dashboard {
+  grid-template-rows: 58px auto;
+  align-items: start;
+}
+.left-rail {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+.dashboard-topbar {
+  grid-column: 2 / 4;
+  grid-row: 1;
+  height: 58px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 0 8px;
+}
+.dashboard-main {
+  grid-column: 2;
+  grid-row: 2;
+}
+.right-rail {
+  grid-column: 3;
+  grid-row: 2;
+  padding-top: 0 !important;
+}
+.version-chip-top {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(15,23,42,.78);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+.playlist-bottom-head { margin-top: 24px; }
+.playlist-bottom-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.playlist-bottom-card {
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(14,20,35,.88), rgba(8,12,24,.9));
+  box-shadow: 0 24px 80px rgba(0,0,0,.18);
+}
+.playlist-bottom-card > span { display: grid; gap: 3px; }
+.playlist-bottom-card > :first-child { font-size: 26px; }
+.playlist-bottom-card small { color: var(--muted); }
+.playlist-bottom-card.pink { border-color: rgba(236,72,153,.22); }
+.playlist-bottom-card.orange { border-color: rgba(245,158,11,.22); }
+.playlist-bottom-card.red { border-color: rgba(239,68,68,.22); }
+.playlist-bottom-card.green { border-color: rgba(34,197,94,.22); }
+@media (max-width: 1200px) {
+  .cinema-dashboard { grid-template-columns: 86px minmax(0, 1fr); grid-template-rows: auto auto auto; }
+  .left-rail { grid-row: 1 / span 3; }
+  .dashboard-topbar { grid-column: 2; grid-row: 1; }
+  .dashboard-main { grid-column: 2; grid-row: 2; }
+  .right-rail { grid-column: 2; grid-row: 3; }
+  .playlist-bottom-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 820px) {
+  .cinema-dashboard { display: block; }
+  .dashboard-topbar { position: relative; display: flex; height: auto; }
+  .playlist-bottom-row { grid-template-columns: 1fr; }
+}

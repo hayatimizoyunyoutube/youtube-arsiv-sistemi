@@ -141,18 +141,18 @@ function HomePage() {
         <button className="collapse-rail-btn" type="button" onClick={() => setSidebarCollapsed(!sidebarCollapsed)}>{sidebarCollapsed ? '»' : '‹'} <b>Menüyü Daralt</b></button>
       </aside>
 
-      <section className="dashboard-main">
-        <div className="dashboard-topbar">
-          <div className="search-pill">🔎 Ara... <kbd>Ctrl K</kbd></div>
-          <div className="top-actions">
-            <button className="icon-action" title="Karanlık tema" type="button">🌙</button>
-            <button className="icon-action notification-action" title="Bildirimler" type="button">🔔<em>3</em></button>
-            {canSeeAdmin ? <a className="top-action-link admin-top-link" href="/admin">🛡️ Yönetim Paneli</a> : null}
-            <a className="profile-chip" href="/profile"><span className="profile-avatar">👤</span><strong>{displayName}</strong><small>{roleLabel(profile?.role)}</small></a>
-            <b>{VERSION}</b>
-          </div>
+      <div className="dashboard-topbar">
+        <div className="search-pill">🔎 Ara... <kbd>Ctrl K</kbd></div>
+        <div className="top-actions">
+          <button className="icon-action" title="Karanlık tema" type="button">🌙</button>
+          <button className="icon-action notification-action" title="Bildirimler" type="button">🔔<em>3</em></button>
+          {canSeeAdmin ? <a className="top-action-link admin-top-link" href="/admin">🛡️ Yönetim Paneli</a> : null}
+          <a className="profile-chip" href="/profile"><span className="profile-avatar">👤</span><strong>{displayName}</strong><small>{roleLabel(profile?.role)}</small></a>
+          <b className="version-chip-top">{VERSION}</b>
         </div>
+      </div>
 
+      <section className="dashboard-main">
         <section className="cinema-hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,8,18,.88), rgba(5,8,18,.45), rgba(5,8,18,.88)), url(${featured.banner_url || featured.cover_url || PLACEHOLDER})` }}>
           <button className="hero-arrow">‹</button>
           <div className="cinema-hero-copy">
@@ -182,15 +182,17 @@ function HomePage() {
             <strong>{item.title || item.name}</strong><small>{item.episode_count || item.episodes || 0} Bölüm</small>
           </a>)}
         </section>
+
+        <section className="content-row-head playlist-bottom-head"><h2>Oynatma Listeleri</h2><a className="ghost-btn" href="/admin/youtube-playlists">Tümünü Gör</a></section>
+        <section className="playlist-bottom-row">
+          <a className="playlist-bottom-card pink" href="/admin/youtube-playlists">🎞️ <span><b>YouTube Arşivim</b><small>{games.rows.length || 0} kayıt</small></span></a>
+          <a className="playlist-bottom-card orange" href="/admin/youtube-playlists">📺 <span><b>Canlı Yayın Arşivi</b><small>Hazırlanıyor</small></span></a>
+          <a className="playlist-bottom-card red" href="/admin/youtube-playlists">▶️ <span><b>Shorts Arşivi</b><small>Yakında</small></span></a>
+          <a className="playlist-bottom-card green" href="/admin/youtube-playlists">☷ <span><b>Seri Oynatma Listeleri</b><small>{series.rows.length || 0} liste</small></span></a>
+        </section>
       </section>
 
       <aside className="right-rail">
-        <section className="side-panel"><div className="side-title"><h3>Oynatma Listeleri</h3><a href="/admin/youtube-playlists">Tümünü Gör</a></div>
-          <div className="playlist-item pink">🎞️ <span><b>YouTube Arşivim</b><small>{games.rows.length || 0} kayıt</small></span></div>
-          <div className="playlist-item orange">📺 <span><b>Canlı Yayın Arşivi</b><small>Hazırlanıyor</small></span></div>
-          <div className="playlist-item red">▶️ <span><b>Shorts Arşivi</b><small>Yakında</small></span></div>
-          <div className="playlist-item green">☷ <span><b>Seri Oynatma Listeleri</b><small>{series.rows.length || 0} liste</small></span></div>
-        </section>
         <section className="side-panel"><div className="side-title"><h3>Duyurular</h3><a href="/updates">Tümünü Gör</a></div>
           <article className="notice-card"><b>Yeni Özellik: Bölüm Otomatik Çekme</b><span>Yeni</span><p>YouTube playlist altyapısı eklendi.</p></article>
           <article className="notice-card"><b>Site Rehberi Güncellendi</b><p>Kullanıcıya yönelik rehber hazırlandı.</p></article>
