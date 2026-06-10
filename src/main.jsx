@@ -96,10 +96,12 @@ function useDeployInfo() {
 function DataCard({ item, type = 'series' }) {
   const title = item.title || item.name || 'Başlıksız';
   const slug = item.slug || item.id;
-  const img = item.cover_url || item.poster_url || item.logo_url || PLACEHOLDER;
-  return <a className="series-card upgraded-series-card" href={`/${type}/${slug}`}>
-    <div className="series-image-wrap"><img src={img} alt={title} /><span className="status-badge">{item.status || 'Aktif'}</span></div>
-    <div className="series-content"><h3>{title}</h3><p>{item.description || 'Açıklama henüz eklenmedi.'}</p><div className="card-info-row"><span>{item.category_title || item.channel_title || 'Arşiv'}</span><span>{item.episodes || item.episode_count || 0} kayıt</span></div></div>
+  const img = item.cover_url || item.poster_url || item.banner_url || item.logo_url || PLACEHOLDER;
+  const description = item.description || item.summary || 'Açıklama henüz eklenmedi.';
+  const count = item.episode_count || item.episodes || item.game_count || 0;
+  return <a className="series-card upgraded-series-card compact-public-card" href={`/${type}/${slug}`}>
+    <div className="series-image-wrap"><img src={img} alt={title} onError={e => { e.currentTarget.src = PLACEHOLDER; }} /><span className="status-badge">{item.status || 'Aktif'}</span></div>
+    <div className="series-content"><h3>{title}</h3><p>{description}</p><div className="card-info-row"><span>{item.category_title || item.channel_title || 'Arşiv'}</span><span>{count} bölüm</span></div></div>
   </a>;
 }
 
@@ -113,9 +115,11 @@ function HomePage() {
   const deployInfo = useDeployInfo();
   const games = useTable('public_games');
   const series = useTable('public_series');
+  const episodes = useTable('public_episodes');
+  const playlists = useTable('youtube_playlists');
   const categories = useTable('public_categories');
   const users = useTable('app_users');
-  const episodeCount = games.rows.reduce((sum, item) => sum + Number(item.episode_count || item.episodes || 0), 0);
+  const episodeCount = episodes.rows.length || games.rows.reduce((sum, item) => sum + Number(item.episode_count || item.episodes || 0), 0);
   const featured = games.rows[0] || series.rows[0] || {
     title: 'Hayatımız Oyun Arşivi',
     description: 'YouTube oynatma listeleri, seriler, bölümler ve yayın arşivi tek ekranda toplanıyor.',
@@ -123,7 +127,7 @@ function HomePage() {
     banner_url: PLACEHOLDER,
     status: 'Arşiv Hazır'
   };
-  const recentItems = [...games.rows, ...series.rows].slice(0, 4);
+  const recentItems = (episodes.rows.length ? episodes.rows : [...games.rows, ...series.rows]).slice(0, 4);
   const seriesItems = series.rows.slice(0, 6);
 
   return <Layout>
@@ -172,7 +176,7 @@ function HomePage() {
           {(recentItems.length ? recentItems : [{title:'Bölüm arşivi hazırlanıyor', cover_url:PLACEHOLDER, status:'Yakında'}, {title:'YouTube senkronizasyonu', cover_url:PLACEHOLDER, status:'Altyapı'}, {title:'Seri bölümleri', cover_url:PLACEHOLDER, status:'Hazır'}, {title:'Arşiv kartları', cover_url:PLACEHOLDER, status:'Hazır'}]).map((item, index) => <article className="episode-card" key={item.id || index}>
             <img src={item.cover_url || item.banner_url || PLACEHOLDER} alt={item.title || item.name} />
             <span className="duration">{index + 1}:25:{(index + 18).toString().padStart(2,'0')}</span>
-            <div><strong>{item.title || item.name}</strong><small>{item.status || 'Aktif'} • {item.category_title || 'Arşiv'}</small></div>
+            <div><strong>{item.title || item.name}</strong><small>{item.game_title || item.status || 'Aktif'} • {item.series_title || item.category_title || 'Arşiv'}</small></div>
           </article>)}
         </section>
 
@@ -186,10 +190,10 @@ function HomePage() {
 
         <section className="content-row-head playlist-bottom-head"><h2>Oynatma Listeleri</h2><a className="ghost-btn" href="/admin/youtube-playlists">Tümünü Gör</a></section>
         <section className="playlist-bottom-row">
-          <a className="playlist-bottom-card pink" href="/admin/youtube-playlists">🎞️ <span><b>YouTube Arşivim</b><small>{games.rows.length || 0} kayıt</small></span></a>
+          <a className="playlist-bottom-card pink" href="/admin/youtube-playlists">🎞️ <span><b>YouTube Arşivim</b><small>{playlists.rows.length || games.rows.length || 0} liste</small></span></a>
           <a className="playlist-bottom-card orange" href="/admin/youtube-playlists">📺 <span><b>Canlı Yayın Arşivi</b><small>Hazırlanıyor</small></span></a>
           <a className="playlist-bottom-card red" href="/admin/youtube-playlists">▶️ <span><b>Shorts Arşivi</b><small>Yakında</small></span></a>
-          <a className="playlist-bottom-card green" href="/admin/youtube-playlists">☷ <span><b>Seri Oynatma Listeleri</b><small>{series.rows.length || 0} liste</small></span></a>
+          <a className="playlist-bottom-card green" href="/admin/youtube-playlists">☷ <span><b>Seri Oynatma Listeleri</b><small>{playlists.rows.length || series.rows.length || 0} liste</small></span></a>
         </section>
       </section>
 
@@ -213,36 +217,6 @@ function SimplePage({ title, icon, text }) { return <Layout><PageHero icon={icon
 
 function AuthPage({ mode }) {
   const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [message, setMessage] = useState(''); const [loading, setLoading] = useState(false);
-  async function syncCurrentPlaylistOnly() {
-    const slug = slugify(form.slug || form.title);
-    if (!form.playlist_url && !form.playlist_id) return setMsg('YouTube playlist çekmek için Playlist URL veya Playlist ID yazmalısın.');
-    if (!slug || !form.title) return setMsg('Önce oyun adını yazmalısın.');
-    setAutoLoading(true);
-    setMsg('YouTube oynatma listesinden bölümler ve thumbnail görselleri çekiliyor...');
-    try {
-      const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
-      const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
-      const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-      const payload = {
-        ...form,
-        slug,
-        category_slug: categorySlug,
-        channel_slug: channelSlug,
-        series_slug: seriesSlug,
-        category_title: form.category_title || 'Arşiv',
-        channel_title: form.channel_title || 'Hayatımız Oyun',
-        series_title: form.series_title || form.title
-      };
-      const yt = await syncPlaylistEpisodes(payload);
-      setMsg(yt.error ? `YouTube uyarısı: ${yt.error}` : `Başarı: ${yt.saved} bölüm ve thumbnail YouTube playlistten çekildi.`);
-      load();
-    } catch (error) {
-      setMsg(error.message || 'YouTube playlist çekme hatası.');
-    } finally {
-      setAutoLoading(false);
-    }
-  }
-
   async function submit(e) {
     e.preventDefault();
     setLoading(true);
@@ -298,11 +272,12 @@ function AdminQuickManager({ session }) {
   const [loading, setLoading] = useState(false);
   const [autoLoading, setAutoLoading] = useState(false);
 
-  async function load() {
+  async function load(quiet = false) {
     setLoading(true);
     const r = await listTable('public_games', session);
     setRows(r.data || []);
-    setMsg(r.error || `Başarı: ${r.data?.length || 0} oyun yüklendi.`);
+    if (r.error) setMsg(r.error);
+    else if (!quiet && !msg) setMsg('');
     setLoading(false);
   }
   useEffect(() => { load(); }, []);
@@ -314,33 +289,13 @@ function AdminQuickManager({ session }) {
   }
   function extractPlaylistId(value) {
     const text = String(value || '').trim();
-    if (!text) return '';
-    try {
-      const url = new URL(text);
-      const list = url.searchParams.get('list');
-      if (list) return list.trim();
-    } catch {}
-    const match = text.match(/[?&]list=([^&#]+)/) || text.match(/playlist\?list=([^&#]+)/) || text.match(/^(PL|UU|OLAK|RD)[A-Za-z0-9_-]+$/);
-    return match ? decodeURIComponent(match[1] || match[0]).trim() : text.replace(/^list=/, '').trim();
+    const match = text.match(/[?&]list=([^&]+)/) || text.match(/playlist\?list=([^&]+)/);
+    return match ? decodeURIComponent(match[1]) : text;
   }
   function toggleTag(tag) {
     const current = String(form.tags || '').split(',').map(x => x.trim()).filter(Boolean);
     const next = current.includes(tag) ? current.filter(x => x !== tag) : [...current, tag];
     set('tags', next.join(', '));
-  }
-  function normalizeListText(value) {
-    if (Array.isArray(value)) return value.map(x => String(x || '').trim()).filter(Boolean).join(', ');
-    return String(value || '').split(',').map(x => x.trim()).filter(Boolean).join(', ');
-  }
-  function safeGamePayload(row) {
-    return {
-      ...row,
-      genres: normalizeListText(row.genres),
-      tags: normalizeListText(row.tags),
-      metacritic: row.metacritic ? String(row.metacritic) : '',
-      rating: row.rating ? String(row.rating) : '',
-      release_date: row.release_date || null
-    };
   }
   async function autoFillRawg() {
     const query = form.title.trim();
@@ -357,15 +312,18 @@ function AdminQuickManager({ session }) {
       const primaryGenre = item.genres_tr?.[0] || item.genres?.[0]?.name || 'Aksiyon';
       const allGenres = (item.genres_tr || item.genres?.map(g => g.name) || []).join(', ');
       const steamAppId = item.steam_appid || '';
-      const cover = item.cover_url || item.steam_cover || item.background_image || form.cover_url;
-      const banner = item.background_image_additional || item.steam_banner || item.background_image || form.banner_url || cover;
-      const logo = item.logo_url || item.steam_logo || item.steam_header || form.logo_url || cover;
+      const steamHeader = steamAppId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/header.jpg` : '';
+      const steamCapsule = steamAppId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/library_600x900_2x.jpg` : '';
+      const steamHero = steamAppId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/library_hero.jpg` : '';
+      const cover = steamCapsule || item.background_image || item.cover_url || form.cover_url;
+      const banner = steamHero || item.background_image_additional || item.background_image || form.banner_url;
+      const logo = steamHeader || item.background_image || form.logo_url;
       setForm(prev => ({
         ...prev,
         title: gameTitle,
         slug: prev.slug || gameSlug,
         description: item.story_tr || item.description_tr || item.description_raw || prev.description,
-        release_date: item.released || item.release_date || prev.release_date,
+        release_date: item.released || prev.release_date,
         category_title: primaryGenre,
         category_slug: slugify(primaryGenre),
         channel_title: prev.channel_title || 'Hayatımız Oyun',
@@ -380,7 +338,7 @@ function AdminQuickManager({ session }) {
         metacritic: String(item.metacritic || item.rating_top || ''),
         rating: String(item.rating || ''),
         genres: allGenres,
-        media_note: steamAppId ? `Kapaklar Steam/SteamDB AppID üzerinden otomatik dolduruldu. Steam AppID: ${steamAppId}. Tarih kaynağı: ${item.release_date_source || 'RAWG/Steam'}` : `Kapaklar RAWG üzerinden otomatik dolduruldu. Tarih kaynağı: ${item.release_date_source || 'RAWG'}`
+        media_note: steamAppId ? `Kapaklar Steam CDN üzerinden otomatik dolduruldu. Steam AppID: ${steamAppId}` : 'Kapaklar RAWG üzerinden otomatik dolduruldu.'
       }));
       setMsg('Başarı: oyun bilgileri, türler, hikaye, kapak/banner/logo ve seri alanları otomatik dolduruldu. Kaydettiğinde kategori/kanal/seri/bölüm bağlantıları da kurulacak.');
     } catch (error) { setMsg(error.message || 'Otomatik çekme başarısız.'); }
@@ -389,21 +347,25 @@ function AdminQuickManager({ session }) {
   async function syncPlaylistEpisodes(gamePayload) {
     const playlistId = gamePayload.playlist_id || extractPlaylistId(gamePayload.playlist_url);
     if (!playlistId) return { saved: 0, error: '' };
-    const response = await fetch(`/api/youtube-playlist?playlistId=${encodeURIComponent(playlistId)}`);
-    const json = await response.json();
-    if (!response.ok) return { saved: 0, error: json?.error || 'YouTube API hatası.' };
-    if (!Array.isArray(json.items) || json.items.length === 0) return { saved: 0, error: 'Playlist bulundu ama bölüm gelmedi. Playlist herkese açık mı ve YOUTUBE_API_KEY doğru mu kontrol et.' };
+    const response = await fetch(`/api/youtube-playlist?playlistId=${encodeURIComponent(playlistId)}&playlistUrl=${encodeURIComponent(gamePayload.playlist_url || '')}`);
+    const json = await response.json().catch(() => ({}));
+    if (!response.ok) return { saved: 0, error: json?.error || 'YouTube API hatası. Vercel içinde YOUTUBE_API_KEY ve YouTube Data API v3 açık olmalı.' };
+    if (!Array.isArray(json.items) || json.items.length === 0) return { saved: 0, error: 'Playlist bulundu ama bölüm gelmedi. Playlist herkese açık mı, URL doğru mu ve YOUTUBE_API_KEY aktif mi kontrol et.' };
+
     let saved = 0;
+    const errors = [];
     for (const item of json.items || []) {
+      const episodeSlug = `${gamePayload.slug}-${item.position || saved + 1}-${item.youtube_video_id}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
       const payload = {
-        slug: `${gamePayload.slug}-${item.position}-${item.youtube_video_id}`.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
-        title: item.title,
+        slug: episodeSlug,
+        title: item.title || `Bölüm ${item.position || saved + 1}`,
         description: item.description || '',
         youtube_url: item.youtube_url,
         youtube_video_id: item.youtube_video_id,
         thumbnail_url: item.thumbnail_url,
-        episode_number: item.position,
-        sort_order: item.position,
+        episode_number: Number(item.position || saved + 1),
+        episode_no: Number(item.position || saved + 1),
+        sort_order: Number(item.position || saved + 1),
         game_slug: gamePayload.slug,
         game_title: gamePayload.title,
         series_slug: gamePayload.series_slug,
@@ -412,87 +374,69 @@ function AdminQuickManager({ session }) {
         published_at: item.published_at,
         is_public: true
       };
-      const savedRow = await upsertRow('game_episodes', payload, session, 'youtube_video_id');
-      const publicPayload = {
-        slug: payload.slug,
-        title: payload.title,
-        description: payload.description,
-        youtube_url: payload.youtube_url,
-        youtube_video_id: payload.youtube_video_id,
-        thumbnail_url: payload.thumbnail_url,
-        episode_no: payload.episode_number,
-        episode_number: payload.episode_number,
-        sort_order: payload.sort_order,
-        game_slug: payload.game_slug,
-        game_title: payload.game_title,
-        series_slug: payload.series_slug,
-        series_title: payload.series_title,
-        status: payload.status,
-        published_at: payload.published_at,
-        is_public: true
-      };
-      await upsertRow('public_episodes', publicPayload, session, 'youtube_video_id');
-      if (!savedRow.error) saved += 1;
+      const gameEpisode = await upsertRow('game_episodes', payload, session, 'youtube_video_id');
+      const publicEpisode = await upsertRow('public_episodes', payload, session, 'youtube_video_id');
+      if (!gameEpisode.error || !publicEpisode.error) saved += 1;
+      if (gameEpisode.error && publicEpisode.error) errors.push(`${payload.title}: ${publicEpisode.error || gameEpisode.error}`);
     }
+
+    const countPayload = { episode_count: saved, episodes: saved };
     await upsertRow('youtube_playlists', {
       slug: gamePayload.playlist_id || playlistId,
       title: `${gamePayload.title} Oynatma Listesi`,
       playlist_id: playlistId,
-      playlist_url: gamePayload.playlist_url,
+      playlist_url: gamePayload.playlist_url || `https://www.youtube.com/playlist?list=${playlistId}`,
       game_slug: gamePayload.slug,
       game_title: gamePayload.title,
       series_slug: gamePayload.series_slug,
       series_title: gamePayload.series_title,
       channel_slug: gamePayload.channel_slug,
       channel_title: gamePayload.channel_title,
-      sync_status: 'Tamamlandı',
+      sync_status: saved ? 'Tamamlandı' : 'Boş',
+      last_sync_note: errors.length ? errors.slice(0, 3).join(' | ') : `${saved} bölüm ve thumbnail çekildi.`,
       episode_count: saved,
       cover_url: gamePayload.cover_url,
       is_public: true
     }, session, 'playlist_id');
-    return { saved, error: '' };
-  }
-  async function syncCurrentPlaylistOnly() {
-    const slug = slugify(form.slug || form.title);
-    if (!form.playlist_url && !form.playlist_id) return setMsg('YouTube playlist çekmek için Playlist URL veya Playlist ID yazmalısın.');
-    if (!slug || !form.title) return setMsg('Önce oyun adını yazmalısın.');
-    setAutoLoading(true);
-    setMsg('YouTube oynatma listesinden bölümler ve thumbnail görselleri çekiliyor...');
-    try {
-      const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
-      const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
-      const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-      const payload = {
-        ...form,
-        slug,
-        category_slug: categorySlug,
-        channel_slug: channelSlug,
-        series_slug: seriesSlug,
-        category_title: form.category_title || 'Arşiv',
-        channel_title: form.channel_title || 'Hayatımız Oyun',
-        series_title: form.series_title || form.title
-      };
-      const yt = await syncPlaylistEpisodes(payload);
-      setMsg(yt.error ? `YouTube uyarısı: ${yt.error}` : `Başarı: ${yt.saved} bölüm ve thumbnail YouTube playlistten çekildi.`);
-      load();
-    } catch (error) {
-      setMsg(error.message || 'YouTube playlist çekme hatası.');
-    } finally {
-      setAutoLoading(false);
-    }
-  }
 
+    await upsertRow('public_series', {
+      slug: gamePayload.series_slug,
+      title: gamePayload.series_title,
+      description: gamePayload.description || `${gamePayload.series_title} serisi.`,
+      category_slug: gamePayload.category_slug,
+      category_title: gamePayload.category_title,
+      channel_slug: gamePayload.channel_slug,
+      channel_title: gamePayload.channel_title,
+      cover_url: gamePayload.cover_url,
+      banner_url: gamePayload.banner_url,
+      logo_url: gamePayload.logo_url,
+      status: gamePayload.status,
+      sort_order: Number(gamePayload.sort_order) || 100,
+      is_public: true,
+      game_count: 1,
+      ...countPayload
+    }, session, 'slug');
+
+    await upsertRow('public_games', {
+      ...gamePayload,
+      playlist_id: playlistId,
+      playlist_url: gamePayload.playlist_url || `https://www.youtube.com/playlist?list=${playlistId}`,
+      ...countPayload
+    }, session, 'slug');
+
+    return { saved, error: errors.length ? errors.slice(0, 2).join(' | ') : '' };
+  }
   async function submit(e) {
     e.preventDefault();
     const slug = slugify(form.slug || form.title);
     const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
     const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
     const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-    const payload = safeGamePayload({
+    const payload = {
       ...form, slug, category_slug: categorySlug, channel_slug: channelSlug, series_slug: seriesSlug,
       category_title: form.category_title || 'Arşiv', channel_title: form.channel_title || 'Hayatımız Oyun', series_title: form.series_title || form.title,
       sort_order: Number(form.sort_order) || 100, release_date: form.release_date || null, is_public: Boolean(form.is_public)
-    });
+    };
     const r = edit ? await updateRow('public_games', edit, payload, session) : await createRow('public_games', payload, session);
     if (r.error) return setMsg(r.error);
     await upsertRow('public_categories', { slug: categorySlug, title: payload.category_title, description: `${payload.category_title} kategorisindeki oyunlar.`, is_public: true, sort_order: payload.sort_order }, session, 'slug');
@@ -500,7 +444,7 @@ function AdminQuickManager({ session }) {
     await upsertRow('public_series', { slug: seriesSlug, title: payload.series_title, description: payload.description, category_slug: categorySlug, category_title: payload.category_title, channel_slug: channelSlug, channel_title: payload.channel_title, cover_url: payload.cover_url, banner_url: payload.banner_url, logo_url: payload.logo_url, status: payload.status, sort_order: payload.sort_order, is_public: true }, session, 'slug');
     const yt = await syncPlaylistEpisodes(payload);
     setMsg(edit ? `Başarı: oyun güncellendi. Seri/kategori/kanal bağlantıları korundu. ${yt.saved ? yt.saved + ' YouTube bölümü çekildi.' : ''}${yt.error ? ' YouTube uyarısı: ' + yt.error : ''}` : `Başarı: oyun eklendi. Seri/kategori/kanal otomatik oluşturuldu. ${yt.saved ? yt.saved + ' YouTube bölümü çekildi.' : ''}${yt.error ? ' YouTube uyarısı: ' + yt.error : ''}`);
-    setEdit(null); setForm(empty); load();
+    setEdit(null); setForm(empty); load(true);
   }
   async function del(row) {
     if (!confirm(`${row.title} silinsin mi? Seri/bölüm kayıtları silinmez.`)) return;
@@ -524,7 +468,6 @@ function AdminQuickManager({ session }) {
     <label>Etiketler<input value={form.tags} onChange={e => set('tags', e.target.value)} placeholder="Türkçe Altyazılı, Coop" /></label>
     <div className="form-two-col"><label>RAWG ID<input value={form.rawg_id} onChange={e => set('rawg_id', e.target.value)} /></label><label>Steam AppID<input value={form.steam_appid} onChange={e => set('steam_appid', e.target.value)} /></label></div>
     <label>YouTube Playlist URL<input value={form.playlist_url} onChange={e => set('playlist_url', e.target.value)} placeholder="https://www.youtube.com/playlist?list=..." /></label>
-    <div className="form-actions-row"><button type="button" className="ghost-btn" disabled={autoLoading} onClick={syncCurrentPlaylistOnly}>▶️ YouTube Bölümlerini Şimdi Çek</button><span className="field-note">Playlist URL/ID girilirse oyun kaydında da otomatik bölüm + thumbnail çekilir.</span></div>
     <label>Kapak URL<input value={form.cover_url} onChange={e => set('cover_url', e.target.value)} placeholder="https://..." /></label>
     <label>Banner URL<input value={form.banner_url} onChange={e => set('banner_url', e.target.value)} placeholder="https://..." /></label>
     <label>Logo URL<input value={form.logo_url} onChange={e => set('logo_url', e.target.value)} placeholder="https://..." /></label>
@@ -536,7 +479,7 @@ function AdminQuickManager({ session }) {
     </div>
     <div className="form-two-col"><label>Seri/Oyun Sırası<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
     <button className="primary-btn">{edit ? 'Oyunu Güncelle' : 'Oyunu Ekle ve Her Şeyi Otomatik Kur'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
-    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori/Seri</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}<small>{r.series_title || 'Seri yok'}</small></td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, genres: normalizeListText(r.genres), tags: normalizeListText(r.tags), release_date: r.release_date || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
+    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori/Seri</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}<small>{r.series_title || 'Seri yok'}</small></td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
 }
 
 
@@ -569,36 +512,6 @@ function AdminSeriesPage() {
   useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
-
-  async function syncCurrentPlaylistOnly() {
-    const slug = slugify(form.slug || form.title);
-    if (!form.playlist_url && !form.playlist_id) return setMsg('YouTube playlist çekmek için Playlist URL veya Playlist ID yazmalısın.');
-    if (!slug || !form.title) return setMsg('Önce oyun adını yazmalısın.');
-    setAutoLoading(true);
-    setMsg('YouTube oynatma listesinden bölümler ve thumbnail görselleri çekiliyor...');
-    try {
-      const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
-      const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
-      const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-      const payload = {
-        ...form,
-        slug,
-        category_slug: categorySlug,
-        channel_slug: channelSlug,
-        series_slug: seriesSlug,
-        category_title: form.category_title || 'Arşiv',
-        channel_title: form.channel_title || 'Hayatımız Oyun',
-        series_title: form.series_title || form.title
-      };
-      const yt = await syncPlaylistEpisodes(payload);
-      setMsg(yt.error ? `YouTube uyarısı: ${yt.error}` : `Başarı: ${yt.saved} bölüm ve thumbnail YouTube playlistten çekildi.`);
-      load();
-    } catch (error) {
-      setMsg(error.message || 'YouTube playlist çekme hatası.');
-    } finally {
-      setAutoLoading(false);
-    }
-  }
 
   async function submit(e) {
     e.preventDefault();
@@ -681,36 +594,6 @@ function AdminEpisodesPage() {
     const game = games.find(g => g.slug === slug);
     setForm(x => ({ ...x, game_slug: slug, game_title: game?.title || '', series_slug: game?.series_slug || x.series_slug || '', series_title: game?.series_title || x.series_title || '' }));
   }
-  async function syncCurrentPlaylistOnly() {
-    const slug = slugify(form.slug || form.title);
-    if (!form.playlist_url && !form.playlist_id) return setMsg('YouTube playlist çekmek için Playlist URL veya Playlist ID yazmalısın.');
-    if (!slug || !form.title) return setMsg('Önce oyun adını yazmalısın.');
-    setAutoLoading(true);
-    setMsg('YouTube oynatma listesinden bölümler ve thumbnail görselleri çekiliyor...');
-    try {
-      const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
-      const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
-      const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-      const payload = {
-        ...form,
-        slug,
-        category_slug: categorySlug,
-        channel_slug: channelSlug,
-        series_slug: seriesSlug,
-        category_title: form.category_title || 'Arşiv',
-        channel_title: form.channel_title || 'Hayatımız Oyun',
-        series_title: form.series_title || form.title
-      };
-      const yt = await syncPlaylistEpisodes(payload);
-      setMsg(yt.error ? `YouTube uyarısı: ${yt.error}` : `Başarı: ${yt.saved} bölüm ve thumbnail YouTube playlistten çekildi.`);
-      load();
-    } catch (error) {
-      setMsg(error.message || 'YouTube playlist çekme hatası.');
-    } finally {
-      setAutoLoading(false);
-    }
-  }
-
   async function submit(e) {
     e.preventDefault();
     const payload = {
@@ -846,36 +729,6 @@ function AdminChannelsPage() {
   useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
-  async function syncCurrentPlaylistOnly() {
-    const slug = slugify(form.slug || form.title);
-    if (!form.playlist_url && !form.playlist_id) return setMsg('YouTube playlist çekmek için Playlist URL veya Playlist ID yazmalısın.');
-    if (!slug || !form.title) return setMsg('Önce oyun adını yazmalısın.');
-    setAutoLoading(true);
-    setMsg('YouTube oynatma listesinden bölümler ve thumbnail görselleri çekiliyor...');
-    try {
-      const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
-      const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
-      const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-      const payload = {
-        ...form,
-        slug,
-        category_slug: categorySlug,
-        channel_slug: channelSlug,
-        series_slug: seriesSlug,
-        category_title: form.category_title || 'Arşiv',
-        channel_title: form.channel_title || 'Hayatımız Oyun',
-        series_title: form.series_title || form.title
-      };
-      const yt = await syncPlaylistEpisodes(payload);
-      setMsg(yt.error ? `YouTube uyarısı: ${yt.error}` : `Başarı: ${yt.saved} bölüm ve thumbnail YouTube playlistten çekildi.`);
-      load();
-    } catch (error) {
-      setMsg(error.message || 'YouTube playlist çekme hatası.');
-    } finally {
-      setAutoLoading(false);
-    }
-  }
-
   async function submit(e) {
     e.preventDefault();
     const payload = { ...form, slug: makeSlug(form.slug || form.title), sort_order: Number(form.sort_order) || 100 };
@@ -958,36 +811,6 @@ function AdminCalendarPage() {
   function pickGame(slug) { const g = games.find(x => x.slug === slug); setForm(x => ({ ...x, game_slug: slug, game_title: g?.title || '' })); }
   function pickSeries(slug) { const sr = seriesRows.find(x => x.slug === slug); setForm(x => ({ ...x, series_slug: slug, series_title: sr?.title || '' })); }
   function pickEpisode(id) { const ep = episodes.find(x => x.id === id); setForm(x => ({ ...x, episode_id: id, episode_title: ep?.title || '' })); }
-  async function syncCurrentPlaylistOnly() {
-    const slug = slugify(form.slug || form.title);
-    if (!form.playlist_url && !form.playlist_id) return setMsg('YouTube playlist çekmek için Playlist URL veya Playlist ID yazmalısın.');
-    if (!slug || !form.title) return setMsg('Önce oyun adını yazmalısın.');
-    setAutoLoading(true);
-    setMsg('YouTube oynatma listesinden bölümler ve thumbnail görselleri çekiliyor...');
-    try {
-      const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
-      const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
-      const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-      const payload = {
-        ...form,
-        slug,
-        category_slug: categorySlug,
-        channel_slug: channelSlug,
-        series_slug: seriesSlug,
-        category_title: form.category_title || 'Arşiv',
-        channel_title: form.channel_title || 'Hayatımız Oyun',
-        series_title: form.series_title || form.title
-      };
-      const yt = await syncPlaylistEpisodes(payload);
-      setMsg(yt.error ? `YouTube uyarısı: ${yt.error}` : `Başarı: ${yt.saved} bölüm ve thumbnail YouTube playlistten çekildi.`);
-      load();
-    } catch (error) {
-      setMsg(error.message || 'YouTube playlist çekme hatası.');
-    } finally {
-      setAutoLoading(false);
-    }
-  }
-
   async function submit(e) {
     e.preventDefault();
     const payload = { ...form, sort_order: Number(form.sort_order) || 100 };
@@ -1325,58 +1148,16 @@ function AdminYouTubePlaylistsPage() {
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
   function extractPlaylistId(value) {
     const text = String(value || '').trim();
-    if (!text) return '';
-    try {
-      const url = new URL(text);
-      const list = url.searchParams.get('list');
-      if (list) return list.trim();
-    } catch {}
-    const match = text.match(/[?&]list=([^&#]+)/) || text.match(/playlist\?list=([^&#]+)/) || text.match(/^(PL|UU|OLAK|RD)[A-Za-z0-9_-]+$/);
-    return match ? decodeURIComponent(match[1] || match[0]).trim() : text.replace(/^list=/, '').trim();
+    const match = text.match(/[?&]list=([^&]+)/) || text.match(/playlist\?list=([^&]+)/);
+    return match ? decodeURIComponent(match[1]) : text;
   }
-  async function syncCurrentPlaylistOnly() {
-    const slug = slugify(form.slug || form.title);
-    if (!form.playlist_url && !form.playlist_id) return setMsg('YouTube playlist çekmek için Playlist URL veya Playlist ID yazmalısın.');
-    if (!slug || !form.title) return setMsg('Önce oyun adını yazmalısın.');
-    setAutoLoading(true);
-    setMsg('YouTube oynatma listesinden bölümler ve thumbnail görselleri çekiliyor...');
-    try {
-      const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
-      const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
-      const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-      const payload = {
-        ...form,
-        slug,
-        category_slug: categorySlug,
-        channel_slug: channelSlug,
-        series_slug: seriesSlug,
-        category_title: form.category_title || 'Arşiv',
-        channel_title: form.channel_title || 'Hayatımız Oyun',
-        series_title: form.series_title || form.title
-      };
-      const yt = await syncPlaylistEpisodes(payload);
-      setMsg(yt.error ? `YouTube uyarısı: ${yt.error}` : `Başarı: ${yt.saved} bölüm ve thumbnail YouTube playlistten çekildi.`);
-      load();
-    } catch (error) {
-      setMsg(error.message || 'YouTube playlist çekme hatası.');
-    } finally {
-      setAutoLoading(false);
-    }
-  }
-
   async function submit(e) {
     e.preventDefault();
     const playlistId = form.playlist_id || extractPlaylistId(form.playlist_url);
     const payload = { ...form, playlist_id: playlistId, slug: makeSlug(form.slug || form.title || playlistId), episode_count: Number(form.episode_count) || 0, sort_order: Number(form.sort_order) || 100 };
     const r = edit ? await updateRow('youtube_playlists', edit, payload, session) : await createRow('youtube_playlists', payload, session);
     if (r.error) return setMsg(r.error);
-    const savedPlaylist = { ...payload, id: edit || r.data?.id };
-    let syncMsg = '';
-    if (playlistId) {
-      await syncEpisodes(savedPlaylist);
-      syncMsg = ' Bölüm çekme işlemi başlatıldı.';
-    }
-    setMsg(edit ? `Başarı: playlist kaydı güncellendi.${syncMsg}` : `Başarı: playlist kaydı eklendi.${syncMsg}`);
+    setMsg(edit ? 'Başarı: playlist kaydı güncellendi.' : 'Başarı: playlist kaydı eklendi. Bölüm çekme sonraki sürümde aktif edilecek.');
     setEdit(null); setForm(empty); load();
   }
   async function syncEpisodes(row) {
@@ -1407,14 +1188,9 @@ function AdminYouTubePlaylistsPage() {
           published_at: item.published_at
         };
         const savedRow = await upsertRow('game_episodes', payload, session, 'youtube_video_id');
-        await upsertRow('public_episodes', {
-          ...payload,
-          episode_no: payload.episode_number,
-          is_public: true
-        }, session, 'youtube_video_id');
         if (!savedRow.error) saved += 1;
       }
-      if (row.id) await updateRow('youtube_playlists', row.id, { sync_status: 'Tamamlandı', episode_count: saved, last_sync_note: `${saved} bölüm çekildi.` }, session);
+      await updateRow('youtube_playlists', row.id, { sync_status: 'Tamamlandı', episode_count: saved, last_sync_note: `${saved} bölüm çekildi.` }, session);
       setMsg(`Başarı: ${saved} bölüm YouTube playlistten çekildi ve game_episodes tablosuna yazıldı.`);
       load();
     } catch (error) {
@@ -1434,7 +1210,7 @@ function AdminYouTubePlaylistsPage() {
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla YouTube playlist altyapısı açılamaz.</p></div></section></Layout>;
 
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔗 {VERSION} • RAWG Oyun Bilgisi Hazırlığı</div><h1>YouTube playlist kayıt merkezi hazır.</h1><p>Bu sürümde playlist ID/URL üzerinden YouTube API ile bölüm çekme altyapısı eklendi.</p></div><AdminNav />
-    <section className="status-grid"><article className="status-check-card"><strong>Yeni .env</strong><p>Gerekli: Vercel Environment Variables içinde YOUTUBE_API_KEY olmalı.</p></article><article className="status-check-card"><strong>Supabase SQL</strong><p>Gerekli. game_episodes ve public_episodes tablosuna YouTube video/thumbnail alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>Tablolar sıfırlanmaz; mevcut kullanıcı yetkileri ve içerikler korunur.</p></article></section>
+    <section className="status-grid"><article className="status-check-card"><strong>Yeni .env</strong><p>Gerekli: Vercel Environment Variables içine RAWG_API_KEY eklenir.</p></article><article className="status-check-card"><strong>Supabase SQL</strong><p>Gerekli. game_episodes tablosuna YouTube video alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>Tablolar sıfırlanmaz; mevcut kullanıcı yetkileri ve içerikler korunur.</p></article></section>
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Playlist Düzenle' : 'Playlist Ekle'}</h2>
       <div className="form-two-col"><label>Başlık<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
       <label>Playlist URL<input value={form.playlist_url} onChange={e => set('playlist_url', e.target.value)} placeholder="https://www.youtube.com/playlist?list=..." /></label>

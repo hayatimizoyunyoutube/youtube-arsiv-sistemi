@@ -3111,3 +3111,51 @@ textarea {
 .media-preview-grid img:not([src]) {
   display: none;
 }
+
+/* FIX v1.3.2 - kompakt kart ve bölüm/playlist görünümü toparlama */
+.compact-public-card {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr);
+  min-height: 170px;
+  overflow: hidden;
+  border-radius: 18px;
+}
+.compact-public-card .series-image-wrap {
+  height: 100%;
+  min-height: 170px;
+}
+.compact-public-card .series-image-wrap img {
+  height: 100%;
+  object-fit: cover;
+}
+.compact-public-card .series-content {
+  padding: 16px;
+  align-content: start;
+}
+.compact-public-card .series-content h3 {
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+.compact-public-card .series-content p {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 0;
+  line-height: 1.55;
+  color: #cbd5e1;
+  text-decoration: none;
+}
+.compact-public-card .card-info-row {
+  margin-top: 12px;
+}
+.episode-card img,
+.poster-card img,
+.series-card img,
+.media-preview-grid img {
+  background: linear-gradient(135deg, rgba(37,99,235,.25), rgba(236,72,153,.18));
+}
+@media (max-width: 720px) {
+  .compact-public-card { grid-template-columns: 1fr; }
+  .compact-public-card .series-image-wrap { min-height: 210px; }
+}
