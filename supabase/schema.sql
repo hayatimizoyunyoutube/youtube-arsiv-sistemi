@@ -1009,6 +1009,13 @@ alter table public.public_episodes add column if not exists sort_order integer d
 create unique index if not exists public_episodes_youtube_video_id_unique_fix_v132b
 on public.public_episodes(youtube_video_id) where youtube_video_id is not null and youtube_video_id <> '';
 
+
+-- FIX: site_status_logs tablo kolon uyumluluğu
+-- Eski kurulumlarda 'detail' kolonu var, bazı fixlerde yanlışlıkla 'message' kullanılmıştı.
+-- Veri/yetki sıfırlamaz; sadece eksik kolon varsa ekler.
+alter table public.site_status_logs add column if not exists detail text;
+alter table public.site_status_logs add column if not exists message text;
+
 insert into public.site_status_logs(version, status, message)
 values ('v1.3.2-fix', 'success', 'Oyun tarih/kapak otomatik çekme ve YouTube playlist bölüm/thumbnail çekme düzeltildi. public_episodes alanları eklendi. Veri/yetki sıfırlanmadı.')
 on conflict do nothing;
