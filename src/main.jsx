@@ -20,6 +20,7 @@ const topMenu = [
 ];
 
 const adminButtons = [
+  ['🏠 Ana Sayfa', '/'],
   ['🛡️ Panel', '/admin'],
   ['➕ Oyun Ekle', '/admin/games/new'],
   ['🎮 Oyunlar', '/admin/games'],
@@ -102,6 +103,10 @@ function DataCard({ item, type = 'series' }) {
 }
 
 function HomePage() {
+  const session = getSession();
+  const [profile, setProfile] = useState(null);
+  useEffect(() => { if (session?.access_token) getCurrentAppUser(session).then(r => setProfile(r.data)); }, [session?.access_token]);
+  const canSeeAdmin = isAdminRole(profile?.role);
   const deployInfo = useDeployInfo();
   const games = useTable('public_games');
   const series = useTable('public_series');
@@ -130,6 +135,7 @@ function HomePage() {
         <a className="rail-link" href="/categories">📁 Kategoriler</a>
         <a className="rail-link" href="/calendar">🗓️ Yayın Akışı</a>
         <a className="rail-link" href="/profile">👤 Profil</a>
+        {canSeeAdmin ? <a className="rail-link admin-rail-link" href="/admin">🛡️ Yönetim Paneli</a> : null}
         <a className="rail-link" href="/guide">📘 Site Rehberi</a>
         <a className="rail-link" href="/status">🛠️ Site Durumu</a>
       </aside>
@@ -137,7 +143,7 @@ function HomePage() {
       <section className="dashboard-main">
         <div className="dashboard-topbar">
           <div className="search-pill">🔎 Ara... <kbd>Ctrl K</kbd></div>
-          <div className="top-actions"><span>🔔</span><span>🌙</span><b>{VERSION}</b></div>
+          <div className="top-actions"><a className="top-action-link" href="/profile">👤 Profil</a>{canSeeAdmin ? <a className="top-action-link admin-top-link" href="/admin">🛡️ Panel</a> : null}<span>🔔</span><span>🌙</span><b>{VERSION}</b></div>
         </div>
 
         <section className="cinema-hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,8,18,.88), rgba(5,8,18,.45), rgba(5,8,18,.88)), url(${featured.banner_url || featured.cover_url || PLACEHOLDER})` }}>
@@ -147,7 +153,7 @@ function HomePage() {
             <h1>{featured.title || 'Hayatımız Oyun Arşivi'}</h1>
             <h2>{featured.status || 'Tam Çözüm Arşivi'}</h2>
             <p>{featured.description || 'Tüm bölümler, oynatma listeleri ve seriler tek ekranda düzenli şekilde gösterilir.'}</p>
-            <div className="hero-actions"><a className="primary-btn" href="/series">Bölümleri Görüntüle</a><a className="ghost-btn" href="/admin">Yönetim Paneli</a></div>
+            <div className="hero-actions"><a className="primary-btn" href="/series">Bölümleri Görüntüle</a><a className="ghost-btn" href="/profile">Profil</a>{canSeeAdmin ? <a className="ghost-btn" href="/admin">Yönetim Paneli</a> : null}</div>
           </div>
           <button className="hero-arrow right">›</button>
           <div className="hero-dots"><span></span><span></span><span></span><span></span><span></span></div>
