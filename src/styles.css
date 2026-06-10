@@ -3069,3 +3069,22 @@ textarea {
   .dashboard-topbar { position: relative; display: flex; height: auto; }
   .playlist-bottom-row { grid-template-columns: 1fr; }
 }
+
+/* FIX v1.3.2 RAWG + YouTube */
+.rawg-inline-panel {
+  border: 1px solid rgba(66, 153, 225, .35);
+  background: linear-gradient(135deg, rgba(30,64,175,.18), rgba(15,23,42,.7));
+  border-radius: 18px;
+  padding: 16px;
+  margin: 14px 0 18px;
+}
+.rawg-inline-panel h3 { margin: 0 0 6px; }
+.rawg-inline-panel p { margin: 0 0 12px; color: #b9c5d8; }
+.rawg-search-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.rawg-search-row input { width: 100%; }
+.rawg-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
+.rawg-result-card { text-align: left; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #fff; border-radius: 14px; padding: 8px; cursor: pointer; display: grid; gap: 6px; }
+.rawg-result-card:hover { border-color: rgba(59,130,246,.8); transform: translateY(-1px); }
+.rawg-result-card img, .rawg-no-image { width: 100%; height: 76px; border-radius: 10px; object-fit: cover; background: rgba(255,255,255,.08); display: grid; place-items: center; color: #94a3b8; font-size: 12px; }
+.rawg-result-card strong { font-size: 13px; line-height: 1.25; }
+.rawg-result-card small { color: #9fb0c8; font-size: 11px; }

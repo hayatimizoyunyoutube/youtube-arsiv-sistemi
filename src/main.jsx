@@ -268,6 +268,11 @@ function AdminQuickManager({ session }) {
     banner_url: '',
     logo_url: '',
     media_note: '',
+    rawg_id: '',
+    metacritic: '',
+    genres: '',
+    website: '',
+    rawg_background_url: '',
     sort_order: 100,
     is_public: true
   };
@@ -276,6 +281,48 @@ function AdminQuickManager({ session }) {
   const [edit, setEdit] = useState(null);
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [rawgQuery, setRawgQuery] = useState('');
+  const [rawgResults, setRawgResults] = useState([]);
+  const [rawgLoading, setRawgLoading] = useState(false);
+
+  async function searchRawgInline() {
+    const query = (rawgQuery || form.title || '').trim();
+    if (!query) return setMsg('RAWG araması için önce oyun adı yaz.');
+    setRawgLoading(true);
+    setMsg('RAWG üzerinden oyun bilgisi aranıyor...');
+    setRawgResults([]);
+    try {
+      const res = await fetch(`/api/rawg-search?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'RAWG araması başarısız oldu.');
+      setRawgResults(data.results || []);
+      setMsg(`Başarı: RAWG üzerinden ${(data.results || []).length} sonuç bulundu.`);
+    } catch (error) {
+      setMsg(error.message || 'RAWG araması yapılamadı.');
+    } finally {
+      setRawgLoading(false);
+    }
+  }
+
+  function applyRawgGame(item) {
+    const genres = (item.genres || []).map(g => g.name).filter(Boolean);
+    const slug = item.slug || String(item.name || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, '');
+    setForm(x => ({
+      ...x,
+      title: item.name || x.title,
+      slug: x.slug || slug,
+      release_date: item.released || x.release_date,
+      cover_url: item.background_image || x.cover_url,
+      banner_url: item.background_image || x.banner_url,
+      logo_url: x.logo_url || item.background_image || '',
+      rawg_id: item.id || x.rawg_id || '',
+      metacritic: item.metacritic || x.metacritic || '',
+      genres: genres.join(', '),
+      rawg_background_url: item.background_image || x.rawg_background_url || '',
+      media_note: `RAWG ID: ${item.id || '—'}${item.metacritic ? ' • Metacritic: ' + item.metacritic : ''}${genres.length ? ' • Türler: ' + genres.join(', ') : ''}`
+    }));
+    setMsg(`Başarı: ${item.name} bilgileri forma aktarıldı.`);
+  }
 
   async function load() {
     setLoading(true);
@@ -290,7 +337,15 @@ function AdminQuickManager({ session }) {
   async function submit(e) {
     e.preventDefault();
     const slug = (form.slug || form.title).trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, '');
-    const payload = { ...form, slug, sort_order: Number(form.sort_order) || 100, release_date: form.release_date || null };
+    const payload = {
+      ...form,
+      slug,
+      sort_order: Number(form.sort_order) || 100,
+      release_date: form.release_date || null,
+      rawg_id: form.rawg_id ? Number(form.rawg_id) : null,
+      metacritic: form.metacritic ? Number(form.metacritic) : null,
+      genres: typeof form.genres === 'string' ? form.genres.split(',').map(x => x.trim()).filter(Boolean) : form.genres
+    };
     const r = edit ? await updateRow('public_games', edit, payload, session) : await createRow('public_games', payload, session);
     if (r.error) return setMsg(r.error);
     setMsg(edit ? 'Başarı: oyun güncellendi.' : 'Başarı: oyun eklendi.');
@@ -305,6 +360,7 @@ function AdminQuickManager({ session }) {
   }
 
   return <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>🎮 Oyun Yönetimi</h2><p>Oyun yönetimi aktif. Yayın tarihlerini Takvim menüsünden planlayabilirsin.</p>
+    <div className="rawg-inline-panel"><h3>🧩 RAWG'dan Çek</h3><p>Oyun adını yazıp RAWG'dan kapak, banner, çıkış tarihi, tür ve puan bilgisini forma aktar.</p><div className="rawg-search-row"><input value={rawgQuery} onChange={e => setRawgQuery(e.target.value)} placeholder="Örn. 007 First Light" /><button type="button" className="ghost-btn" onClick={searchRawgInline} disabled={rawgLoading}>{rawgLoading ? 'Aranıyor...' : "🎮 RAWG'dan Çek"}</button></div>{rawgResults.length ? <div className="rawg-result-grid">{rawgResults.map(item => <button type="button" className="rawg-result-card" key={item.id} onClick={() => applyRawgGame(item)}>{item.background_image ? <img src={item.background_image} alt={item.name} /> : <span className="rawg-no-image">Görsel yok</span>}<strong>{item.name}</strong><small>{item.released || 'Tarih yok'} {item.metacritic ? `• MC ${item.metacritic}` : ''}</small></button>)}</div> : null}</div>
     <div className="form-two-col"><label>Oyun Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
     <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
     <div className="form-two-col"><label>Kategori Başlığı<input value={form.category_title} onChange={e => set('category_title', e.target.value)} placeholder="Korku" /></label><label>Kategori Slug<input value={form.category_slug} onChange={e => set('category_slug', e.target.value)} placeholder="korku" /></label></div>
@@ -314,6 +370,10 @@ function AdminQuickManager({ session }) {
     <label>Kapak URL<input value={form.cover_url} onChange={e => set('cover_url', e.target.value)} placeholder="https://..." /></label>
     <label>Banner URL<input value={form.banner_url} onChange={e => set('banner_url', e.target.value)} placeholder="https://..." /></label>
     <label>Logo URL<input value={form.logo_url} onChange={e => set('logo_url', e.target.value)} placeholder="https://..." /></label>
+    <div className="form-two-col"><label>RAWG ID<input value={form.rawg_id || ''} onChange={e => set('rawg_id', e.target.value)} placeholder="RAWG ID" /></label><label>Metacritic<input value={form.metacritic || ''} onChange={e => set('metacritic', e.target.value)} placeholder="Puan" /></label></div>
+    <label>Türler<input value={form.genres || ''} onChange={e => set('genres', e.target.value)} placeholder="Aksiyon, Macera, Korku" /></label>
+    <label>RAWG Arka Plan URL<input value={form.rawg_background_url || ''} onChange={e => set('rawg_background_url', e.target.value)} placeholder="https://..." /></label>
+    <label>Web Sitesi<input value={form.website || ''} onChange={e => set('website', e.target.value)} placeholder="https://..." /></label>
     <label>Medya Notu<textarea rows="2" value={form.media_note} onChange={e => set('media_note', e.target.value)} placeholder="Kapak/banner hakkında kısa not" /></label>
     <div className="media-preview-grid">
       <article><strong>Kapak Önizleme</strong><img src={form.cover_url || PLACEHOLDER} alt="Kapak önizleme" /></article>
@@ -322,7 +382,7 @@ function AdminQuickManager({ session }) {
     </div>
     <div className="form-two-col"><label>Sıra<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
     <button className="primary-btn">{edit ? 'Oyunu Güncelle' : 'Oyunu Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
-    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}</td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
+    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}</td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '', genres: Array.isArray(r.genres) ? r.genres.join(', ') : (r.genres || '') }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
 }
 
 
@@ -1000,7 +1060,7 @@ function AdminYouTubePlaylistsPage() {
     const payload = { ...form, playlist_id: playlistId, slug: makeSlug(form.slug || form.title || playlistId), episode_count: Number(form.episode_count) || 0, sort_order: Number(form.sort_order) || 100 };
     const r = edit ? await updateRow('youtube_playlists', edit, payload, session) : await createRow('youtube_playlists', payload, session);
     if (r.error) return setMsg(r.error);
-    setMsg(edit ? 'Başarı: playlist kaydı güncellendi.' : 'Başarı: playlist kaydı eklendi. Bölüm çekme sonraki sürümde aktif edilecek.');
+    setMsg(edit ? 'Başarı: playlist kaydı güncellendi.' : "Başarı: playlist kaydı eklendi. Listeden 'Bölümleri Çek' butonuyla YouTube bölümleri alınabilir.");
     setEdit(null); setForm(empty); load();
   }
   async function syncEpisodes(row) {
@@ -1053,7 +1113,7 @@ function AdminYouTubePlaylistsPage() {
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla YouTube playlist altyapısı açılamaz.</p></div></section></Layout>;
 
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔗 {VERSION} • RAWG Oyun Bilgisi Hazırlığı</div><h1>YouTube playlist kayıt merkezi hazır.</h1><p>Bu sürümde playlist ID/URL üzerinden YouTube API ile bölüm çekme altyapısı eklendi.</p></div><AdminNav />
-    <section className="status-grid"><article className="status-check-card"><strong>Yeni .env</strong><p>Gerekli: Vercel Environment Variables içine RAWG_API_KEY eklenir.</p></article><article className="status-check-card"><strong>Supabase SQL</strong><p>Gerekli. game_episodes tablosuna YouTube video alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>Tablolar sıfırlanmaz; mevcut kullanıcı yetkileri ve içerikler korunur.</p></article></section>
+    <section className="status-grid"><article className="status-check-card"><strong>Yeni .env</strong><p>Gerekli: Vercel Environment Variables içinde YOUTUBE_API_KEY ve RAWG_API_KEY bulunmalı.</p></article><article className="status-check-card"><strong>Supabase SQL</strong><p>Gerekli. youtube_playlists ve game_episodes alanları korunarak güncellenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>Tablolar sıfırlanmaz; mevcut kullanıcı yetkileri ve içerikler korunur.</p></article></section>
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Playlist Düzenle' : 'Playlist Ekle'}</h2>
       <div className="form-two-col"><label>Başlık<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
       <label>Playlist URL<input value={form.playlist_url} onChange={e => set('playlist_url', e.target.value)} placeholder="https://www.youtube.com/playlist?list=..." /></label>
