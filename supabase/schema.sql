@@ -933,3 +933,46 @@ select
   'DROP TABLE/TRUNCATE yok; kullanıcı yetkileri ve mevcut içerikler sıfırlanmadı.' as veri_koruma,
   'Yeni .env gerekli: Vercel Environment Variables içine YOUTUBE_API_KEY eklenmeli.' as env_notu,
   now() as calisma_zamani;
+
+-- FIX v1.3.2 - Otomatik çekme toparlama
+-- Veri/yetki sıfırlamaz. DROP TABLE / TRUNCATE yoktur.
+
+alter table public.public_games add column if not exists rawg_id text default '';
+alter table public.public_games add column if not exists steam_appid text default '';
+alter table public.public_games add column if not exists metacritic text default '';
+alter table public.public_games add column if not exists rating text default '';
+alter table public.public_games add column if not exists genres text default '';
+alter table public.public_games add column if not exists tags text default '';
+alter table public.public_games add column if not exists playlist_url text default '';
+alter table public.public_games add column if not exists playlist_id text default '';
+alter table public.public_games add column if not exists media_note text default '';
+alter table public.public_series add column if not exists game_count integer default 0;
+alter table public.public_series add column if not exists episode_count integer default 0;
+alter table public.public_series add column if not exists logo_url text default '';
+alter table public.public_series add column if not exists sort_order integer default 100;
+alter table public.game_episodes add column if not exists thumbnail_url text default '';
+alter table public.game_episodes add column if not exists youtube_video_id text;
+alter table public.game_episodes add column if not exists episode_number integer default 0;
+
+create unique index if not exists public_games_slug_unique_fix_v132 on public.public_games(slug);
+create unique index if not exists public_series_slug_unique_fix_v132 on public.public_series(slug);
+create unique index if not exists public_categories_slug_unique_fix_v132 on public.public_categories(slug);
+create unique index if not exists public_channels_slug_unique_fix_v132 on public.public_channels(slug);
+create unique index if not exists youtube_playlists_playlist_id_unique_fix_v132 on public.youtube_playlists(playlist_id) where playlist_id is not null and playlist_id <> '';
+create unique index if not exists game_episodes_youtube_video_id_unique_fix_v132 on public.game_episodes(youtube_video_id) where youtube_video_id is not null and youtube_video_id <> '';
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.3.2-fix', 'success', 'Oyun Ekle merkezi otomasyon düzeltildi: RAWG/Steam otomatik doldurma, kategori/kanal/seri otomatik bağlama, YouTube playlistten bölüm/thumbnail çekme ve tag alanları eklendi. Veri/yetki sıfırlanmadı.')
+on conflict do nothing;
+
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com') and role is distinct from 'founder';
+
+select
+  'v1.3.2 otomatik çekme fix başarıyla çalıştı' as status,
+  'public_games: rawg_id, steam_appid, metacritic, rating, genres, tags, playlist_url, playlist_id, media_note alanları eklendi.' as oyun_tablosu,
+  'public_series/public_categories/public_channels slug bazlı otomatik bağlama için unique indexler eklendi.' as baglanti_tablolari,
+  'game_episodes/youtube_playlists için YouTube video ve playlist indexleri eklendi; thumbnail_url korunur.' as youtube_bolumleri,
+  'DROP TABLE/TRUNCATE yok; kullanıcı yetkileri ve mevcut veriler sıfırlanmadı.' as veri_koruma,
+  now() as calisma_zamani;

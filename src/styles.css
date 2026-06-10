@@ -3069,3 +3069,45 @@ textarea {
   .dashboard-topbar { position: relative; display: flex; height: auto; }
   .playlist-bottom-row { grid-template-columns: 1fr; }
 }
+
+/* FIX v1.3.2 otomatik çekme toparlama */
+.login-card select,
+.login-card select option {
+  background: #171821;
+  color: #f8fafc;
+}
+.full-btn {
+  width: 100%;
+  margin: 6px 0 14px;
+  justify-content: center;
+  text-align: center;
+}
+.field-note {
+  margin: -8px 0 12px;
+  color: #93a4bd;
+  font-size: 12px;
+}
+.tag-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+.tag-toggle {
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  color: #dbeafe;
+  border-radius: 999px;
+  padding: 9px 12px;
+  cursor: pointer;
+  font-weight: 800;
+}
+.tag-toggle.active {
+  background: linear-gradient(135deg,#ef4444,#ec4899);
+  color: white;
+  border-color: rgba(255,255,255,.35);
+}
+.media-preview-grid img[src=""],
+.media-preview-grid img:not([src]) {
+  display: none;
+}

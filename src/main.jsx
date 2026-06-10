@@ -251,31 +251,22 @@ function AdminPage() {
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>v1.3.2 ile RAWG oyun bilgisi altyapısı aktif edildi; SQL gerekli, mevcut veriler sıfırlanmaz.</p></div><AdminNav /><AdminDashboardOverview /><AdminQuickManager session={session} /></section></Layout>;
 }
 
+
 function AdminQuickManager({ session }) {
   const empty = {
-    slug: '',
-    title: '',
-    description: '',
-    status: 'Planlandı',
-    category_slug: '',
-    category_title: '',
-    channel_slug: '',
-    channel_title: '',
-    series_slug: '',
-    series_title: '',
-    release_date: '',
-    cover_url: '',
-    banner_url: '',
-    logo_url: '',
-    media_note: '',
-    sort_order: 100,
-    is_public: true
+    slug: '', title: '', description: '', status: 'Planlandı',
+    category_slug: '', category_title: '', channel_slug: 'hayatimiz-oyun', channel_title: 'Hayatımız Oyun',
+    series_slug: '', series_title: '', release_date: '', cover_url: '', banner_url: '', logo_url: '', media_note: '',
+    rawg_id: '', steam_appid: '', metacritic: '', rating: '', genres: '', tags: '', playlist_url: '', playlist_id: '',
+    sort_order: 100, is_public: true
   };
+  const tagOptions = ['Türkçe Altyazılı', 'Türkçe Dublajlı', 'Coop', 'DLC', '%100'];
   const [rows, setRows] = useState([]);
   const [form, setForm] = useState(empty);
   const [edit, setEdit] = useState(null);
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [autoLoading, setAutoLoading] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -286,43 +277,168 @@ function AdminQuickManager({ session }) {
   }
   useEffect(() => { load(); }, []);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
-
+  function slugify(value) {
+    return String(value || '').trim().toLowerCase()
+      .replaceAll('ı','i').replaceAll('ğ','g').replaceAll('ü','u').replaceAll('ş','s').replaceAll('ö','o').replaceAll('ç','c')
+      .replaceAll(' ', '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  }
+  function extractPlaylistId(value) {
+    const text = String(value || '').trim();
+    const match = text.match(/[?&]list=([^&]+)/) || text.match(/playlist\?list=([^&]+)/);
+    return match ? decodeURIComponent(match[1]) : text;
+  }
+  function toggleTag(tag) {
+    const current = String(form.tags || '').split(',').map(x => x.trim()).filter(Boolean);
+    const next = current.includes(tag) ? current.filter(x => x !== tag) : [...current, tag];
+    set('tags', next.join(', '));
+  }
+  async function autoFillRawg() {
+    const query = form.title.trim();
+    if (!query) return setMsg('Önce oyun adını yazmalısın. Örn: 007 First Light');
+    setAutoLoading(true); setMsg('RAWG + Steam bilgileri otomatik çekiliyor...');
+    try {
+      const response = await fetch('/api/rawg-search?query=' + encodeURIComponent(query));
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'RAWG/Steam otomatik çekme hatası.');
+      const item = data.best || data.results?.[0];
+      if (!item) throw new Error('Oyun bulunamadı. Oyun adını biraz daha açık yaz.');
+      const gameTitle = item.name || query;
+      const gameSlug = slugify(gameTitle);
+      const primaryGenre = item.genres_tr?.[0] || item.genres?.[0]?.name || 'Aksiyon';
+      const allGenres = (item.genres_tr || item.genres?.map(g => g.name) || []).join(', ');
+      const steamAppId = item.steam_appid || '';
+      const steamHeader = steamAppId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/header.jpg` : '';
+      const steamCapsule = steamAppId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/library_600x900_2x.jpg` : '';
+      const steamHero = steamAppId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppId}/library_hero.jpg` : '';
+      const cover = steamCapsule || item.background_image || item.cover_url || form.cover_url;
+      const banner = steamHero || item.background_image_additional || item.background_image || form.banner_url;
+      const logo = steamHeader || item.background_image || form.logo_url;
+      setForm(prev => ({
+        ...prev,
+        title: gameTitle,
+        slug: prev.slug || gameSlug,
+        description: item.story_tr || item.description_tr || item.description_raw || prev.description,
+        release_date: item.released || prev.release_date,
+        category_title: primaryGenre,
+        category_slug: slugify(primaryGenre),
+        channel_title: prev.channel_title || 'Hayatımız Oyun',
+        channel_slug: prev.channel_slug || 'hayatimiz-oyun',
+        series_title: item.series_title || gameTitle,
+        series_slug: slugify(item.series_title || gameTitle),
+        cover_url: cover,
+        banner_url: banner,
+        logo_url: logo,
+        rawg_id: String(item.id || ''),
+        steam_appid: String(steamAppId || ''),
+        metacritic: String(item.metacritic || item.rating_top || ''),
+        rating: String(item.rating || ''),
+        genres: allGenres,
+        media_note: steamAppId ? `Kapaklar Steam CDN üzerinden otomatik dolduruldu. Steam AppID: ${steamAppId}` : 'Kapaklar RAWG üzerinden otomatik dolduruldu.'
+      }));
+      setMsg('Başarı: oyun bilgileri, türler, hikaye, kapak/banner/logo ve seri alanları otomatik dolduruldu. Kaydettiğinde kategori/kanal/seri/bölüm bağlantıları da kurulacak.');
+    } catch (error) { setMsg(error.message || 'Otomatik çekme başarısız.'); }
+    finally { setAutoLoading(false); }
+  }
+  async function syncPlaylistEpisodes(gamePayload) {
+    const playlistId = gamePayload.playlist_id || extractPlaylistId(gamePayload.playlist_url);
+    if (!playlistId) return { saved: 0, error: '' };
+    const response = await fetch(`/api/youtube-playlist?playlistId=${encodeURIComponent(playlistId)}`);
+    const json = await response.json();
+    if (!response.ok) return { saved: 0, error: json?.error || 'YouTube API hatası.' };
+    let saved = 0;
+    for (const item of json.items || []) {
+      const payload = {
+        slug: `${gamePayload.slug}-${item.position}-${item.youtube_video_id}`.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+        title: item.title,
+        description: item.description || '',
+        youtube_url: item.youtube_url,
+        youtube_video_id: item.youtube_video_id,
+        thumbnail_url: item.thumbnail_url,
+        episode_number: item.position,
+        sort_order: item.position,
+        game_slug: gamePayload.slug,
+        game_title: gamePayload.title,
+        series_slug: gamePayload.series_slug,
+        series_title: gamePayload.series_title,
+        status: 'Yayında',
+        published_at: item.published_at,
+        is_public: true
+      };
+      const savedRow = await upsertRow('game_episodes', payload, session, 'youtube_video_id');
+      if (!savedRow.error) saved += 1;
+    }
+    await upsertRow('youtube_playlists', {
+      slug: gamePayload.playlist_id || playlistId,
+      title: `${gamePayload.title} Oynatma Listesi`,
+      playlist_id: playlistId,
+      playlist_url: gamePayload.playlist_url,
+      game_slug: gamePayload.slug,
+      game_title: gamePayload.title,
+      series_slug: gamePayload.series_slug,
+      series_title: gamePayload.series_title,
+      channel_slug: gamePayload.channel_slug,
+      channel_title: gamePayload.channel_title,
+      sync_status: 'Tamamlandı',
+      episode_count: saved,
+      cover_url: gamePayload.cover_url,
+      is_public: true
+    }, session, 'playlist_id');
+    return { saved, error: '' };
+  }
   async function submit(e) {
     e.preventDefault();
-    const slug = (form.slug || form.title).trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, '');
-    const payload = { ...form, slug, sort_order: Number(form.sort_order) || 100, release_date: form.release_date || null };
+    const slug = slugify(form.slug || form.title);
+    const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
+    const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
+    const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
+    const payload = {
+      ...form, slug, category_slug: categorySlug, channel_slug: channelSlug, series_slug: seriesSlug,
+      category_title: form.category_title || 'Arşiv', channel_title: form.channel_title || 'Hayatımız Oyun', series_title: form.series_title || form.title,
+      sort_order: Number(form.sort_order) || 100, release_date: form.release_date || null, is_public: Boolean(form.is_public)
+    };
     const r = edit ? await updateRow('public_games', edit, payload, session) : await createRow('public_games', payload, session);
     if (r.error) return setMsg(r.error);
-    setMsg(edit ? 'Başarı: oyun güncellendi.' : 'Başarı: oyun eklendi.');
+    await upsertRow('public_categories', { slug: categorySlug, title: payload.category_title, description: `${payload.category_title} kategorisindeki oyunlar.`, is_public: true, sort_order: payload.sort_order }, session, 'slug');
+    await upsertRow('public_channels', { slug: channelSlug, title: payload.channel_title, description: 'Hayatımız Oyun içerik kanalı.', channel_type: 'YouTube', is_public: true, sort_order: 100 }, session, 'slug');
+    await upsertRow('public_series', { slug: seriesSlug, title: payload.series_title, description: payload.description, category_slug: categorySlug, category_title: payload.category_title, channel_slug: channelSlug, channel_title: payload.channel_title, cover_url: payload.cover_url, banner_url: payload.banner_url, logo_url: payload.logo_url, status: payload.status, sort_order: payload.sort_order, is_public: true }, session, 'slug');
+    const yt = await syncPlaylistEpisodes(payload);
+    setMsg(edit ? `Başarı: oyun güncellendi. Seri/kategori/kanal bağlantıları korundu. ${yt.saved ? yt.saved + ' YouTube bölümü çekildi.' : ''}${yt.error ? ' YouTube uyarısı: ' + yt.error : ''}` : `Başarı: oyun eklendi. Seri/kategori/kanal otomatik oluşturuldu. ${yt.saved ? yt.saved + ' YouTube bölümü çekildi.' : ''}${yt.error ? ' YouTube uyarısı: ' + yt.error : ''}`);
     setEdit(null); setForm(empty); load();
   }
-
   async function del(row) {
-    if (!confirm(`${row.title} silinsin mi?`)) return;
+    if (!confirm(`${row.title} silinsin mi? Seri/bölüm kayıtları silinmez.`)) return;
     const r = await deleteRow('public_games', row.id, session);
-    setMsg(r.error || 'Başarı: oyun silindi.');
+    setMsg(r.error || 'Başarı: oyun silindi. Seri/bölüm kayıtları korunur.');
     load();
   }
 
-  return <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>🎮 Oyun Yönetimi</h2><p>Oyun yönetimi aktif. Yayın tarihlerini Takvim menüsünden planlayabilirsin.</p>
-    <div className="form-two-col"><label>Oyun Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
-    <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
-    <div className="form-two-col"><label>Kategori Başlığı<input value={form.category_title} onChange={e => set('category_title', e.target.value)} placeholder="Korku" /></label><label>Kategori Slug<input value={form.category_slug} onChange={e => set('category_slug', e.target.value)} placeholder="korku" /></label></div>
+  return <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>🎮 Oyun Ekle / Otomatik Çekme Merkezi</h2><p>Tek merkez burasıdır: RAWG + Steam kapakları + kategori/seri + YouTube bölümleri bu formdan otomatik kurulur.</p>
+    <div className="form-two-col"><label>Oyun Adı<input value={form.title} onChange={e => set('title', e.target.value)} required placeholder="Örn. 007 First Light" /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
+    <button type="button" className="ghost-btn full-btn" onClick={autoFillRawg} disabled={autoLoading}>{autoLoading ? 'Otomatik çekiliyor...' : '🎮 RAWG + Steam’den Otomatik Çek'}</button>
+    <label>Hikaye / Açıklama<textarea rows="5" value={form.description} onChange={e => set('description', e.target.value)} placeholder="RAWG/Steam’den Türkçe hikaye özeti otomatik gelir." /></label>
+    <div className="form-two-col"><label>Kategori Başlığı<input value={form.category_title} onChange={e => set('category_title', e.target.value)} placeholder="Aksiyon" /></label><label>Kategori Slug<input value={form.category_slug} onChange={e => set('category_slug', e.target.value)} placeholder="aksiyon" /></label></div>
+    <p className="field-note">Kategori: Oyunun tür grubudur. Oyun eklenince kategori tablosuna otomatik bağlanır.</p>
     <div className="form-two-col"><label>Kanal Başlığı<input value={form.channel_title} onChange={e => set('channel_title', e.target.value)} placeholder="Hayatımız Oyun" /></label><label>Kanal Slug<input value={form.channel_slug} onChange={e => set('channel_slug', e.target.value)} placeholder="hayatimiz-oyun" /></label></div>
-    <div className="form-two-col"><label>Seri Başlığı<input value={form.series_title} onChange={e => set('series_title', e.target.value)} /></label><label>Seri Slug<input value={form.series_slug} onChange={e => set('series_slug', e.target.value)} /></label></div>
+    <p className="field-note">Kanal: İçeriğin yayınlandığı kanal adıdır. Kullanıcı yönetimiyle karışmaz.</p>
+    <div className="form-two-col"><label>Seri Başlığı<input value={form.series_title} onChange={e => set('series_title', e.target.value)} placeholder="Örn. James Bond" /></label><label>Seri Slug<input value={form.series_slug} onChange={e => set('series_slug', e.target.value)} /></label></div>
     <div className="form-two-col"><label>Durum<select value={form.status} onChange={e => set('status', e.target.value)}><option>Planlandı</option><option>Devam Ediyor</option><option>Tamamlandı</option><option>Gizli</option></select></label><label>Yayın Tarihi<input type="date" value={form.release_date || ''} onChange={e => set('release_date', e.target.value)} /></label></div>
+    <div className="form-two-col"><label>Türler<input value={form.genres} onChange={e => set('genres', e.target.value)} placeholder="Aksiyon, Macera, Gizlilik" /></label><label>Ortalama Puan<input value={form.metacritic || form.rating} onChange={e => set('metacritic', e.target.value)} placeholder="RAWG/Metacritic puanı" /></label></div>
+    <div className="tag-button-row">{tagOptions.map(tag => <button type="button" key={tag} className={String(form.tags).includes(tag) ? 'tag-toggle active' : 'tag-toggle'} onClick={() => toggleTag(tag)}>{tag}</button>)}</div>
+    <label>Etiketler<input value={form.tags} onChange={e => set('tags', e.target.value)} placeholder="Türkçe Altyazılı, Coop" /></label>
+    <div className="form-two-col"><label>RAWG ID<input value={form.rawg_id} onChange={e => set('rawg_id', e.target.value)} /></label><label>Steam AppID<input value={form.steam_appid} onChange={e => set('steam_appid', e.target.value)} /></label></div>
+    <label>YouTube Playlist URL<input value={form.playlist_url} onChange={e => set('playlist_url', e.target.value)} placeholder="https://www.youtube.com/playlist?list=..." /></label>
     <label>Kapak URL<input value={form.cover_url} onChange={e => set('cover_url', e.target.value)} placeholder="https://..." /></label>
     <label>Banner URL<input value={form.banner_url} onChange={e => set('banner_url', e.target.value)} placeholder="https://..." /></label>
     <label>Logo URL<input value={form.logo_url} onChange={e => set('logo_url', e.target.value)} placeholder="https://..." /></label>
     <label>Medya Notu<textarea rows="2" value={form.media_note} onChange={e => set('media_note', e.target.value)} placeholder="Kapak/banner hakkında kısa not" /></label>
     <div className="media-preview-grid">
-      <article><strong>Kapak Önizleme</strong><img src={form.cover_url || PLACEHOLDER} alt="Kapak önizleme" /></article>
-      <article><strong>Banner Önizleme</strong><img src={form.banner_url || PLACEHOLDER} alt="Banner önizleme" /></article>
-      <article><strong>Logo Önizleme</strong><img src={form.logo_url || PLACEHOLDER} alt="Logo önizleme" /></article>
+      <article><strong>Kapak Önizleme</strong><img src={form.cover_url || PLACEHOLDER} onError={e => { e.currentTarget.src = PLACEHOLDER; }} alt="Kapak önizleme" /></article>
+      <article><strong>Banner Önizleme</strong><img src={form.banner_url || PLACEHOLDER} onError={e => { e.currentTarget.src = PLACEHOLDER; }} alt="Banner önizleme" /></article>
+      <article><strong>Logo Önizleme</strong><img src={form.logo_url || PLACEHOLDER} onError={e => { e.currentTarget.src = PLACEHOLDER; }} alt="Logo önizleme" /></article>
     </div>
-    <div className="form-two-col"><label>Sıra<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
-    <button className="primary-btn">{edit ? 'Oyunu Güncelle' : 'Oyunu Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
-    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}</td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
+    <div className="form-two-col"><label>Seri/Oyun Sırası<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
+    <button className="primary-btn">{edit ? 'Oyunu Güncelle' : 'Oyunu Ekle ve Her Şeyi Otomatik Kur'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
+    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori/Seri</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}<small>{r.series_title || 'Seri yok'}</small></td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
 }
 
 
