@@ -2736,3 +2736,81 @@ textarea {
 
 .guide-list { display: grid; gap: 10px; margin: 0; padding-left: 22px; color: var(--muted); font-weight: 700; }
 .guide-list code, .status-check-card code { background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 8px; color: #fff; }
+
+/* FIX: v1.3.1 sinematik dashboard arayüzü */
+.compact-header { display: none; }
+.footer { max-width: 1560px; margin: 0 auto; padding: 14px 22px 24px; }
+.page-shell { width: 100%; max-width: none; padding: 0; }
+.cinema-dashboard {
+  width: min(1720px, 100%);
+  min-height: calc(100vh - 52px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 380px;
+  gap: 18px;
+  padding: 14px 16px 0;
+}
+.left-rail, .right-rail, .cinema-hero, .episode-card, .poster-card, .side-panel {
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(14,20,35,.88), rgba(8,12,24,.9));
+  box-shadow: 0 24px 80px rgba(0,0,0,.25);
+}
+.left-rail {
+  position: sticky; top: 14px; height: calc(100vh - 28px);
+  border-radius: 0; padding: 18px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.rail-logo { display: grid; grid-template-columns: 42px 1fr; column-gap: 10px; align-items: center; margin-bottom: 18px; }
+.rail-logo span { grid-row: span 2; width: 42px; height: 42px; border-radius: 16px; display:grid; place-items:center; background: linear-gradient(135deg,#2563eb,#ec4899); }
+.rail-logo strong { font-size: 15px; }
+.rail-logo small { color: var(--muted); }
+.rail-link { text-decoration:none; display:flex; gap:12px; align-items:center; padding: 12px 14px; border-radius: 10px; color: #dbeafe; border: 1px solid transparent; }
+.rail-link:hover, .rail-link.active { background: rgba(37,99,235,.18); border-color: rgba(59,130,246,.5); color:#fff; }
+.dashboard-main { min-width:0; }
+.dashboard-topbar { height: 58px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.search-pill { flex:1; max-width: 540px; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 12px 16px; color: var(--muted); background: rgba(15,23,42,.75); }
+.search-pill kbd { float:right; background:rgba(255,255,255,.08); border-radius:8px; padding:2px 7px; color:#cbd5e1; }
+.top-actions { display:flex; align-items:center; gap:12px; }
+.top-actions span, .top-actions b { border:1px solid rgba(255,255,255,.12); background:rgba(15,23,42,.78); border-radius:999px; padding:10px 12px; }
+.cinema-hero { position:relative; min-height:390px; border-radius: 10px; overflow:hidden; background-size:cover; background-position:center; display:flex; align-items:center; padding: 52px 64px; }
+.cinema-hero-copy { max-width: 660px; position:relative; z-index:1; }
+.blue-chip { display:inline-flex; padding:8px 12px; border-radius:8px; background:rgba(37,99,235,.85); font-size:13px; font-weight:900; }
+.cinema-hero h1 { font-size: clamp(34px, 4.8vw, 62px); line-height:.95; letter-spacing:-.05em; margin:18px 0 8px; }
+.cinema-hero h2 { margin:0 0 10px; font-size:24px; }
+.cinema-hero p { color:#dbeafe; font-size:17px; line-height:1.65; }
+.hero-arrow { position:absolute; left:16px; z-index:2; width:38px; height:38px; border:0; border-radius:999px; color:white; background:rgba(0,0,0,.38); font-size:30px; }
+.hero-arrow.right { left:auto; right:16px; }
+.hero-dots { position:absolute; left:50%; bottom:22px; transform:translateX(-50%); display:flex; gap:8px; }
+.hero-dots span { width:10px; height:10px; border-radius:999px; background:rgba(255,255,255,.5); }
+.content-row-head { display:flex; justify-content:space-between; align-items:center; margin: 20px 0 12px; }
+.content-row-head h2 { margin:0; font-size:20px; }
+.episode-row { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px; }
+.episode-card { position:relative; overflow:hidden; border-radius:10px; }
+.episode-card img { width:100%; height:138px; object-fit:cover; display:block; }
+.episode-card div { padding:12px; display:grid; gap:4px; }
+.episode-card small, .poster-card small { color:var(--muted); }
+.duration { position:absolute; right:8px; top:105px; background:rgba(0,0,0,.72); border-radius:6px; padding:4px 7px; font-weight:900; }
+.poster-row { display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap:14px; }
+.poster-card { min-height:220px; text-decoration:none; border-radius:10px; overflow:hidden; padding-bottom:12px; display:grid; }
+.poster-card img { width:100%; height:155px; object-fit:cover; }
+.poster-card strong, .poster-card small { padding: 0 12px; align-self:end; }
+.right-rail { display:grid; gap:14px; align-content:start; padding-top:58px; }
+.side-panel { border-radius:10px; padding:18px; }
+.side-title { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.side-title h3, .side-panel h3 { margin:0 0 14px; }
+.side-title a { color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:7px 10px; font-size:12px; }
+.playlist-item { display:flex; align-items:center; gap:14px; margin:12px 0; }
+.playlist-item > :first-child, .playlist-item::first-letter { font-size:20px; }
+.playlist-item span { display:grid; }
+.playlist-item small { color:var(--muted); }
+.notice-card { position:relative; border:1px solid rgba(255,255,255,.10); border-radius:10px; padding:14px; margin:10px 0; background:rgba(255,255,255,.035); }
+.notice-card span { margin-left:8px; background:#2563eb; border-radius:6px; padding:3px 7px; font-size:12px; }
+.notice-card p { color:var(--muted); margin:8px 0 0; }
+.stat-mini-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.stat-mini-grid b { border:1px solid rgba(255,255,255,.10); border-radius:10px; padding:12px; display:grid; gap:3px; }
+.stat-mini-grid span { font-size:20px; }
+.stat-mini-grid small { color:var(--muted); }
+.backup-note { color:var(--muted); }
+.backup-note em { float:right; color:#86efac; background:rgba(34,197,94,.15); padding:3px 8px; border-radius:7px; font-style:normal; }
+@media (max-width: 1200px) { .cinema-dashboard { grid-template-columns: 220px 1fr; } .right-rail { grid-column: 2; grid-template-columns: repeat(3,1fr); padding-top:0; } .episode-row { grid-template-columns: repeat(2,1fr); } .poster-row { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 820px) { .cinema-dashboard { display:block; padding:10px; } .left-rail { position:relative; height:auto; flex-direction:row; overflow:auto; margin-bottom:12px; } .rail-logo { display:none; } .rail-link { white-space:nowrap; } .dashboard-topbar { height:auto; margin-bottom:12px; } .cinema-hero { min-height:360px; padding:32px 28px; } .right-rail { display:grid; grid-template-columns:1fr; padding-top:12px; } .episode-row, .poster-row { grid-template-columns:1fr; } }

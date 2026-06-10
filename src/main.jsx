@@ -107,16 +107,87 @@ function HomePage() {
   const series = useTable('public_series');
   const categories = useTable('public_categories');
   const users = useTable('app_users');
+  const episodeCount = games.rows.reduce((sum, item) => sum + Number(item.episode_count || item.episodes || 0), 0);
+  const featured = games.rows[0] || series.rows[0] || {
+    title: 'Hayatımız Oyun Arşivi',
+    description: 'YouTube oynatma listeleri, seriler, bölümler ve yayın arşivi tek ekranda toplanıyor.',
+    cover_url: PLACEHOLDER,
+    banner_url: PLACEHOLDER,
+    status: 'Arşiv Hazır'
+  };
+  const recentItems = [...games.rows, ...series.rows].slice(0, 4);
+  const seriesItems = series.rows.slice(0, 6);
+
   return <Layout>
-    <section className="hero-card showcase-hero">
-      <div className="showcase-copy"><div className="version-pill">✅ {VERSION} • Bakım modu</div><h1>Yönetim paneli istatistikleri ve veri sağlığı merkezi hazırlandı.</h1><p>Oyun, seri, bölüm, kullanıcı, kategori, kanal ve takvim kayıtlarını tek dashboard üzerinden kontrol et.</p><div className="hero-actions"><a className="primary-btn" href="/admin">Yönetim Paneli</a><a className="ghost-btn" href="/register">Kayıt Ol</a><a className="ghost-btn" href="/status">Durumu Kontrol Et</a></div></div>
-      <aside className="showcase-panel"><span>SQL Durumu</span><strong>{supabaseConfig.isReady ? 'Bağlantı hazır' : 'Vercel ortam değişkenlerini kontrol et'}</strong><p>Bu sürümde yeni Supabase SQL gerekli. Mevcut tablolar okunur; Vercel build sırasında deploy-info.json yenilenir.</p><div className="mini-metrics"><b>{games.rows.length} oyun</b><b>{series.rows.length} seri</b><b>{users.rows.length} kullanıcı</b><b>Deploy #{deployInfo?.deployNumber || '—'}</b></div></aside>
-    </section>
-    <section className="beta-stats premium-stats"><article><span>{games.rows.length}</span><p>Oyun</p></article><article><span>{series.rows.length}</span><p>Seri</p></article><article><span>{categories.rows.length}</span><p>Kategori</p></article><article><span>{users.rows.length}</span><p>Kullanıcı</p></article></section>
-    <Updates />
+    <div className="cinema-dashboard">
+      <aside className="left-rail">
+        <div className="rail-logo"><span>▶</span><strong>Hayatımız Oyun</strong><small>Arşiv Sistemi</small></div>
+        <a className="rail-link active" href="/">🏠 Ana Sayfa</a>
+        <a className="rail-link" href="/archive">🎮 Arşiv</a>
+        <a className="rail-link" href="/series">🎬 Seriler</a>
+        <a className="rail-link" href="/admin/episodes">📺 Bölümler</a>
+        <a className="rail-link" href="/admin/youtube-playlists">🔗 Oynatma Listeleri</a>
+        <a className="rail-link" href="/categories">📁 Kategoriler</a>
+        <a className="rail-link" href="/calendar">🗓️ Yayın Akışı</a>
+        <a className="rail-link" href="/profile">👤 Profil</a>
+        <a className="rail-link" href="/guide">📘 Site Rehberi</a>
+        <a className="rail-link" href="/status">🛠️ Site Durumu</a>
+      </aside>
+
+      <section className="dashboard-main">
+        <div className="dashboard-topbar">
+          <div className="search-pill">🔎 Ara... <kbd>Ctrl K</kbd></div>
+          <div className="top-actions"><span>🔔</span><span>🌙</span><b>{VERSION}</b></div>
+        </div>
+
+        <section className="cinema-hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,8,18,.88), rgba(5,8,18,.45), rgba(5,8,18,.88)), url(${featured.banner_url || featured.cover_url || PLACEHOLDER})` }}>
+          <button className="hero-arrow">‹</button>
+          <div className="cinema-hero-copy">
+            <span className="blue-chip">ÖNE ÇIKAN</span>
+            <h1>{featured.title || 'Hayatımız Oyun Arşivi'}</h1>
+            <h2>{featured.status || 'Tam Çözüm Arşivi'}</h2>
+            <p>{featured.description || 'Tüm bölümler, oynatma listeleri ve seriler tek ekranda düzenli şekilde gösterilir.'}</p>
+            <div className="hero-actions"><a className="primary-btn" href="/series">Bölümleri Görüntüle</a><a className="ghost-btn" href="/admin">Yönetim Paneli</a></div>
+          </div>
+          <button className="hero-arrow right">›</button>
+          <div className="hero-dots"><span></span><span></span><span></span><span></span><span></span></div>
+        </section>
+
+        <section className="content-row-head"><h2>Son Eklenen Bölümler</h2><a className="ghost-btn" href="/admin/episodes">Tümünü Gör</a></section>
+        <section className="episode-row">
+          {(recentItems.length ? recentItems : [{title:'Bölüm arşivi hazırlanıyor', cover_url:PLACEHOLDER, status:'Yakında'}, {title:'YouTube senkronizasyonu', cover_url:PLACEHOLDER, status:'Altyapı'}, {title:'Seri bölümleri', cover_url:PLACEHOLDER, status:'Hazır'}, {title:'Arşiv kartları', cover_url:PLACEHOLDER, status:'Hazır'}]).map((item, index) => <article className="episode-card" key={item.id || index}>
+            <img src={item.cover_url || item.banner_url || PLACEHOLDER} alt={item.title || item.name} />
+            <span className="duration">{index + 1}:25:{(index + 18).toString().padStart(2,'0')}</span>
+            <div><strong>{item.title || item.name}</strong><small>{item.status || 'Aktif'} • {item.category_title || 'Arşiv'}</small></div>
+          </article>)}
+        </section>
+
+        <section className="content-row-head"><h2>Seriler</h2><a className="ghost-btn" href="/series">Tüm Serileri Gör</a></section>
+        <section className="poster-row">
+          {(seriesItems.length ? seriesItems : recentItems).slice(0,6).map((item, index) => <a className="poster-card" href={`/series/${item.slug || item.id || ''}`} key={item.id || index}>
+            <img src={item.cover_url || item.poster_url || item.banner_url || PLACEHOLDER} alt={item.title || item.name} />
+            <strong>{item.title || item.name}</strong><small>{item.episode_count || item.episodes || 0} Bölüm</small>
+          </a>)}
+        </section>
+      </section>
+
+      <aside className="right-rail">
+        <section className="side-panel"><div className="side-title"><h3>Oynatma Listeleri</h3><a href="/admin/youtube-playlists">Tümünü Gör</a></div>
+          <div className="playlist-item pink">🎞️ <span><b>YouTube Arşivim</b><small>{games.rows.length || 0} kayıt</small></span></div>
+          <div className="playlist-item orange">📺 <span><b>Canlı Yayın Arşivi</b><small>Hazırlanıyor</small></span></div>
+          <div className="playlist-item red">▶️ <span><b>Shorts Arşivi</b><small>Yakında</small></span></div>
+          <div className="playlist-item green">☷ <span><b>Seri Oynatma Listeleri</b><small>{series.rows.length || 0} liste</small></span></div>
+        </section>
+        <section className="side-panel"><div className="side-title"><h3>Duyurular</h3><a href="/updates">Tümünü Gör</a></div>
+          <article className="notice-card"><b>Yeni Özellik: Bölüm Otomatik Çekme</b><span>Yeni</span><p>YouTube playlist altyapısı eklendi.</p></article>
+          <article className="notice-card"><b>Site Rehberi Güncellendi</b><p>Kullanıcıya yönelik rehber hazırlandı.</p></article>
+          <article className="notice-card"><b>Bakım Modu Koruması</b><p>Normal kullanıcı/ziyaretçi koruması eklendi.</p></article>
+        </section>
+        <section className="side-panel"><h3>İstatistikler</h3><div className="stat-mini-grid"><b>🎮<span>{games.rows.length}</span><small>Toplam Oyun</small></b><b>🎬<span>{series.rows.length}</span><small>Toplam Seri</small></b><b>📺<span>{episodeCount}</span><small>Toplam Bölüm</small></b><b>👥<span>{users.rows.length}</span><small>Kullanıcı</small></b></div><p className="backup-note">Son deploy: #{deployInfo?.deployNumber || '—'} <em>Başarılı</em></p></section>
+      </aside>
+    </div>
   </Layout>;
 }
-
 function ListPage({ table, icon, title, text, type }) {
   const { rows, loading, error } = useTable(table);
   return <Layout><PageHero icon={icon} title={title} text={text} />{error ? <p className="form-message error">{error}</p> : null}{loading ? <p>Yükleniyor...</p> : rows.length ? <section className="series-section"><div className="series-grid premium-series-grid">{rows.map(x => <DataCard key={x.id} item={x} type={type} />)}</div></section> : <EmptyState title={`${title} kaydı yok`} text="SQL temiz başlangıç yaptığı için kayıtlar yönetim panelinden eklenecek." />}</Layout>;
