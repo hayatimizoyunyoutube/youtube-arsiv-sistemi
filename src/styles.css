@@ -3130,3 +3130,22 @@ select option {
   background: linear-gradient(135deg, #ef4444, #be123c);
   color: white;
 }
+
+/* FIX v1.3.2 RAWG hikaye + Steam kapak + YouTube thumbnail */
+.field-help {
+  margin: -8px 0 12px;
+  color: #aeb8d6;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.table-thumb {
+  width: 86px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,.12);
+  background: #111827;
+}
+.rawg-inline-panel p {
+  color: #b7c2df;
+}

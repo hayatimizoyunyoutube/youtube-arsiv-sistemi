@@ -1014,3 +1014,17 @@ begin
 end $$;
 
 select 'FIX v1.3.2 RAWG + YouTube çalışır hale getirildi. Eklenenler: public_games rawg_id/metacritic/genres/website/rawg_background_url, youtube_playlists güvenli alanları, game_episodes youtube_video_id/thumbnail_url/episode_number. Veri ve yetkiler sıfırlanmadı.' as result;
+
+-- FIX v1.3.2 RAWG hikaye + Steam kapak + YouTube thumbnail geliştirmesi
+-- Güvenli migration: tablo sıfırlamaz, veri silmez, yetkileri değiştirmez.
+alter table if exists public.public_games add column if not exists story_tr text default '';
+alter table if exists public.public_games add column if not exists steam_app_id text default '';
+alter table if exists public.public_games add column if not exists steam_cover_url text default '';
+alter table if exists public.public_games add column if not exists tags text[] default '{}';
+alter table if exists public.public_games add column if not exists genres text[] default '{}';
+alter table if exists public.game_episodes add column if not exists thumbnail_url text default '';
+alter table if exists public.youtube_playlists add column if not exists cover_url text default '';
+
+select
+  'FIX v1.3.2 RAWG hikaye, Steam kapak, tüm türler, etiketler ve YouTube thumbnail alanları eklendi. Veri/yetki sıfırlanmadı.' as result,
+  'public_games: story_tr, steam_app_id, steam_cover_url, tags, genres; game_episodes: thumbnail_url; youtube_playlists: cover_url' as sql_eklenenler;
