@@ -107,6 +107,8 @@ function HomePage() {
   const [profile, setProfile] = useState(null);
   useEffect(() => { if (session?.access_token) getCurrentAppUser(session).then(r => setProfile(r.data)); }, [session?.access_token]);
   const canSeeAdmin = isAdminRole(profile?.role);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const displayName = profile?.display_name || profile?.email?.split('@')?.[0] || 'Profil';
   const deployInfo = useDeployInfo();
   const games = useTable('public_games');
   const series = useTable('public_series');
@@ -124,26 +126,31 @@ function HomePage() {
   const seriesItems = series.rows.slice(0, 6);
 
   return <Layout>
-    <div className="cinema-dashboard">
+    <div className={sidebarCollapsed ? 'cinema-dashboard sidebar-collapsed' : 'cinema-dashboard'}>
       <aside className="left-rail">
         <div className="rail-logo"><span>▶</span><strong>Hayatımız Oyun</strong><small>Arşiv Sistemi</small></div>
-        <a className="rail-link active" href="/">🏠 Ana Sayfa</a>
-        <a className="rail-link" href="/archive">🎮 Arşiv</a>
-        <a className="rail-link" href="/series">🎬 Seriler</a>
-        <a className="rail-link" href="/admin/episodes">📺 Bölümler</a>
-        <a className="rail-link" href="/admin/youtube-playlists">🔗 Oynatma Listeleri</a>
-        <a className="rail-link" href="/categories">📁 Kategoriler</a>
-        <a className="rail-link" href="/calendar">🗓️ Yayın Akışı</a>
-        <a className="rail-link" href="/profile">👤 Profil</a>
-        {canSeeAdmin ? <a className="rail-link admin-rail-link" href="/admin">🛡️ Yönetim Paneli</a> : null}
-        <a className="rail-link" href="/guide">📘 Site Rehberi</a>
-        <a className="rail-link" href="/status">🛠️ Site Durumu</a>
+        <a className="rail-link active" href="/"><span>🏠</span><b>Ana Sayfa</b></a>
+        <a className="rail-link" href="/archive"><span>🎮</span><b>Arşiv</b></a>
+        <a className="rail-link" href="/series"><span>🎬</span><b>Seriler</b></a>
+        <a className="rail-link" href="/admin/episodes"><span>📺</span><b>Bölümler</b></a>
+        <a className="rail-link" href="/admin/youtube-playlists"><span>🔗</span><b>Oynatma Listeleri</b></a>
+        <a className="rail-link" href="/categories"><span>📁</span><b>Kategoriler</b></a>
+        <a className="rail-link" href="/calendar"><span>🗓️</span><b>Yayın Akışı</b></a>
+        <a className="rail-link" href="/guide"><span>📘</span><b>Site Rehberi</b></a>
+        <a className="rail-link" href="/status"><span>🛠️</span><b>Site Durumu</b></a>
+        <button className="collapse-rail-btn" type="button" onClick={() => setSidebarCollapsed(!sidebarCollapsed)}>{sidebarCollapsed ? '»' : '‹'} <b>Menüyü Daralt</b></button>
       </aside>
 
       <section className="dashboard-main">
         <div className="dashboard-topbar">
           <div className="search-pill">🔎 Ara... <kbd>Ctrl K</kbd></div>
-          <div className="top-actions"><a className="top-action-link" href="/profile">👤 Profil</a>{canSeeAdmin ? <a className="top-action-link admin-top-link" href="/admin">🛡️ Panel</a> : null}<span>🔔</span><span>🌙</span><b>{VERSION}</b></div>
+          <div className="top-actions">
+            <button className="icon-action" title="Karanlık tema" type="button">🌙</button>
+            <button className="icon-action notification-action" title="Bildirimler" type="button">🔔<em>3</em></button>
+            {canSeeAdmin ? <a className="top-action-link admin-top-link" href="/admin">🛡️ Yönetim Paneli</a> : null}
+            <a className="profile-chip" href="/profile"><span className="profile-avatar">👤</span><strong>{displayName}</strong><small>{roleLabel(profile?.role)}</small></a>
+            <b>{VERSION}</b>
+          </div>
         </div>
 
         <section className="cinema-hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,8,18,.88), rgba(5,8,18,.45), rgba(5,8,18,.88)), url(${featured.banner_url || featured.cover_url || PLACEHOLDER})` }}>
@@ -153,7 +160,7 @@ function HomePage() {
             <h1>{featured.title || 'Hayatımız Oyun Arşivi'}</h1>
             <h2>{featured.status || 'Tam Çözüm Arşivi'}</h2>
             <p>{featured.description || 'Tüm bölümler, oynatma listeleri ve seriler tek ekranda düzenli şekilde gösterilir.'}</p>
-            <div className="hero-actions"><a className="primary-btn" href="/series">Bölümleri Görüntüle</a><a className="ghost-btn" href="/profile">Profil</a>{canSeeAdmin ? <a className="ghost-btn" href="/admin">Yönetim Paneli</a> : null}</div>
+            <div className="hero-actions"><a className="primary-btn" href="/series">Bölümleri Görüntüle</a><a className="ghost-btn" href="/series">Seriye Git</a></div>
           </div>
           <button className="hero-arrow right">›</button>
           <div className="hero-dots"><span></span><span></span><span></span><span></span><span></span></div>
