@@ -1,57 +1,33 @@
-# Vercel Kurulum Rehberi — v1.3.1
+# Vercel Kurulum Rehberi — v1.3.2
 
-## Bu sürümde yeni `.env` gerekli mi?
+## Yeni .env gerekli mi?
 
-Evet. v1.3.1 ile YouTube playlistten bölüm çekme altyapısı geldiği için Vercel'e yeni bir değişken eklenmeli.
+Evet. v1.3.2 ile RAWG oyun bilgisi arama altyapısı geldiği için Vercel'e yeni bir değişken eklenmelidir.
 
-## Vercel Environment Variables
-
-Vercel → Project → Settings → Environment Variables alanına şunlar eklenmiş olmalı:
+Vercel → Project → Settings → Environment Variables:
 
 ```env
 VITE_SUPABASE_URL=Supabase Project URL
 VITE_SUPABASE_ANON_KEY=Supabase anon public key
-YOUTUBE_API_KEY=YouTube Data API v3 Key
+YOUTUBE_API_KEY=YouTube API key
+RAWG_API_KEY=RAWG API key
 ```
 
-## Önemli güvenlik notu
+## GitHub'a gerçek key gönderme
 
-`YOUTUBE_API_KEY` GitHub'a yazılmayacak. Sadece Vercel Environment Variables içine eklenecek.
+Gerçek keyler `.env.local` içinde veya Vercel Environment Variables içinde kalır.
+GitHub'a sadece `.env.example` gider.
 
-`.env.local` dosyası bilgisayarda kalır, GitHub'a gönderilmez.
+## Değişken ekledikten sonra
 
-## Vercel'de env ekledikten sonra
-
-Mutlaka:
+Vercel'de mutlaka yeniden deploy yap:
 
 ```text
 Deployments → Redeploy
 ```
 
-yapılmalı. Vite build ve Vercel serverless API yeni env değerini ancak redeploy sonrası kullanır.
-
 ## Supabase SQL gerekli mi?
 
-Evet, gerekli.
-
-v1.3.1 SQL şunları ekler/günceller:
-
-- `game_episodes` tablosu yoksa oluşturur.
-- `youtube_video_id` alanı ekler.
-- `youtube_url` alanı ekler.
-- `thumbnail_url` alanı ekler.
-- `published_at` alanı ekler.
-- `episode_number` ve `sort_order` alanlarını ekler.
-- `game_episodes_youtube_video_id_key` unique index ekler.
-- RLS policy kontrol eder.
-- `mertdundaroyunda@gmail.com` kurucu yetkisini korur.
-
-## Veri koruma kuralı
-
-Bu SQL:
-
-- Tablo sıfırlamaz.
-- Kullanıcı yetkilerini silmez.
-- Oyun/seri/kategori/kanal/bölüm verilerini silmez.
-- `DROP TABLE` kullanmaz.
-- `TRUNCATE` kullanmaz.
+Hayır. v1.3.2 için Supabase SQL gerekmez.
+Bu sürüm sadece RAWG arama endpointi ve yönetim paneli arayüzü ekler.
+Mevcut tablo, veri ve kullanıcı yetkileri korunur.

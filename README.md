@@ -1,9 +1,9 @@
 # Hayatımız Oyun YouTube Arşiv Sistemi
 
-Sürüm: v1.3.1
+Sürüm: v1.3.2
 
 ## Bu sürüm
-YouTube Bölüm Çekme Altyapısı.
+RAWG Oyun Bilgisi Hazırlığı.
 
 ## Supabase SQL gerekli mi?
 Evet. `youtube_playlists` tablosu eklenir.

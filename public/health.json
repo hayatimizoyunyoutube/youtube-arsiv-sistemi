@@ -1,10 +1,11 @@
 {
-  "ok": true,
-  "version": "v1.3.1",
-  "release": "YouTube Bölüm Çekme Altyapısı",
-  "supabase_sql_required": true,
+  "name": "Hayatımız Oyun Arşivi",
+  "version": "v1.3.2",
+  "status": "ok",
+  "release": "RAWG Oyun Bilgisi Hazırlığı",
+  "supabase_sql_required": false,
   "new_env_required": true,
-  "required_env": ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY", "YOUTUBE_API_KEY"],
+  "required_env": ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY", "YOUTUBE_API_KEY", "RAWG_API_KEY"],
   "data_reset": false,
-  "notes": "game_episodes YouTube alanları eklendi; veri/yetki sıfırlanmaz."
+  "permissions_reset": false
 }

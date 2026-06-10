@@ -2,7 +2,7 @@
 chcp 65001 >nul
 setlocal
 
-set VERSION=v1.3.1
+set VERSION=v1.3.2
 set REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
 
 echo ========================================

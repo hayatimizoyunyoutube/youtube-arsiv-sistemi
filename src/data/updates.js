@@ -40,13 +40,14 @@ export const completedUpdates = [
   { version: 'v1.2.7', title: 'Dashboard ve Veri Sağlığı', date: '2026-06-09', summary: 'Admin dashboard istatistikleri ve veri sağlığı merkezi eklendi.', items: ['Dashboard metrikleri', 'Medya kontrolü', 'Yetki kontrolü', 'Veri sağlığı'] },
   { version: 'v1.2.8', title: 'Profil Merkezi', date: '2026-06-09', summary: 'Profil ekranı kullanıcı bilgileri, rol görünümü ve hesap düzenleme alanıyla dolduruldu.', items: ['Profil bilgisi', 'Rol görünümü', 'Görünen ad', 'Oturum bilgisi'] },
   { version: 'v1.3.1', title: 'YouTube Bölüm Çekme Altyapısı', date: '2026-06-09', summary: 'Public rehber, yetkili rehberi, Vercel kurulum notları ve SQL/.env kontrol bilgileri güncellendi.', items: ['YouTube playlist altyapısı', 'Yetkili rehberi', 'Vercel rehberi', 'SQL gerekli değil notu'] }
+  { version: 'v1.3.2', title: 'RAWG Oyun Bilgisi Hazırlığı', date: '2026-06-10', summary: 'RAWG API ile oyun arama, kapak/meta önizleme ve Vercel env rehberi eklendi.', items: ['RAWG_API_KEY', 'Oyun arama', 'Kapak/meta önizleme', 'SQL gerekmez'] }
 ];
 
 
 export const plannedUpdates = [
-  { version: 'v1.3.1', title: 'YouTube Bölüm Çekme Altyapısı', summary: 'YouTube API anahtarı, playlist ID alanları ve bölüm çekme hazırlığı yapılacak.', items: ['YOUTUBE_API_KEY', 'Playlist alanları', 'Video ön izleme', 'API kontrolü'] },
-  { version: 'v1.3.1', title: 'YouTube Bölüm Çekme', summary: 'Playlist videolarını bölümlere aktarma ve sonuç tablosu kurulacak.', items: ['Playlist çek', 'Bölüm oluştur', 'Sonuç tablosu', 'Hata mesajları'] },
-  { version: 'v1.3.2', title: 'RAWG Oyun Bilgisi Hazırlığı', summary: 'RAWG API ile oyun kapak/meta bilgisi çekme altyapısı hazırlanacak.', items: ['RAWG_API_KEY', 'Oyun arama', 'Kapak/meta önizleme', 'Güvenli env'] },
-  { version: 'v1.3.3', title: 'Steam Bilgi Hazırlığı', summary: 'Steam sayfaları için ID ve kapak bağlantı hazırlığı yapılacak.', items: ['Steam ID', 'Kapak bağlantısı', 'Oyun eşleştirme', 'Kontrol notları'] },
-  { version: 'v1.3.4', title: 'Public Arşiv Cila', summary: 'Public arşiv, koleksiyon, seri ve takvim sayfaları daha profesyonel hale getirilecek.', items: ['Public kartlar', 'Arama/filtre', 'Mobil düzen', 'Boş durumlar'] }
+  { version: 'v1.3.3', title: 'Steam Bilgi Hazırlığı', summary: 'Steam App ID ve kapak bağlantı hazırlığı yapılacak.', items: ['Steam App ID', 'Kapak bağlantısı', 'Oyun eşleştirme', 'Kontrol notları'] },
+  { version: 'v1.3.4', title: 'Public Arşiv Cila', summary: 'Public arşiv, koleksiyon, seri ve takvim sayfaları daha profesyonel hale getirilecek.', items: ['Public kartlar', 'Arama/filtre', 'Mobil düzen', 'Boş durumlar'] },
+  { version: 'v1.3.5', title: 'Oyun Otomatik Doldurma', summary: 'RAWG sonuçlarından oyun formunu otomatik doldurma akışı hazırlanacak.', items: ['Kapak aktar', 'Tür aktar', 'Tarih aktar', 'Meta kontrol'] },
+  { version: 'v1.3.6', title: 'Playlistten Bölüm Aktarma İyileştirme', summary: 'YouTube playlistten bölüm aktarma sonuçları daha anlaşılır hale getirilecek.', items: ['Sonuç tablosu', 'Hata mesajları', 'Tekrar kontrol', 'Eşleştirme'] },
+  { version: 'v1.3.7', title: 'Public Bölüm Sayfası', summary: 'Kullanıcıların bölümleri daha rahat görebileceği public bölüm sayfası yapılacak.', items: ['Bölüm listesi', 'Video linkleri', 'Filtre', 'Mobil düzen'] }
 ];

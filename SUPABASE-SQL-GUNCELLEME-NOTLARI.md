@@ -1,4 +1,4 @@
-# Supabase SQL Güncelleme Notları - v1.3.1
+# Supabase SQL Güncelleme Notları - v1.3.2
 
 ## Supabase SQL gerekli mi?
 Evet.
@@ -25,5 +25,5 @@ Evet.
 SQL sonunda şu sonuç dönmelidir:
 
 ```sql
-v1.3.1 başarıyla çalıştı
+v1.3.2 başarıyla çalıştı
 ```

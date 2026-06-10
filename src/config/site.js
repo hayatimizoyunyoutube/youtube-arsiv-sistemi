@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: 'Hayatımız Oyun',
   subtitle: 'YouTube Oynatma Listesi Arşivi',
-  version: 'v1.3.1',
-  releaseName: 'v1.3.1 YouTube Bölüm Çekme Altyapısı',
+  version: 'v1.3.2',
+  releaseName: 'v1.3.2 RAWG Oyun Bilgisi Hazırlığı',
   releaseDate: '2026-06-09',
-  description: 'YouTube playlistten bölüm çekme altyapısı eklendi. Vercel için YOUTUBE_API_KEY gerekir, Supabase SQL gereklidir, mevcut veri ve yetkiler sıfırlanmaz.',
+  description: 'RAWG API ile oyun arama ve meta/kapak önizleme altyapısı eklendi. Vercel için RAWG_API_KEY gerekir, Supabase SQL gerekmez, mevcut veri ve yetkiler sıfırlanmaz.',
   url: 'https://hayatimiz-oyun.vercel.app'
 };

@@ -28,6 +28,7 @@ const adminButtons = [
   ['📺 Kanallar', '/admin/channels'],
   ['▶️ Bölümler', '/admin/episodes'],
   ['🔗 YouTube Playlist', '/admin/youtube-playlists'],
+  ['🧩 RAWG Oyun Bilgisi', '/admin/rawg'],
   ['🗓️ Takvim', '/admin/calendar'],
   ['📝 Notlar', '/admin/notes'],
   ['🛠️ Bakım', '/admin/maintenance'],
@@ -231,7 +232,7 @@ function AuthPage({ mode }) {
     setMessage('Başarı: giriş yapıldı, app_users profil kaydı kontrol edildi.');
     setTimeout(() => location.href = '/admin', 600);
   }
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔐 {VERSION} • Kayıt ve giriş</div><h1>{mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</h1><p>v1.3.1 ile youtube playlist altyapısı eklendi.</p></div><section className="status-grid"><article className="status-check-card"><strong>Supabase Bağlantısı</strong><p>{supabaseConfig.isReady ? 'Hazır' : 'Eksik: Vercel ortam değişkenleri ve yeniden dağıtım gerekli.'}</p></article><article className="status-check-card"><strong>E-posta Onayı</strong><p>Test için Supabase Auth → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Kaydı</strong><p>schema.sql içindeki trigger app_users profilini otomatik açar.</p></article></section><form className="admin-card login-card" onSubmit={submit}><h2>{mode === 'register' ? 'Yeni hesap' : 'Hesaba giriş'}</h2><label>E-posta<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label><label>Şifre<input type="password" minLength="6" value={password} onChange={e => setPassword(e.target.value)} required /></label><button className="primary-btn" disabled={loading}>{loading ? 'İşleniyor...' : mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</button>{message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}<div className="hero-actions"><a className="ghost-btn" href={mode === 'register' ? '/login' : '/register'}>{mode === 'register' ? 'Girişe geç' : 'Kayıt ol'}</a><a className="ghost-btn" href="/status">Durumu kontrol et</a></div></form></section></Layout>;
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔐 {VERSION} • Kayıt ve giriş</div><h1>{mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</h1><p>v1.3.2 ile RAWG oyun bilgisi altyapısı eklendi.</p></div><section className="status-grid"><article className="status-check-card"><strong>Supabase Bağlantısı</strong><p>{supabaseConfig.isReady ? 'Hazır' : 'Eksik: Vercel ortam değişkenleri ve yeniden dağıtım gerekli.'}</p></article><article className="status-check-card"><strong>E-posta Onayı</strong><p>Test için Supabase Auth → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Kaydı</strong><p>schema.sql içindeki trigger app_users profilini otomatik açar.</p></article></section><form className="admin-card login-card" onSubmit={submit}><h2>{mode === 'register' ? 'Yeni hesap' : 'Hesaba giriş'}</h2><label>E-posta<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label><label>Şifre<input type="password" minLength="6" value={password} onChange={e => setPassword(e.target.value)} required /></label><button className="primary-btn" disabled={loading}>{loading ? 'İşleniyor...' : mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</button>{message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}<div className="hero-actions"><a className="ghost-btn" href={mode === 'register' ? '/login' : '/register'}>{mode === 'register' ? 'Girişe geç' : 'Kayıt ol'}</a><a className="ghost-btn" href="/status">Durumu kontrol et</a></div></form></section></Layout>;
 }
 
 function AdminNav() { return <div className="admin-button-bar single-row-admin">{adminButtons.map(([label, href]) => <a key={href} className="ghost-btn admin-mini-btn" href={href}>{label}</a>)}</div>; }
@@ -247,7 +248,7 @@ function AdminPage() {
   if (!session?.access_token) return <AuthPage mode="login" />;
   if (loading) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION} • Normal Kullanıcı</div><h1>Yönetim paneli sadece yetkililere açıktır.</h1><p>Hesabın normal kullanıcı rolünde görünüyor. Bu yüzden yönetim paneli menüde gösterilmez ve bu alana giriş kapalıdır.</p></div><section className="notes-card"><h2>Hesap Bilgisi</h2><p>Rol: <strong>{roleLabel(profile?.role)}</strong></p><p>{error || 'Yetkili olmak için kurucu hesabından rol verilmesi gerekir.'}</p><a className="primary-btn" href="/profile">Profile Git</a></section></section></Layout>;
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>v1.3.1 ile youtube playlist altyapısı aktif edildi; SQL gerekli, mevcut veriler sıfırlanmaz.</p></div><AdminNav /><AdminDashboardOverview /><AdminQuickManager session={session} /></section></Layout>;
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>v1.3.2 ile RAWG oyun bilgisi altyapısı aktif edildi; SQL gerekli, mevcut veriler sıfırlanmaz.</p></div><AdminNav /><AdminDashboardOverview /><AdminQuickManager session={session} /></section></Layout>;
 }
 
 function AdminQuickManager({ session }) {
@@ -389,7 +390,7 @@ function AdminSeriesPage() {
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla seri yönetimi açılamaz.</p></div></section></Layout>;
 
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🎬 {VERSION} • Seri Yönetimi</div><h1>YouTube Bölüm Çekme Altyapısı</h1><p>Seri ekle, düzenle, sil ve oyunları seçili seriye bağla. SQL veri sıfırlamaz.</p></div><AdminNav />
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🎬 {VERSION} • Seri Yönetimi</div><h1>RAWG Oyun Bilgisi Hazırlığı</h1><p>Seri ekle, düzenle, sil ve oyunları seçili seriye bağla. SQL veri sıfırlamaz.</p></div><AdminNav />
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Seri Düzenle' : 'Seri Ekle'}</h2>
       <div className="form-two-col"><label>Seri Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
       <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
@@ -465,7 +466,7 @@ function AdminEpisodesPage() {
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla bölüm yönetimi açılamaz.</p></div></section></Layout>;
 
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">▶️ {VERSION} • Yayın Takvimi</div><h1>YouTube Bölüm Çekme Altyapısı</h1><p>Oyunlara bağlı bölüm ekle, YouTube bağlantısı gir, yayın durumunu ve bölüm sırasını yönet.</p></div><AdminNav />
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">▶️ {VERSION} • Yayın Takvimi</div><h1>RAWG Oyun Bilgisi Hazırlığı</h1><p>Oyunlara bağlı bölüm ekle, YouTube bağlantısı gir, yayın durumunu ve bölüm sırasını yönet.</p></div><AdminNav />
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Bölüm Düzenle' : 'Bölüm Ekle'}</h2>
       <div className="form-two-col"><label>Oyun<select value={form.game_slug} onChange={e => pickGame(e.target.value)}><option value="">Oyun seç</option>{games.map(g => <option key={g.id} value={g.slug}>{g.title}</option>)}</select></label><label>Oyun Başlığı<input value={form.game_title} onChange={e => set('game_title', e.target.value)} placeholder="Oyun adı" /></label></div>
       <div className="form-two-col"><label>Seri Slug<input value={form.series_slug} onChange={e => set('series_slug', e.target.value)} /></label><label>Seri Başlığı<input value={form.series_title} onChange={e => set('series_title', e.target.value)} /></label></div>
@@ -589,7 +590,7 @@ function AdminChannelsPage() {
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla kanal yönetimi açılamaz.</p></div></section></Layout>;
 
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">📺 {VERSION} • Yayın Takvimi</div><h1>YouTube Bölüm Çekme Altyapısı</h1><p>Kanal ekle, düzenle, sil; logo, kapak, banner, bağlantı ve YouTube kanal ID bilgilerini yönet. SQL veri sıfırlamaz.</p></div><AdminNav />
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">📺 {VERSION} • Yayın Takvimi</div><h1>RAWG Oyun Bilgisi Hazırlığı</h1><p>Kanal ekle, düzenle, sil; logo, kapak, banner, bağlantı ve YouTube kanal ID bilgilerini yönet. SQL veri sıfırlamaz.</p></div><AdminNav />
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Kanal Düzenle' : 'Kanal Ekle'}</h2>
       <div className="form-two-col"><label>Kanal Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
       <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
@@ -724,7 +725,7 @@ function ProfilePage() {
 
   if (!session?.access_token) return <AuthPage mode="login" />;
   if (loading) return <Layout><section className="admin-shell"><p>Profil yükleniyor...</p></section></Layout>;
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION} • YouTube Bölüm Çekme Altyapısı</div><h1>Profil ve hesap bilgileri</h1><p>Bu ekran app_users tablosundan okur. Supabase SQL gerekli, yetkiler ve veriler sıfırlanmaz.</p></div>
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION} • RAWG Oyun Bilgisi Hazırlığı</div><h1>Profil ve hesap bilgileri</h1><p>Bu ekran app_users tablosundan okur. Supabase SQL gerekli, yetkiler ve veriler sıfırlanmaz.</p></div>
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={save}><h2>Profil Bilgileri</h2>
       <label>E-posta<input value={profile?.email || session?.user?.email || ''} disabled /></label>
       <label>Görünen Ad<input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Kanal adı veya kullanıcı adı" /></label>
@@ -734,10 +735,10 @@ function ProfilePage() {
   </section></Layout>;
 }
 
-function Updates() { return <section className="notes-card"><h2>📌 {VERSION} Tamamlananlar</h2><ul><li>✅ YouTube Bölüm Çekme Altyapısı dolduruldu.</li><li>✅ Kullanıcı e-posta, görünen ad, rol ve durum bilgisi gösterildi.</li><li>✅ Profil görünen adı panelden kaydedilebilir hale geldi.</li><li>✅ Oturum ve yetki bilgisi Türkçe gösterildi.</li><li>✅ Supabase SQL gerekli; game_episodes YouTube alanları eklenir.</li><li>✅ Vercel/GitHub sürüm etiketi v1.3.1 olarak güncellendi.</li></ul></section>; }
+function Updates() { return <section className="notes-card"><h2>📌 {VERSION} Tamamlananlar</h2><ul><li>✅ RAWG Oyun Bilgisi Hazırlığı dolduruldu.</li><li>✅ Kullanıcı e-posta, görünen ad, rol ve durum bilgisi gösterildi.</li><li>✅ Profil görünen adı panelden kaydedilebilir hale geldi.</li><li>✅ Oturum ve yetki bilgisi Türkçe gösterildi.</li><li>✅ Supabase SQL gerekli; game_episodes YouTube alanları eklenir.</li><li>✅ Vercel/GitHub sürüm etiketi v1.3.2 olarak güncellendi.</li></ul></section>; }
 
-function UpdatesPage() { return <Layout><PageHero icon="📝" title="Güncellemeler" text="v1.3.1 tamamlananlar ve sıradaki plan." /><Updates /><section className="next-card"><h2>➡️ Sonraki Plan: v1.3.1 YouTube Bölüm Çekme</h2><p>YouTube API anahtarı Vercel ortam değişkenlerine eklenerek playlistten bölüm çekme işlemi başlatıldı.</p></section></Layout>; }
-function StatusPage() { return <Layout><PageHero icon="✅" title="Site Durumu" text="YouTube Bölüm Çekme Altyapısı kontrol paneli." /><section className="status-grid"><article className="status-check-card"><strong>Supabase SQL gerekli</strong><p>youtube_playlists tablosu ve playlist kolonları eklenir. Veri/yetki sıfırlanmaz.</p></article><article className="status-check-card"><strong>Yeni .env gerekli</strong><p>Vercel içine YOUTUBE_API_KEY eklenir. Mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY korunur.</p></article><article className="status-check-card"><strong>YouTube API</strong><p>Playlist bölüm çekme için Vercel serverless API kullanılır.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>DROP TABLE / TRUNCATE yoktur. Mevcut kullanıcı yetkileri, oyunlar, kategoriler, kanallar, seriler ve bölümler korunur.</p></article></section></Layout>; }
+function UpdatesPage() { return <Layout><PageHero icon="📝" title="Güncellemeler" text="v1.3.2 tamamlananlar ve sıradaki plan." /><Updates /><section className="next-card"><h2>➡️ Sonraki Plan: v1.3.2 RAWG Oyun Bilgisi Hazırlığı</h2><p>YouTube API anahtarı Vercel ortam değişkenlerine eklenerek playlistten bölüm çekme işlemi başlatıldı.</p></section></Layout>; }
+function StatusPage() { return <Layout><PageHero icon="✅" title="Site Durumu" text="RAWG Oyun Bilgisi Hazırlığı kontrol paneli." /><section className="status-grid"><article className="status-check-card"><strong>Supabase SQL gerekli</strong><p>youtube_playlists tablosu ve playlist kolonları eklenir. Veri/yetki sıfırlanmaz.</p></article><article className="status-check-card"><strong>Yeni .env gerekli</strong><p>Vercel içine RAWG_API_KEY eklenir. Mevcut VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY korunur.</p></article><article className="status-check-card"><strong>YouTube API</strong><p>Playlist bölüm çekme için Vercel serverless API kullanılır.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>DROP TABLE / TRUNCATE yoktur. Mevcut kullanıcı yetkileri, oyunlar, kategoriler, kanallar, seriler ve bölümler korunur.</p></article></section></Layout>; }
 function NotFoundPage() { return <Layout><section className="hero-card"><div className="version-pill">404 • {VERSION}</div><h1>Sayfa hazır değil.</h1><p>Bu route henüz planlanmadı veya yanlış yazıldı.</p><div className="hero-actions"><a className="primary-btn" href="/">Ana Sayfa</a><a className="ghost-btn" href="/admin">Admin</a></div></section></Layout>; }
 
 
@@ -839,7 +840,7 @@ function AdminMaintenancePage() {
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla bakım modu yönetimi açılamaz.</p></div></section></Layout>;
 
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛠️ {VERSION} • Bakım Modu</div><h1>YouTube Bölüm Çekme Altyapısı</h1><p>Siteyi bakım moduna al, kullanıcıya gösterilecek başlık/mesajı düzenle ve sosyal bağlantıları tek merkezden hazırla. SQL veri ve yetki sıfırlamaz.</p></div><AdminNav />
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛠️ {VERSION} • Bakım Modu</div><h1>RAWG Oyun Bilgisi Hazırlığı</h1><p>Siteyi bakım moduna al, kullanıcıya gösterilecek başlık/mesajı düzenle ve sosyal bağlantıları tek merkezden hazırla. SQL veri ve yetki sıfırlamaz.</p></div><AdminNav />
     <form className="admin-grid" onSubmit={save}>
       <section className="admin-card login-card"><h2>Bakım Modu</h2>
         <label className="checkbox-row"><input type="checkbox" checked={form.maintenance_enabled} onChange={e => setForm({ ...form, maintenance_enabled: e.target.checked })} /> Bakım modunu aç</label>
@@ -877,7 +878,7 @@ function AdminDashboardOverview() {
   const staff = users.rows.filter(x => isAdminRole(x.role)).length;
   return <section className="dashboard-overview">
     <section className="beta-stats premium-stats"><article><span>{games.rows.length}</span><p>Oyun</p></article><article><span>{series.rows.length}</span><p>Seri</p></article><article><span>{episodes.rows.length}</span><p>Bölüm</p></article><article><span>{users.rows.length}</span><p>Kullanıcı</p></article></section>
-    <section className="status-grid"><article className="status-check-card"><strong>Medya Kontrolü</strong><p>{missingCover} kapaksız oyun, {missingBanner} bannersız oyun var.</p></article><article className="status-check-card"><strong>Yetki Kontrolü</strong><p>{staff} yetkili, {banned} banlı kullanıcı görünüyor.</p></article><article className="status-check-card"><strong>Arşiv Yapısı</strong><p>{categories.rows.length} kategori, {channels.rows.length} kanal ve {calendar.rows.length} takvim kaydı okunuyor.</p></article><article className="status-check-card"><strong>SQL Durumu</strong><p>v1.3.1 için yeni SQL gerekli. Mevcut tablolar okunur, veri/yetki sıfırlanmaz.</p></article></section>
+    <section className="status-grid"><article className="status-check-card"><strong>Medya Kontrolü</strong><p>{missingCover} kapaksız oyun, {missingBanner} bannersız oyun var.</p></article><article className="status-check-card"><strong>Yetki Kontrolü</strong><p>{staff} yetkili, {banned} banlı kullanıcı görünüyor.</p></article><article className="status-check-card"><strong>Arşiv Yapısı</strong><p>{categories.rows.length} kategori, {channels.rows.length} kanal ve {calendar.rows.length} takvim kaydı okunuyor.</p></article><article className="status-check-card"><strong>SQL Durumu</strong><p>v1.3.2 için yeni SQL gerekli. Mevcut tablolar okunur, veri/yetki sıfırlanmaz.</p></article></section>
     <section className="admin-card"><h2>Hızlı İşlemler</h2><div className="admin-button-bar"><a className="ghost-btn" href="/admin/games">🎮 Oyunları Yönet</a><a className="ghost-btn" href="/admin/episodes">▶️ Bölümleri Yönet</a><a className="ghost-btn" href="/admin/users">👥 Kullanıcılar</a><a className="ghost-btn" href="/admin/data-health">💾 Veri Sağlığı</a></div></section>
   </section>;
 }
@@ -904,7 +905,7 @@ function AdminDataHealthPage() {
   const banned = users.rows.filter(x => x.is_banned || x.status === 'banned').length;
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">💾 {VERSION} • Veri Sağlığı</div><h1>Veri Sağlığı Merkezi</h1><p>Mevcut Supabase tabloları okunur; bu ekran veri silmez, yetki sıfırlamaz ve yeni SQL gerektirmez.</p></div><AdminNav />
     <section className="beta-stats premium-stats"><article><span>{games.rows.length}</span><p>Oyun</p></article><article><span>{series.rows.length}</span><p>Seri</p></article><article><span>{episodes.rows.length}</span><p>Bölüm</p></article><article><span>{users.rows.length}</span><p>Kullanıcı</p></article></section>
-    <section className="status-grid"><article className="status-check-card"><strong>Kapak Eksikleri</strong><p>{missingCover} oyun kapaksız, {missingBanner} oyun bannersız, {missingLogo} oyun logosuz.</p></article><article className="status-check-card"><strong>Bölüm Kontrolü</strong><p>{noEpisodes} oyunda bağlı bölüm görünmüyor.</p></article><article className="status-check-card"><strong>Kategori/Kanal</strong><p>{categories.rows.length} kategori ve {channels.rows.length} kanal okunuyor.</p></article><article className="status-check-card"><strong>Kullanıcı Güvenliği</strong><p>{banned} banlı kullanıcı var. Kurucu/yetki kayıtları korunur.</p></article><article className="status-check-card"><strong>Takvim</strong><p>{calendar.rows.length} yayın takvimi kaydı okunuyor.</p></article><article className="status-check-card"><strong>SQL Gerekli mi?</strong><p>Hayır. v1.3.1 mevcut tabloları okur, yeni kolon veya tablo eklemez.</p></article></section>
+    <section className="status-grid"><article className="status-check-card"><strong>Kapak Eksikleri</strong><p>{missingCover} oyun kapaksız, {missingBanner} oyun bannersız, {missingLogo} oyun logosuz.</p></article><article className="status-check-card"><strong>Bölüm Kontrolü</strong><p>{noEpisodes} oyunda bağlı bölüm görünmüyor.</p></article><article className="status-check-card"><strong>Kategori/Kanal</strong><p>{categories.rows.length} kategori ve {channels.rows.length} kanal okunuyor.</p></article><article className="status-check-card"><strong>Kullanıcı Güvenliği</strong><p>{banned} banlı kullanıcı var. Kurucu/yetki kayıtları korunur.</p></article><article className="status-check-card"><strong>Takvim</strong><p>{calendar.rows.length} yayın takvimi kaydı okunuyor.</p></article><article className="status-check-card"><strong>SQL Gerekli mi?</strong><p>Hayır. v1.3.2 mevcut tabloları okur, yeni kolon veya tablo eklemez.</p></article></section>
   </section></Layout>;
 }
 
@@ -1051,8 +1052,8 @@ function AdminYouTubePlaylistsPage() {
   if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
   if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>Normal kullanıcı hesabıyla YouTube playlist altyapısı açılamaz.</p></div></section></Layout>;
 
-  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔗 {VERSION} • YouTube Bölüm Çekme Altyapısı</div><h1>YouTube playlist kayıt merkezi hazır.</h1><p>Bu sürümde playlist ID/URL üzerinden YouTube API ile bölüm çekme altyapısı eklendi.</p></div><AdminNav />
-    <section className="status-grid"><article className="status-check-card"><strong>Yeni .env</strong><p>Gerekli: Vercel Environment Variables içine YOUTUBE_API_KEY eklenir.</p></article><article className="status-check-card"><strong>Supabase SQL</strong><p>Gerekli. game_episodes tablosuna YouTube video alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>Tablolar sıfırlanmaz; mevcut kullanıcı yetkileri ve içerikler korunur.</p></article></section>
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔗 {VERSION} • RAWG Oyun Bilgisi Hazırlığı</div><h1>YouTube playlist kayıt merkezi hazır.</h1><p>Bu sürümde playlist ID/URL üzerinden YouTube API ile bölüm çekme altyapısı eklendi.</p></div><AdminNav />
+    <section className="status-grid"><article className="status-check-card"><strong>Yeni .env</strong><p>Gerekli: Vercel Environment Variables içine RAWG_API_KEY eklenir.</p></article><article className="status-check-card"><strong>Supabase SQL</strong><p>Gerekli. game_episodes tablosuna YouTube video alanları eklenir.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>Tablolar sıfırlanmaz; mevcut kullanıcı yetkileri ve içerikler korunur.</p></article></section>
     <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>{edit ? 'Playlist Düzenle' : 'Playlist Ekle'}</h2>
       <div className="form-two-col"><label>Başlık<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
       <label>Playlist URL<input value={form.playlist_url} onChange={e => set('playlist_url', e.target.value)} placeholder="https://www.youtube.com/playlist?list=..." /></label>
@@ -1067,6 +1068,40 @@ function AdminYouTubePlaylistsPage() {
       <label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label>
       <button className="primary-btn">{edit ? 'Playlist Güncelle' : 'Playlist Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
       <div className="admin-card admin-table-card"><h2>Playlist Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Playlist</th><th>Bağlantı</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.playlist_id}</small></td><td>{r.game_title || r.series_title || r.channel_title || '—'}</td><td>{r.sync_status || r.status}</td><td><button onClick={() => syncEpisodes(r)}>Bölümleri Çek</button><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz playlist yok.</td></tr> : null}</tbody></table></div></section>
+  </section></Layout>;
+}
+
+
+function AdminRawgPage() {
+  const session = getSession();
+  const [profile, setProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [query, setQuery] = useState('');
+  const [items, setItems] = useState([]);
+  const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+  useEffect(() => { if (session?.access_token) getCurrentAppUser(session).then(r => { setProfile(r.data); setLoadingProfile(false); }); else setLoadingProfile(false); }, [session?.access_token]);
+  async function searchRawg(e) {
+    e.preventDefault();
+    if (!query.trim()) return setMsg('Oyun adı yazmalısın.');
+    setLoading(true); setMsg('RAWG üzerinden aranıyor...'); setItems([]);
+    try {
+      const res = await fetch('/api/rawg-search?query=' + encodeURIComponent(query.trim()));
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'RAWG arama hatası.');
+      setItems(data.results || []);
+      setMsg(`Başarı: ${data.results?.length || 0} sonuç bulundu. Kapak/meta bilgilerini oyun yönetiminde kullanabilirsin.`);
+    } catch (error) {
+      setMsg(error.message || 'RAWG araması yapılamadı.');
+    } finally { setLoading(false); }
+  }
+  if (!session?.access_token) return <AuthPage mode="login" />;
+  if (loadingProfile) return <Layout><section className="admin-shell"><p>Yetki kontrol ediliyor...</p></section></Layout>;
+  if (!isAdminRole(profile?.role)) return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">👤 {VERSION}</div><h1>Bu alan sadece yetkililere açıktır.</h1><p>RAWG oyun bilgisi merkezi normal kullanıcıya gösterilmez.</p></div></section></Layout>;
+  return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🧩 {VERSION} • RAWG Oyun Bilgisi Hazırlığı</div><h1>RAWG oyun arama ve kapak/meta önizleme merkezi.</h1><p>Oyun eklerken doğru kapak, çıkış tarihi ve tür bilgisini bulmak için RAWG arama altyapısı hazırlandı.</p></div><AdminNav />
+    <section className="status-grid"><article className="status-check-card"><strong>Yeni .env</strong><p>Gerekli: Vercel Environment Variables içine RAWG_API_KEY eklenir.</p></article><article className="status-check-card"><strong>Supabase SQL</strong><p>Gerekmez. Mevcut public_games alanları kullanılacak; tablo/kolon eklenmez.</p></article><article className="status-check-card"><strong>Veri Koruma</strong><p>Arama sadece önizleme yapar; mevcut oyunlar, kullanıcılar ve yetkiler sıfırlanmaz.</p></article></section>
+    <section className="admin-grid"><form className="admin-card login-card" onSubmit={searchRawg}><h2>🎮 RAWG Oyun Ara</h2><label>Oyun Adı<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Örn. Resident Evil 5" /></label><button className="primary-btn" disabled={loading}>{loading ? 'Aranıyor...' : 'RAWG Üzerinden Ara'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
+      <div className="admin-card admin-table-card"><h2>Sonuçlar</h2><table className="admin-table"><thead><tr><th>Oyun</th><th>Çıkış</th><th>Kapak</th><th>RAWG</th></tr></thead><tbody>{items.map(item => <tr key={item.id}><td><strong>{item.name}</strong><small>{item.genres?.map(g => g.name).join(', ') || 'Tür yok'}</small></td><td>{item.released || '—'}</td><td>{item.background_image ? <a href={item.background_image} target="_blank">Kapak URL</a> : '—'}</td><td>{item.id}</td></tr>)}{!items.length ? <tr><td colSpan="4">Henüz sonuç yok.</td></tr> : null}</tbody></table></div></section>
   </section></Layout>;
 }
 
@@ -1104,6 +1139,7 @@ function AppRouter() {
   if (p === '/admin/channels') return <AdminChannelsPage />;
   if (p === '/admin/episodes') return <AdminEpisodesPage />;
   if (p === '/admin/youtube-playlists') return <AdminYouTubePlaylistsPage />;
+  if (p === '/admin/rawg') return <AdminRawgPage />;
   if (p === '/admin/calendar') return <AdminCalendarPage />;
   if (p === '/admin/maintenance') return <AdminMaintenancePage />;
   if (p === '/admin/data-health') return <AdminDataHealthPage />;
