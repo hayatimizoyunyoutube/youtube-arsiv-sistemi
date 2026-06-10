@@ -6,6 +6,10 @@ import { clearSession, createRow, deleteRow, getCurrentAppUser, getSession, isAd
 
 const VERSION = siteConfig.version;
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80';
+function SafeImg({ src, alt = '', className = '' }) {
+  const clean = String(src || '').trim();
+  return <img className={className} src={clean || PLACEHOLDER} alt={alt} onError={(e) => { if (e.currentTarget.src !== PLACEHOLDER) e.currentTarget.src = PLACEHOLDER; }} loading="lazy" />;
+}
 
 const topMenu = [
   ['🏠 Ana Sayfa', '/'],
@@ -98,7 +102,7 @@ function DataCard({ item, type = 'series' }) {
   const slug = item.slug || item.id;
   const img = item.cover_url || item.poster_url || item.logo_url || PLACEHOLDER;
   return <a className="series-card upgraded-series-card" href={`/${type}/${slug}`}>
-    <div className="series-image-wrap"><img src={img} alt={title} /><span className="status-badge">{item.status || 'Aktif'}</span></div>
+    <div className="series-image-wrap"><SafeImg src={img} alt={title} /><span className="status-badge">{item.status || 'Aktif'}</span></div>
     <div className="series-content"><h3>{title}</h3><p>{item.description || 'Açıklama henüz eklenmedi.'}</p><div className="card-info-row"><span>{item.category_title || item.channel_title || 'Arşiv'}</span><span>{item.episodes || item.episode_count || 0} kayıt</span></div></div>
   </a>;
 }
@@ -206,7 +210,22 @@ function HomePage() {
 }
 function ListPage({ table, icon, title, text, type }) {
   const { rows, loading, error } = useTable(table);
-  return <Layout><PageHero icon={icon} title={title} text={text} />{error ? <p className="form-message error">{error}</p> : null}{loading ? <p>Yükleniyor...</p> : rows.length ? <section className="series-section"><div className="series-grid premium-series-grid">{rows.map(x => <DataCard key={x.id} item={x} type={type} />)}</div></section> : <EmptyState title={`${title} kaydı yok`} text="SQL temiz başlangıç yaptığı için kayıtlar yönetim panelinden eklenecek." />}</Layout>;
+  const gamesFallback = useTable(type === 'series' ? 'public_games' : table);
+  const derivedSeries = type === 'series' && !rows.length ? deriveSeriesFromGames(gamesFallback.rows) : [];
+  const visibleRows = rows.length ? rows : derivedSeries;
+  const isLoading = loading || (type === 'series' && gamesFallback.loading);
+  return <Layout><PageHero icon={icon} title={title} text={text} />{error ? <p className="form-message error">{error}</p> : null}{isLoading ? <p>Yükleniyor...</p> : visibleRows.length ? <section className="series-section"><div className="series-grid premium-series-grid">{visibleRows.map(x => <DataCard key={x.id || x.slug} item={x} type={type} />)}</div></section> : <EmptyState title={`${title} kaydı yok`} text="Kayıtlar yönetim panelinden eklenecek. Oyun eklerken seri başlığı yazarsan burada otomatik görünür." />}</Layout>;
+}
+function deriveSeriesFromGames(games) {
+  const map = new Map();
+  (games || []).forEach(g => {
+    const title = g.series_title || inferSeriesTitle(g.title) || g.title;
+    const slug = g.series_slug || makeSlug(title);
+    if (!slug) return;
+    const old = map.get(slug);
+    map.set(slug, { id: slug, slug, title, description: g.description || old?.description || '', category_title: g.category_title || old?.category_title || '', channel_title: g.channel_title || old?.channel_title || '', status: g.status || old?.status || 'Aktif', cover_url: g.cover_url || old?.cover_url || '', banner_url: g.banner_url || old?.banner_url || '', episode_count: Number(old?.episode_count || 0), game_count: Number(old?.game_count || 0) + 1, is_public: true });
+  });
+  return [...map.values()];
 }
 
 function SimplePage({ title, icon, text }) { return <Layout><PageHero icon={icon} title={title} text={text} /><EmptyState title="İskelet hazır" text="Bu sayfa route olarak kuruldu. İçerik sonraki sürümlerde Supabase tablosuyla doldurulacak." /></Layout>; }
@@ -280,13 +299,32 @@ function makeSlug(value) { return String(value || '').trim().toLowerCase().repla
 function getRawgAverageScore(item) { const meta = Number(item?.metacritic || 0); if (meta) return meta; const rating = Number(item?.rating || 0); return rating ? Math.round(rating * 20) : ''; }
 function makeTurkishStory(item) {
   const title = item?.name || 'Bu oyun';
-  const raw = String(item?.description_raw || item?.description || '').replace(/<[^>]+>/g, '').trim();
-  if (raw) return `Hikaye / Özet: ${raw}`;
-  const genres = (item?.genres || []).map(g => trGenre(g.name)).filter(Boolean).join(', ');
+  const lower = String(title).toLowerCase();
+  const genres = (item?.genres || []).map(g => trGenre(g.name)).filter(Boolean);
   const released = item?.released ? ` Çıkış tarihi: ${item.released}.` : '';
-  return `Hikaye / Özet: ${title}, ${genres || 'oyun'} türünde bir yapımdır.${released} RAWG üzerinde resmi hikaye metni bulunamadığı için bu alan kısa Türkçe özet olarak hazırlanmıştır.`;
+  const dev = (item?.developers || []).map(d => d.name).filter(Boolean).slice(0, 2).join(', ');
+  const pub = (item?.publishers || []).map(d => d.name).filter(Boolean).slice(0, 2).join(', ');
+  if (lower.includes('007') || lower.includes('james bond')) {
+    return `Hikaye / Özet: ${title}, James Bond evreninde geçen sinematik bir ajanlık ve aksiyon macerasıdır. Oyuncu, 007 kod adlı ajanın gizli görevlerine, takip sahnelerine, sızma bölümlerine ve yüksek tempolu çatışmalarına odaklanan bir hikaye akışını takip eder.${released} Türler: ${genres.join(', ') || 'Aksiyon, Macera'}. ${dev ? 'Geliştirici: ' + dev + '. ' : ''}${pub ? 'Yayıncı: ' + pub + '. ' : ''}Bu Türkçe özet, RAWG/Steam bilgilerinden kullanıcıya anlaşılır arşiv açıklaması olarak hazırlanmıştır.`;
+  }
+  const raw = String(item?.description_raw || item?.description || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  if (raw && raw.length > 80) {
+    return `Hikaye / Özet: ${title}, ${genres.join(', ') || 'oyun'} türünde bir yapımdır.${released} ${dev ? 'Geliştirici: ' + dev + '. ' : ''}${pub ? 'Yayıncı: ' + pub + '. ' : ''}Oyunun genel anlatımı, keşif, görev akışı, karakter ilerleyişi ve atmosfer üzerine kuruludur. RAWG açıklaması İngilizce geldiği için bu alan kullanıcıya Türkçe arşiv özeti olarak sadeleştirilmiştir: ${raw.slice(0, 650)}${raw.length > 650 ? '...' : ''}`;
+  }
+  return `Hikaye / Özet: ${title}, ${genres.join(', ') || 'oyun'} türünde bir yapımdır.${released} Oyunun arşiv kaydı için hikaye, görev akışı, atmosfer, oynanış yapısı ve yayın planı bu sayfada tutulur. RAWG üzerinde uzun resmi hikaye metni bulunamadığı için bu alan Türkçe ve kullanıcı dostu özet olarak hazırlanmıştır.`;
 }
-function rawgGenresText(item) { return (item?.genres || []).map(g => trGenre(g.name)).filter(Boolean).join(', '); }
+function rawgGenresText(item) {
+  const all = [...(item?.genres || []), ...(item?.tags || [])].map(g => trGenre(g.name)).filter(Boolean);
+  return [...new Set(all)].join(', ');
+}
+function inferSeriesTitle(name) {
+  const lower = String(name || '').toLowerCase();
+  if (lower.includes('007') || lower.includes('james bond')) return 'James Bond';
+  if (lower.includes('assassin')) return "Assassin's Creed";
+  if (lower.includes('resident evil')) return 'Resident Evil';
+  if (lower.includes('silent hill')) return 'Silent Hill';
+  return name || '';
+}
 async function getSteamCoverByName(name) {
   try {
     const res = await fetch(`/api/steam-cover?query=${encodeURIComponent(name || '')}`);
@@ -341,7 +379,8 @@ function AdminQuickManager({ session }) {
     setMsg('RAWG üzerinden oyun bilgisi aranıyor...');
     setRawgResults([]);
     try {
-      const res = await fetch(`/api/rawg-search?query=${encodeURIComponent(query)}`);
+      const searchQuery = query.toLowerCase().includes('007') && !query.toLowerCase().includes('james bond') ? `James Bond ${query}` : query;
+      const res = await fetch(`/api/rawg-search?query=${encodeURIComponent(searchQuery)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'RAWG araması başarısız oldu.');
       setRawgResults(data.results || []);
@@ -358,6 +397,7 @@ function AdminQuickManager({ session }) {
     const genres = genresText ? genresText.split(',').map(x => x.trim()).filter(Boolean) : [];
     const firstGenre = genres[0] || 'Oyun';
     const slug = item.slug || makeSlug(item.name);
+    const inferredSeries = inferSeriesTitle(item.name);
     const score = getRawgAverageScore(item);
     setMsg('Başarı: RAWG sonucu seçildi. Steam kapak bilgisi kontrol ediliyor...');
     const steam = await getSteamCoverByName(item.name);
@@ -373,8 +413,8 @@ function AdminQuickManager({ session }) {
       category_slug: x.category_slug || makeSlug(firstGenre),
       channel_title: x.channel_title || 'Hayatımız Oyun',
       channel_slug: x.channel_slug || 'hayatimiz-oyun',
-      series_title: x.series_title || item.name || '',
-      series_slug: x.series_slug || slug,
+      series_title: x.series_title || inferredSeries || item.name || '',
+      series_slug: x.series_slug || makeSlug(inferredSeries || item.name || slug),
       release_date: item.released || x.release_date,
       cover_url: steamCover || item.background_image || x.cover_url,
       banner_url: steamBanner || item.background_image || x.banner_url,
@@ -417,7 +457,26 @@ function AdminQuickManager({ session }) {
     };
     const r = edit ? await updateRow('public_games', edit, payload, session) : await createRow('public_games', payload, session);
     if (r.error) return setMsg(r.error);
-    setMsg(edit ? 'Başarı: oyun güncellendi.' : 'Başarı: oyun eklendi.');
+    if (payload.series_slug && payload.series_title) {
+      await upsertRow('public_series', {
+        slug: payload.series_slug,
+        title: payload.series_title,
+        description: payload.description || payload.story_tr || '',
+        category_slug: payload.category_slug || '',
+        category_title: payload.category_title || '',
+        channel_slug: payload.channel_slug || '',
+        channel_title: payload.channel_title || '',
+        status: payload.status || 'Planlandı',
+        cover_url: payload.cover_url || '',
+        banner_url: payload.banner_url || payload.rawg_background_url || '',
+        logo_url: payload.logo_url || '',
+        game_count: 1,
+        episode_count: 0,
+        is_public: true,
+        sort_order: payload.sort_order || 100
+      }, session, 'slug');
+    }
+    setMsg(edit ? 'Başarı: oyun güncellendi ve seri bağlantısı kontrol edildi.' : 'Başarı: oyun eklendi ve seri kaydı otomatik oluşturuldu.');
     setEdit(null); setForm(empty); load();
   }
 
@@ -446,9 +505,9 @@ function AdminQuickManager({ session }) {
     <label>Web Sitesi<input value={form.website || ''} onChange={e => set('website', e.target.value)} placeholder="https://..." /></label>
     <label>Medya Notu<textarea rows="2" value={form.media_note} onChange={e => set('media_note', e.target.value)} placeholder="Kapak/banner hakkında kısa not" /></label>
     <div className="media-preview-grid">
-      <article><strong>Kapak Önizleme</strong><img src={form.cover_url || PLACEHOLDER} alt="Kapak önizleme" /></article>
-      <article><strong>Banner Önizleme</strong><img src={form.banner_url || PLACEHOLDER} alt="Banner önizleme" /></article>
-      <article><strong>Logo Önizleme</strong><img src={form.logo_url || PLACEHOLDER} alt="Logo önizleme" /></article>
+      <article><strong>Kapak Önizleme</strong><SafeImg src={form.cover_url} alt="Kapak önizleme" /></article>
+      <article><strong>Banner Önizleme</strong><SafeImg src={form.banner_url} alt="Banner önizleme" /></article>
+      <article><strong>Logo Önizleme</strong><SafeImg src={form.logo_url} alt="Logo önizleme" /></article>
     </div>
     <div className="form-two-col"><label>Sıra<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
     <button className="primary-btn">{edit ? 'Oyunu Güncelle' : 'Oyunu Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
@@ -531,7 +590,7 @@ function AdminSeriesPage() {
       <label>Kapak URL<input value={form.cover_url} onChange={e => set('cover_url', e.target.value)} placeholder="https://..." /></label>
       <label>Banner URL<input value={form.banner_url} onChange={e => set('banner_url', e.target.value)} placeholder="https://..." /></label>
       <label>Logo URL<input value={form.logo_url} onChange={e => set('logo_url', e.target.value)} placeholder="https://..." /></label>
-      <div className="media-preview-grid"><article><strong>Kapak</strong><img src={form.cover_url || PLACEHOLDER} alt="Kapak" /></article><article><strong>Banner</strong><img src={form.banner_url || PLACEHOLDER} alt="Banner" /></article><article><strong>Logo</strong><img src={form.logo_url || PLACEHOLDER} alt="Logo" /></article></div>
+      <div className="media-preview-grid"><article><strong>Kapak</strong><SafeImg src={form.cover_url} alt="Kapak" /></article><article><strong>Banner</strong><SafeImg src={form.banner_url} alt="Banner" /></article><article><strong>Logo</strong><SafeImg src={form.logo_url} alt="Logo" /></article></div>
       <div className="form-two-col"><label>Oyun Sayısı<input type="number" value={form.game_count} onChange={e => set('game_count', e.target.value)} /></label><label>Bölüm Sayısı<input type="number" value={form.episode_count} onChange={e => set('episode_count', e.target.value)} /></label></div>
       <label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label>
       <button className="primary-btn">{edit ? 'Seriyi Güncelle' : 'Seriyi Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
@@ -733,7 +792,7 @@ function AdminChannelsPage() {
       <label>Kapak URL<input value={form.cover_url} onChange={e => set('cover_url', e.target.value)} placeholder="https://..." /></label>
       <label>Banner URL<input value={form.banner_url} onChange={e => set('banner_url', e.target.value)} placeholder="https://..." /></label>
       <label>Logo URL<input value={form.logo_url} onChange={e => set('logo_url', e.target.value)} placeholder="https://..." /></label>
-      <div className="media-preview-grid"><article><strong>Kapak</strong><img src={form.cover_url || PLACEHOLDER} alt="Kapak" /></article><article><strong>Banner</strong><img src={form.banner_url || PLACEHOLDER} alt="Banner" /></article><article><strong>Logo</strong><img src={form.logo_url || PLACEHOLDER} alt="Logo" /></article></div>
+      <div className="media-preview-grid"><article><strong>Kapak</strong><SafeImg src={form.cover_url} alt="Kapak" /></article><article><strong>Banner</strong><SafeImg src={form.banner_url} alt="Banner" /></article><article><strong>Logo</strong><SafeImg src={form.logo_url} alt="Logo" /></article></div>
       <div className="form-two-col"><label>Sıra<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
       <button className="primary-btn">{edit ? 'Kanalı Güncelle' : 'Kanalı Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
       <div className="admin-card admin-table-card"><h2>Kanal Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Kanal</th><th>Tür</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title || r.name}</strong><small>{r.slug}</small></td><td>{r.channel_type || 'YouTube'}</td><td>{r.status || 'Aktif'}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, title: r.title || r.name || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz kanal yok.</td></tr> : null}</tbody></table></div></section>

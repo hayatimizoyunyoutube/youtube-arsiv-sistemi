@@ -1028,3 +1028,17 @@ alter table if exists public.youtube_playlists add column if not exists cover_ur
 select
   'FIX v1.3.2 RAWG hikaye, Steam kapak, tüm türler, etiketler ve YouTube thumbnail alanları eklendi. Veri/yetki sıfırlanmadı.' as result,
   'public_games: story_tr, steam_app_id, steam_cover_url, tags, genres; game_episodes: thumbnail_url; youtube_playlists: cover_url' as sql_eklenenler;
+
+-- FIX v1.3.2 - RAWG görsel/seri/hikaye düzeltmesi
+-- Veri ve yetki sıfırlamaz. DROP TABLE / TRUNCATE yoktur.
+alter table if exists public.public_games add column if not exists story_tr text default '';
+alter table if exists public.public_games add column if not exists steam_app_id text default '';
+alter table if exists public.public_games add column if not exists steam_cover_url text default '';
+alter table if exists public.public_games add column if not exists tags text[] default '{}';
+alter table if exists public.public_games add column if not exists genres text[] default '{}';
+alter table if exists public.public_games add column if not exists website text default '';
+alter table if exists public.public_series add column if not exists logo_url text default '';
+alter table if exists public.public_series add column if not exists game_count integer default 0;
+alter table if exists public.public_series add column if not exists episode_count integer default 0;
+
+select 'FIX v1.3.2 RAWG hikaye/kapak/seri düzeltmesi çalıştı. Eklenen/güncellenenler: public_games story_tr, steam_app_id, steam_cover_url, tags, genres, website; public_series logo_url, game_count, episode_count. Veri ve yetkiler sıfırlanmadı.' as result;
