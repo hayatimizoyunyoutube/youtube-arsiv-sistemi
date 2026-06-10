@@ -79,3 +79,8 @@ begin
 end $$;
 
 select 'FIX v1.3.2 RAWG + YouTube çalışır hale getirildi. Eklenenler: public_games rawg_id/metacritic/genres/website/rawg_background_url, youtube_playlists güvenli alanları, game_episodes youtube_video_id/thumbnail_url/episode_number. Veri ve yetkiler sıfırlanmadı.' as result;
+
+-- FIX: RAWG otomatik doldurma alanları ve etiketler. Veri/yetki sıfırlamaz.
+alter table if exists public.public_games add column if not exists tags text[] default '{}';
+
+select 'FIX v1.3.2 RAWG form düzeltildi. Eklenen/güncellenen: public_games.tags alanı, formda Türkçe oyun türleri, butonlu etiketler, kategori/kanal/seri otomatik doldurma ve koyu select görünümü. Veri ve yetkiler sıfırlanmadı.' as result;

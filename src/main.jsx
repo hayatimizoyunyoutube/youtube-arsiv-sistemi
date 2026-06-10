@@ -251,6 +251,34 @@ function AdminPage() {
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🛡️ {VERSION} • Yönetim Paneli</div><h1>Yetkili yönetim paneli hazır.</h1><p>v1.3.2 ile RAWG oyun bilgisi altyapısı aktif edildi; SQL gerekli, mevcut veriler sıfırlanmaz.</p></div><AdminNav /><AdminDashboardOverview /><AdminQuickManager session={session} /></section></Layout>;
 }
 
+
+const TAG_OPTIONS = ['Türkçe Altyazılı', 'Türkçe Dublajlı', 'Coop', 'DLC', '%100'];
+const GENRE_TR = {
+  'Action': 'Aksiyon',
+  'Adventure': 'Macera',
+  'RPG': 'RPG',
+  'Role-playing (RPG)': 'RPG',
+  'Shooter': 'Nişancı',
+  'Strategy': 'Strateji',
+  'Puzzle': 'Bulmaca',
+  'Racing': 'Yarış',
+  'Sports': 'Spor',
+  'Simulation': 'Simülasyon',
+  'Indie': 'Bağımsız',
+  'Platformer': 'Platform',
+  'Arcade': 'Arcade',
+  'Fighting': 'Dövüş',
+  'Casual': 'Gündelik',
+  'Family': 'Aile',
+  'Board Games': 'Masa Oyunu',
+  'Educational': 'Eğitici',
+  'Card': 'Kart',
+  'Massively Multiplayer': 'Çok Oyunculu'
+};
+function trGenre(name) { return GENRE_TR[name] || name || ''; }
+function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll('ı','i').replaceAll('ğ','g').replaceAll('ü','u').replaceAll('ş','s').replaceAll('ö','o').replaceAll('ç','c').replaceAll(' ', '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, ''); }
+function getRawgAverageScore(item) { const meta = Number(item?.metacritic || 0); if (meta) return meta; const rating = Number(item?.rating || 0); return rating ? Math.round(rating * 20) : ''; }
+
 function AdminQuickManager({ session }) {
   const empty = {
     slug: '',
@@ -273,6 +301,7 @@ function AdminQuickManager({ session }) {
     genres: '',
     website: '',
     rawg_background_url: '',
+    tags: [],
     sort_order: 100,
     is_public: true
   };
@@ -305,23 +334,33 @@ function AdminQuickManager({ session }) {
   }
 
   function applyRawgGame(item) {
-    const genres = (item.genres || []).map(g => g.name).filter(Boolean);
-    const slug = item.slug || String(item.name || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, '');
+    const genres = (item.genres || []).map(g => trGenre(g.name)).filter(Boolean);
+    const firstGenre = genres[0] || 'Oyun';
+    const slug = item.slug || makeSlug(item.name);
+    const score = getRawgAverageScore(item);
     setForm(x => ({
       ...x,
       title: item.name || x.title,
       slug: x.slug || slug,
+      description: x.description || (item.released ? `${item.name} için çıkış tarihi: ${item.released}.` : ''),
+      category_title: x.category_title || firstGenre,
+      category_slug: x.category_slug || makeSlug(firstGenre),
+      channel_title: x.channel_title || 'Hayatımız Oyun',
+      channel_slug: x.channel_slug || 'hayatimiz-oyun',
+      series_title: x.series_title || item.name || '',
+      series_slug: x.series_slug || slug,
       release_date: item.released || x.release_date,
       cover_url: item.background_image || x.cover_url,
       banner_url: item.background_image || x.banner_url,
       logo_url: x.logo_url || item.background_image || '',
       rawg_id: item.id || x.rawg_id || '',
-      metacritic: item.metacritic || x.metacritic || '',
+      metacritic: score || x.metacritic || '',
       genres: genres.join(', '),
+      website: item.website || x.website || '',
       rawg_background_url: item.background_image || x.rawg_background_url || '',
-      media_note: `RAWG ID: ${item.id || '—'}${item.metacritic ? ' • Metacritic: ' + item.metacritic : ''}${genres.length ? ' • Türler: ' + genres.join(', ') : ''}`
+      media_note: `RAWG ID: ${item.id || '—'}${score ? ' • Ortalama Puan: ' + score : ''}${genres.length ? ' • Türler: ' + genres.join(', ') : ''}`
     }));
-    setMsg(`Başarı: ${item.name} bilgileri forma aktarıldı.`);
+    setMsg(`Başarı: ${item.name} bilgileri forma aktarıldı. Kategori, seri, türler, tarih, görseller ve ortalama puan otomatik dolduruldu.`);
   }
 
   async function load() {
@@ -333,6 +372,7 @@ function AdminQuickManager({ session }) {
   }
   useEffect(() => { load(); }, []);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
+  function toggleTag(tag) { setForm(x => { const current = Array.isArray(x.tags) ? x.tags : String(x.tags || '').split(',').map(v => v.trim()).filter(Boolean); return { ...x, tags: current.includes(tag) ? current.filter(v => v !== tag) : [...current, tag] }; }); }
 
   async function submit(e) {
     e.preventDefault();
@@ -344,7 +384,8 @@ function AdminQuickManager({ session }) {
       release_date: form.release_date || null,
       rawg_id: form.rawg_id ? Number(form.rawg_id) : null,
       metacritic: form.metacritic ? Number(form.metacritic) : null,
-      genres: typeof form.genres === 'string' ? form.genres.split(',').map(x => x.trim()).filter(Boolean) : form.genres
+      genres: typeof form.genres === 'string' ? form.genres.split(',').map(x => x.trim()).filter(Boolean) : form.genres,
+      tags: Array.isArray(form.tags) ? form.tags : String(form.tags || '').split(',').map(x => x.trim()).filter(Boolean)
     };
     const r = edit ? await updateRow('public_games', edit, payload, session) : await createRow('public_games', payload, session);
     if (r.error) return setMsg(r.error);
@@ -360,7 +401,7 @@ function AdminQuickManager({ session }) {
   }
 
   return <section className="admin-grid"><form className="admin-card login-card" onSubmit={submit}><h2>🎮 Oyun Yönetimi</h2><p>Oyun yönetimi aktif. Yayın tarihlerini Takvim menüsünden planlayabilirsin.</p>
-    <div className="rawg-inline-panel"><h3>🧩 RAWG'dan Çek</h3><p>Oyun adını yazıp RAWG'dan kapak, banner, çıkış tarihi, tür ve puan bilgisini forma aktar.</p><div className="rawg-search-row"><input value={rawgQuery} onChange={e => setRawgQuery(e.target.value)} placeholder="Örn. 007 First Light" /><button type="button" className="ghost-btn" onClick={searchRawgInline} disabled={rawgLoading}>{rawgLoading ? 'Aranıyor...' : "🎮 RAWG'dan Çek"}</button></div>{rawgResults.length ? <div className="rawg-result-grid">{rawgResults.map(item => <button type="button" className="rawg-result-card" key={item.id} onClick={() => applyRawgGame(item)}>{item.background_image ? <img src={item.background_image} alt={item.name} /> : <span className="rawg-no-image">Görsel yok</span>}<strong>{item.name}</strong><small>{item.released || 'Tarih yok'} {item.metacritic ? `• MC ${item.metacritic}` : ''}</small></button>)}</div> : null}</div>
+    <div className="rawg-inline-panel"><h3>🧩 RAWG'dan Çek</h3><p>Oyun adını yazıp RAWG'dan kapak, banner, çıkış tarihi, tür ve puan bilgisini forma aktar.</p><div className="rawg-search-row"><input value={rawgQuery} onChange={e => setRawgQuery(e.target.value)} placeholder="Örn. 007 First Light" /><button type="button" className="ghost-btn" onClick={searchRawgInline} disabled={rawgLoading}>{rawgLoading ? 'Aranıyor...' : "🎮 RAWG'dan Çek"}</button></div>{rawgResults.length ? <div className="rawg-result-grid">{rawgResults.map(item => <button type="button" className="rawg-result-card" key={item.id} onClick={() => applyRawgGame(item)}>{item.background_image ? <img src={item.background_image} alt={item.name} /> : <span className="rawg-no-image">Görsel yok</span>}<strong>{item.name}</strong><small>{item.released || 'Tarih yok'} {getRawgAverageScore(item) ? `• Puan ${getRawgAverageScore(item)}` : ''}</small></button>)}</div> : null}</div>
     <div className="form-two-col"><label>Oyun Adı<input value={form.title} onChange={e => set('title', e.target.value)} required /></label><label>Slug<input value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="boş kalırsa otomatik" /></label></div>
     <label>Açıklama<textarea rows="3" value={form.description} onChange={e => set('description', e.target.value)} /></label>
     <div className="form-two-col"><label>Kategori Başlığı<input value={form.category_title} onChange={e => set('category_title', e.target.value)} placeholder="Korku" /></label><label>Kategori Slug<input value={form.category_slug} onChange={e => set('category_slug', e.target.value)} placeholder="korku" /></label></div>
@@ -370,8 +411,9 @@ function AdminQuickManager({ session }) {
     <label>Kapak URL<input value={form.cover_url} onChange={e => set('cover_url', e.target.value)} placeholder="https://..." /></label>
     <label>Banner URL<input value={form.banner_url} onChange={e => set('banner_url', e.target.value)} placeholder="https://..." /></label>
     <label>Logo URL<input value={form.logo_url} onChange={e => set('logo_url', e.target.value)} placeholder="https://..." /></label>
-    <div className="form-two-col"><label>RAWG ID<input value={form.rawg_id || ''} onChange={e => set('rawg_id', e.target.value)} placeholder="RAWG ID" /></label><label>Metacritic<input value={form.metacritic || ''} onChange={e => set('metacritic', e.target.value)} placeholder="Puan" /></label></div>
-    <label>Türler<input value={form.genres || ''} onChange={e => set('genres', e.target.value)} placeholder="Aksiyon, Macera, Korku" /></label>
+    <div className="form-two-col"><label>RAWG ID<input value={form.rawg_id || ''} onChange={e => set('rawg_id', e.target.value)} placeholder="RAWG ID" /></label><label>IGN / Ortalama Puan<input value={form.metacritic || ''} onChange={e => set('metacritic', e.target.value)} placeholder="RAWG/IGN ortalama puanı" /></label></div>
+    <label>Oyun Türleri<input value={form.genres || ''} onChange={e => set('genres', e.target.value)} placeholder="Aksiyon, Macera, Korku" /></label>
+    <div className="tag-picker"><strong>Etiketler</strong><div>{TAG_OPTIONS.map(tag => <button type="button" key={tag} className={(Array.isArray(form.tags) ? form.tags : String(form.tags || '').split(',')).includes(tag) ? 'tag-chip active' : 'tag-chip'} onClick={() => toggleTag(tag)}>{tag}</button>)}</div></div>
     <label>RAWG Arka Plan URL<input value={form.rawg_background_url || ''} onChange={e => set('rawg_background_url', e.target.value)} placeholder="https://..." /></label>
     <label>Web Sitesi<input value={form.website || ''} onChange={e => set('website', e.target.value)} placeholder="https://..." /></label>
     <label>Medya Notu<textarea rows="2" value={form.media_note} onChange={e => set('media_note', e.target.value)} placeholder="Kapak/banner hakkında kısa not" /></label>
@@ -382,7 +424,7 @@ function AdminQuickManager({ session }) {
     </div>
     <div className="form-two-col"><label>Sıra<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
     <button className="primary-btn">{edit ? 'Oyunu Güncelle' : 'Oyunu Ekle'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
-    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}</td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '', genres: Array.isArray(r.genres) ? r.genres.join(', ') : (r.genres || '') }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
+    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}</td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '', genres: Array.isArray(r.genres) ? r.genres.join(', ') : (r.genres || ''), tags: Array.isArray(r.tags) ? r.tags : (r.tags ? String(r.tags).split(',').map(x => x.trim()).filter(Boolean) : []) }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
 }
 
 
@@ -414,6 +456,7 @@ function AdminSeriesPage() {
   }
   useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
+  function toggleTag(tag) { setForm(x => { const current = Array.isArray(x.tags) ? x.tags : String(x.tags || '').split(',').map(v => v.trim()).filter(Boolean); return { ...x, tags: current.includes(tag) ? current.filter(v => v !== tag) : [...current, tag] }; }); }
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
 
   async function submit(e) {
@@ -493,6 +536,7 @@ function AdminEpisodesPage() {
   }
   useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
+  function toggleTag(tag) { setForm(x => { const current = Array.isArray(x.tags) ? x.tags : String(x.tags || '').split(',').map(v => v.trim()).filter(Boolean); return { ...x, tags: current.includes(tag) ? current.filter(v => v !== tag) : [...current, tag] }; }); }
   function pickGame(slug) {
     const game = games.find(g => g.slug === slug);
     setForm(x => ({ ...x, game_slug: slug, game_title: game?.title || '', series_slug: game?.series_slug || x.series_slug || '', series_title: game?.series_title || x.series_title || '' }));
@@ -631,6 +675,7 @@ function AdminChannelsPage() {
   }
   useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
+  function toggleTag(tag) { setForm(x => { const current = Array.isArray(x.tags) ? x.tags : String(x.tags || '').split(',').map(v => v.trim()).filter(Boolean); return { ...x, tags: current.includes(tag) ? current.filter(v => v !== tag) : [...current, tag] }; }); }
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
   async function submit(e) {
     e.preventDefault();
@@ -711,6 +756,7 @@ function AdminCalendarPage() {
   }
   useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
+  function toggleTag(tag) { setForm(x => { const current = Array.isArray(x.tags) ? x.tags : String(x.tags || '').split(',').map(v => v.trim()).filter(Boolean); return { ...x, tags: current.includes(tag) ? current.filter(v => v !== tag) : [...current, tag] }; }); }
   function pickGame(slug) { const g = games.find(x => x.slug === slug); setForm(x => ({ ...x, game_slug: slug, game_title: g?.title || '' })); }
   function pickSeries(slug) { const sr = seriesRows.find(x => x.slug === slug); setForm(x => ({ ...x, series_slug: slug, series_title: sr?.title || '' })); }
   function pickEpisode(id) { const ep = episodes.find(x => x.id === id); setForm(x => ({ ...x, episode_id: id, episode_title: ep?.title || '' })); }
@@ -1048,6 +1094,7 @@ function AdminYouTubePlaylistsPage() {
   }
   useEffect(() => { if (session?.access_token) load(); }, [session?.access_token]);
   function set(k, v) { setForm(x => ({ ...x, [k]: v })); }
+  function toggleTag(tag) { setForm(x => { const current = Array.isArray(x.tags) ? x.tags : String(x.tags || '').split(',').map(v => v.trim()).filter(Boolean); return { ...x, tags: current.includes(tag) ? current.filter(v => v !== tag) : [...current, tag] }; }); }
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
   function extractPlaylistId(value) {
     const text = String(value || '').trim();
