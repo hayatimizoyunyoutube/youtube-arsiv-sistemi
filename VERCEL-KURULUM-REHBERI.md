@@ -1,44 +1,57 @@
-# Vercel Kurulum Rehberi - v1.3.0
+# Vercel Kurulum Rehberi — v1.3.1
 
-## Bu sürümde yeni .env gerekli mi?
-Hayır.
+## Bu sürümde yeni `.env` gerekli mi?
 
-Mevcut Vercel Environment Variables yeterli:
+Evet. v1.3.1 ile YouTube playlistten bölüm çekme altyapısı geldiği için Vercel'e yeni bir değişken eklenmeli.
+
+## Vercel Environment Variables
+
+Vercel → Project → Settings → Environment Variables alanına şunlar eklenmiş olmalı:
 
 ```env
 VITE_SUPABASE_URL=Supabase Project URL
 VITE_SUPABASE_ANON_KEY=Supabase anon public key
+YOUTUBE_API_KEY=YouTube Data API v3 Key
 ```
 
-## YouTube API key gerekli mi?
-Hayır, v1.3.0 sadece playlist kayıt altyapısıdır.
+## Önemli güvenlik notu
 
-YouTube API key v1.3.1 sürümünde, playlistten bölüm çekme aktif edilirken eklenecek.
+`YOUTUBE_API_KEY` GitHub'a yazılmayacak. Sadece Vercel Environment Variables içine eklenecek.
+
+`.env.local` dosyası bilgisayarda kalır, GitHub'a gönderilmez.
+
+## Vercel'de env ekledikten sonra
+
+Mutlaka:
+
+```text
+Deployments → Redeploy
+```
+
+yapılmalı. Vite build ve Vercel serverless API yeni env değerini ancak redeploy sonrası kullanır.
 
 ## Supabase SQL gerekli mi?
-Evet.
 
-`supabase/schema.sql` çalıştırılmalı.
+Evet, gerekli.
 
-## SQL ne ekledi?
-- `youtube_playlists` tablosu
-- Playlist başlığı, URL ve ID alanları
-- Oyun/seri/kanal bağlantı alanları
-- Senkron durumu ve son not alanı
-- Public okuma ve authenticated yazma policyleri
-- Indexler
+v1.3.1 SQL şunları ekler/günceller:
 
-## Veri ve yetki sıfırlanır mı?
-Hayır.
+- `game_episodes` tablosu yoksa oluşturur.
+- `youtube_video_id` alanı ekler.
+- `youtube_url` alanı ekler.
+- `thumbnail_url` alanı ekler.
+- `published_at` alanı ekler.
+- `episode_number` ve `sort_order` alanlarını ekler.
+- `game_episodes_youtube_video_id_key` unique index ekler.
+- RLS policy kontrol eder.
+- `mertdundaroyunda@gmail.com` kurucu yetkisini korur.
+
+## Veri koruma kuralı
 
 Bu SQL:
-- `DROP TABLE` kullanmaz
-- `TRUNCATE` kullanmaz
-- Mevcut kullanıcı yetkilerini sıfırlamaz
-- Oyun/seri/kategori/kanal/bölüm kayıtlarını silmez
 
-## Deploy sonrası
-1. GitHub'a gönder.
-2. Vercel otomatik deploy alır.
-3. Supabase SQL Editor içinde `supabase/schema.sql` çalıştır.
-4. Site menüsünden Yönetim Paneli → YouTube Playlist alanını kontrol et.
+- Tablo sıfırlamaz.
+- Kullanıcı yetkilerini silmez.
+- Oyun/seri/kategori/kanal/bölüm verilerini silmez.
+- `DROP TABLE` kullanmaz.
+- `TRUNCATE` kullanmaz.

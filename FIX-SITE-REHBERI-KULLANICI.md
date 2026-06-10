@@ -1,4 +1,4 @@
-# YouTube Playlist Altyapısı Kullanıcı Fix
+# YouTube Bölüm Çekme Altyapısı Kullanıcı Fix
 
 - /guide sayfası yönetim ekibi rehberi olmaktan çıkarıldı.
 - GitHub, Vercel, Supabase, SQL ve .env kurulum adımları kullanıcı rehberinden kaldırıldı.

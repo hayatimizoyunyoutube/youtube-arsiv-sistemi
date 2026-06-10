@@ -1,10 +1,10 @@
-# v1.3.0 - YouTube Playlist Altyapısı
+# v1.3.1 - YouTube Bölüm Çekme Altyapısı
 
 ## Eklenenler
 - Yönetim paneline YouTube Playlist menüsü eklendi.
 - Playlist başlığı, URL, ID, oyun, seri, kanal ve senkron durum alanları eklendi.
 - YouTube API çağrısı bu sürümde yapılmaz; sadece kayıt altyapısı hazırlanır.
-- Vercel/GitHub sürüm etiketi v1.3.0 olarak güncellendi.
+- Vercel/GitHub sürüm etiketi v1.3.1 olarak güncellendi.
 
 ## Supabase SQL gerekli mi?
 Evet, gerekli.

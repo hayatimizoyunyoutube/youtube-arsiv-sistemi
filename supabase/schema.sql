@@ -319,7 +319,7 @@ insert into public.site_menu_items (slug, title, href, icon, sort_order) values
 ('seriler', 'Seriler', '/series', '🎬', 40),
 ('yayin-takvimi', 'Yayın Takvimi', '/calendar', '🗓️', 50),
 ('site-durumu', 'Site Durumu', '/status', '🛠️', 60),
-('site-rehberi', 'YouTube Playlist Altyapısı', '/guide', '📘', 70),
+('site-rehberi', 'YouTube Bölüm Çekme Altyapısı', '/guide', '📘', 70),
 ('yonetim-paneli', 'Yönetim Paneli', '/admin', '🛡️', 80),
 ('profil', 'Profil', '/profile', '👤', 90)
 on conflict (slug) do update set
@@ -782,7 +782,7 @@ select
   'Vercel/GitHub commit sürüm etiketi v1.2.8 olarak güncellendi' as deploy_notu,
   now() as calisma_zamani;
 
--- v1.3.0 - YouTube Playlist Altyapısı
+-- v1.3.1 - YouTube Bölüm Çekme Altyapısı
 -- Güvenli migration: tablo/veri/yetki sıfırlamaz. DROP TABLE/TRUNCATE yoktur.
 create table if not exists public.youtube_playlists (
   id uuid primary key default gen_random_uuid(),
@@ -844,7 +844,7 @@ begin
 end $$;
 
 insert into public.site_status_logs (version, status, detail)
-values ('v1.3.0', 'success', 'YouTube playlist kayıt altyapısı eklendi. youtube_playlists tablosu oluşturuldu/güncellendi. Mevcut veriler ve yetkiler sıfırlanmadı.')
+values ('v1.3.1', 'success', 'YouTube playlist kayıt altyapısı eklendi. youtube_playlists tablosu oluşturuldu/güncellendi. Mevcut veriler ve yetkiler sıfırlanmadı.')
 on conflict do nothing;
 
 update public.app_users
@@ -852,9 +852,84 @@ set role = 'founder', status = 'active', is_banned = false, ban_reason = '', upd
 where lower(email) = lower('mertdundaroyunda@gmail.com') and role is distinct from 'founder';
 
 select
-  'v1.3.0 başarıyla çalıştı' as status,
+  'v1.3.1 başarıyla çalıştı' as status,
   'YouTube playlist kayıt altyapısı eklendi.' as yeni_ozellik,
   'youtube_playlists tablosu, playlist_id, playlist_url, oyun/seri/kanal bağlantı alanları, sync_status ve indexler eklendi.' as sql_eklenenler,
   'DROP TABLE/TRUNCATE yok; kullanıcı yetkileri ve mevcut içerikler sıfırlanmadı.' as veri_koruma,
   'Yeni .env gerekmez. YouTube API anahtarı v1.3.1 bölüm çekme sürümünde istenecek.' as env_notu,
+  now() as calisma_zamani;
+
+-- v1.3.1 - YouTube Bölüm Çekme Altyapısı
+-- Güvenli migration: tablo/veri/yetki sıfırlamaz. DROP TABLE/TRUNCATE yoktur.
+create table if not exists public.game_episodes (
+  id uuid primary key default gen_random_uuid(),
+  slug text,
+  title text not null,
+  description text default '',
+  game_slug text default '',
+  game_title text default '',
+  series_slug text default '',
+  series_title text default '',
+  youtube_url text default '',
+  youtube_video_id text,
+  thumbnail_url text default '',
+  duration text default '',
+  episode_number integer default 0,
+  sort_order integer default 100,
+  status text default 'Taslak',
+  published_at timestamptz,
+  is_public boolean default true,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.game_episodes add column if not exists slug text;
+alter table public.game_episodes add column if not exists title text;
+alter table public.game_episodes add column if not exists description text default '';
+alter table public.game_episodes add column if not exists game_slug text default '';
+alter table public.game_episodes add column if not exists game_title text default '';
+alter table public.game_episodes add column if not exists series_slug text default '';
+alter table public.game_episodes add column if not exists series_title text default '';
+alter table public.game_episodes add column if not exists youtube_url text default '';
+alter table public.game_episodes add column if not exists youtube_video_id text;
+alter table public.game_episodes add column if not exists thumbnail_url text default '';
+alter table public.game_episodes add column if not exists duration text default '';
+alter table public.game_episodes add column if not exists episode_number integer default 0;
+alter table public.game_episodes add column if not exists sort_order integer default 100;
+alter table public.game_episodes add column if not exists status text default 'Taslak';
+alter table public.game_episodes add column if not exists published_at timestamptz;
+alter table public.game_episodes add column if not exists is_public boolean default true;
+alter table public.game_episodes add column if not exists created_at timestamptz default now();
+alter table public.game_episodes add column if not exists updated_at timestamptz default now();
+
+create unique index if not exists game_episodes_youtube_video_id_key on public.game_episodes(youtube_video_id) where youtube_video_id is not null;
+create index if not exists game_episodes_game_slug_idx on public.game_episodes(game_slug);
+create index if not exists game_episodes_series_slug_idx on public.game_episodes(series_slug);
+create index if not exists game_episodes_sort_order_idx on public.game_episodes(sort_order);
+
+alter table public.game_episodes enable row level security;
+do $$
+begin
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='game_episodes' and policyname='public read game episodes v131') then
+    create policy "public read game episodes v131" on public.game_episodes for select using (is_public = true or auth.role() = 'authenticated');
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='public' and tablename='game_episodes' and policyname='auth write game episodes v131') then
+    create policy "auth write game episodes v131" on public.game_episodes for all to authenticated using (true) with check (true);
+  end if;
+end $$;
+
+insert into public.site_status_logs (version, status, detail)
+values ('v1.3.1', 'success', 'YouTube playlistten bölüm çekme altyapısı eklendi. game_episodes tablosuna YouTube video alanları ve indexler eklendi. Mevcut veriler ve yetkiler sıfırlanmadı.')
+on conflict do nothing;
+
+update public.app_users
+set role = 'founder', status = 'active', is_banned = false, ban_reason = '', updated_at = now()
+where lower(email) = lower('mertdundaroyunda@gmail.com') and role is distinct from 'founder';
+
+select
+  'v1.3.1 başarıyla çalıştı' as status,
+  'YouTube playlistten bölüm çekme altyapısı eklendi.' as yeni_ozellik,
+  'game_episodes tablosuna youtube_video_id, youtube_url, thumbnail_url, published_at, episode_number alanları ve indexler eklendi.' as sql_eklenenler,
+  'DROP TABLE/TRUNCATE yok; kullanıcı yetkileri ve mevcut içerikler sıfırlanmadı.' as veri_koruma,
+  'Yeni .env gerekli: Vercel Environment Variables içine YOUTUBE_API_KEY eklenmeli.' as env_notu,
   now() as calisma_zamani;

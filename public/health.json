@@ -1,8 +1,10 @@
 {
   "ok": true,
-  "version": "v1.3.0",
-  "releaseName": "YouTube Playlist Altyapısı",
-  "sqlRequired": false,
-  "newEnvRequired": false,
-  "notes": "Supabase SQL gerekli. Yeni .env gerekmez. Rehber ve kontrol sayfaları güncellendi; veri/yetki sıfırlanmaz."
+  "version": "v1.3.1",
+  "release": "YouTube Bölüm Çekme Altyapısı",
+  "supabase_sql_required": true,
+  "new_env_required": true,
+  "required_env": ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY", "YOUTUBE_API_KEY"],
+  "data_reset": false,
+  "notes": "game_episodes YouTube alanları eklendi; veri/yetki sıfırlanmaz."
 }

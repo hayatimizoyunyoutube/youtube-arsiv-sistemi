@@ -39,12 +39,12 @@ export const completedUpdates = [
   { version: 'v1.2.6', title: 'Bakım Modu ve Site Ayarları', date: '2026-06-09', summary: 'Bakım modu, site ayarları ve F5 sonrası kayıt koruma fixleri tamamlandı.', items: ['Bakım aç/kapat', 'Yetkili bypass', 'Ayar kaydı', 'F5 koruması'] },
   { version: 'v1.2.7', title: 'Dashboard ve Veri Sağlığı', date: '2026-06-09', summary: 'Admin dashboard istatistikleri ve veri sağlığı merkezi eklendi.', items: ['Dashboard metrikleri', 'Medya kontrolü', 'Yetki kontrolü', 'Veri sağlığı'] },
   { version: 'v1.2.8', title: 'Profil Merkezi', date: '2026-06-09', summary: 'Profil ekranı kullanıcı bilgileri, rol görünümü ve hesap düzenleme alanıyla dolduruldu.', items: ['Profil bilgisi', 'Rol görünümü', 'Görünen ad', 'Oturum bilgisi'] },
-  { version: 'v1.3.0', title: 'YouTube Playlist Altyapısı', date: '2026-06-09', summary: 'Public rehber, yetkili rehberi, Vercel kurulum notları ve SQL/.env kontrol bilgileri güncellendi.', items: ['YouTube playlist altyapısı', 'Yetkili rehberi', 'Vercel rehberi', 'SQL gerekli değil notu'] }
+  { version: 'v1.3.1', title: 'YouTube Bölüm Çekme Altyapısı', date: '2026-06-09', summary: 'Public rehber, yetkili rehberi, Vercel kurulum notları ve SQL/.env kontrol bilgileri güncellendi.', items: ['YouTube playlist altyapısı', 'Yetkili rehberi', 'Vercel rehberi', 'SQL gerekli değil notu'] }
 ];
 
 
 export const plannedUpdates = [
-  { version: 'v1.3.0', title: 'YouTube Playlist Altyapısı', summary: 'YouTube API anahtarı, playlist ID alanları ve bölüm çekme hazırlığı yapılacak.', items: ['YOUTUBE_API_KEY', 'Playlist alanları', 'Video ön izleme', 'API kontrolü'] },
+  { version: 'v1.3.1', title: 'YouTube Bölüm Çekme Altyapısı', summary: 'YouTube API anahtarı, playlist ID alanları ve bölüm çekme hazırlığı yapılacak.', items: ['YOUTUBE_API_KEY', 'Playlist alanları', 'Video ön izleme', 'API kontrolü'] },
   { version: 'v1.3.1', title: 'YouTube Bölüm Çekme', summary: 'Playlist videolarını bölümlere aktarma ve sonuç tablosu kurulacak.', items: ['Playlist çek', 'Bölüm oluştur', 'Sonuç tablosu', 'Hata mesajları'] },
   { version: 'v1.3.2', title: 'RAWG Oyun Bilgisi Hazırlığı', summary: 'RAWG API ile oyun kapak/meta bilgisi çekme altyapısı hazırlanacak.', items: ['RAWG_API_KEY', 'Oyun arama', 'Kapak/meta önizleme', 'Güvenli env'] },
   { version: 'v1.3.3', title: 'Steam Bilgi Hazırlığı', summary: 'Steam sayfaları için ID ve kapak bağlantı hazırlığı yapılacak.', items: ['Steam ID', 'Kapak bağlantısı', 'Oyun eşleştirme', 'Kontrol notları'] },
