@@ -1009,13 +1009,6 @@ alter table public.public_episodes add column if not exists sort_order integer d
 create unique index if not exists public_episodes_youtube_video_id_unique_fix_v132b
 on public.public_episodes(youtube_video_id) where youtube_video_id is not null and youtube_video_id <> '';
 
-
--- FIX: site_status_logs tablo kolon uyumluluğu
--- Eski kurulumlarda 'detail' kolonu var, bazı fixlerde yanlışlıkla 'message' kullanılmıştı.
--- Veri/yetki sıfırlamaz; sadece eksik kolon varsa ekler.
-alter table public.site_status_logs add column if not exists detail text;
-alter table public.site_status_logs add column if not exists message text;
-
 insert into public.site_status_logs(version, status, message)
 values ('v1.3.2-fix', 'success', 'Oyun tarih/kapak otomatik çekme ve YouTube playlist bölüm/thumbnail çekme düzeltildi. public_episodes alanları eklendi. Veri/yetki sıfırlanmadı.')
 on conflict do nothing;
@@ -1024,4 +1017,60 @@ select
   'v1.3.2 otomatik çekme tarih/kapak + YouTube playlist fix başarıyla çalıştı' as result,
   'public_games: release_date/rawg_id/steam_appid/metacritic/rating/genres/tags/playlist alanları güvenli kontrol edildi.' as oyun_tablosu,
   'public_episodes: youtube_video_id, youtube_url, thumbnail_url, episode_number, game/series bağlantı alanları eklendi.' as bolum_tablosu,
+  'Yetkiler ve mevcut veriler korunur; DROP TABLE/TRUNCATE yok.' as veri_koruma;
+
+-- =========================================================
+-- FIX v1.3.2 - malformed array literal + YouTube playlist çekme
+-- Sürüm değildir. Veri/yetki sıfırlamaz. DROP/TRUNCATE yoktur.
+-- =========================================================
+
+-- Daha önce genres/tags alanları yanlışlıkla text[] oluşturulduysa, oyun formundan gelen
+-- "Aksiyon, Macera" metni hata veriyordu. Bu fix alanları düz metin olarak standardize eder.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='public_games' and column_name='genres' and data_type='ARRAY'
+  ) then
+    alter table public.public_games
+      alter column genres type text using array_to_string(genres, ', '),
+      alter column genres set default '';
+  end if;
+
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='public_games' and column_name='tags' and data_type='ARRAY'
+  ) then
+    alter table public.public_games
+      alter column tags type text using array_to_string(tags, ', '),
+      alter column tags set default '';
+  end if;
+end $$;
+
+alter table public.public_games add column if not exists genres text default '';
+alter table public.public_games add column if not exists tags text default '';
+alter table public.public_games add column if not exists playlist_url text default '';
+alter table public.public_games add column if not exists playlist_id text default '';
+
+alter table public.public_episodes add column if not exists youtube_video_id text;
+alter table public.public_episodes add column if not exists youtube_url text default '';
+alter table public.public_episodes add column if not exists thumbnail_url text default '';
+alter table public.public_episodes add column if not exists episode_number integer default 0;
+alter table public.public_episodes add column if not exists game_slug text default '';
+alter table public.public_episodes add column if not exists game_title text default '';
+alter table public.public_episodes add column if not exists series_slug text default '';
+alter table public.public_episodes add column if not exists series_title text default '';
+alter table public.public_episodes add column if not exists published_at timestamptz;
+
+create unique index if not exists public_episodes_youtube_video_id_unique_fix_v132c
+on public.public_episodes(youtube_video_id) where youtube_video_id is not null and youtube_video_id <> '';
+
+insert into public.site_status_logs(version, status, detail)
+values ('v1.3.2-fix', 'success', 'malformed array literal hatası düzeltildi. public_games genres/tags alanları text standardına alındı. YouTube playlist bölüm/thumbnail alanları kontrol edildi. Veri/yetki sıfırlanmadı.')
+on conflict do nothing;
+
+select
+  'v1.3.2 malformed array + YouTube playlist fix başarıyla çalıştı' as result,
+  'public_games.genres ve public_games.tags alanları düz metin standardına alındı.' as oyun_tablosu,
+  'public_episodes YouTube video/thumbnail bağlantı alanları kontrol edildi.' as youtube_bolumleri,
   'Yetkiler ve mevcut veriler korunur; DROP TABLE/TRUNCATE yok.' as veri_koruma;

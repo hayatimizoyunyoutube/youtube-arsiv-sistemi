@@ -314,13 +314,33 @@ function AdminQuickManager({ session }) {
   }
   function extractPlaylistId(value) {
     const text = String(value || '').trim();
-    const match = text.match(/[?&]list=([^&]+)/) || text.match(/playlist\?list=([^&]+)/);
-    return match ? decodeURIComponent(match[1]) : text;
+    if (!text) return '';
+    try {
+      const url = new URL(text);
+      const list = url.searchParams.get('list');
+      if (list) return list.trim();
+    } catch {}
+    const match = text.match(/[?&]list=([^&#]+)/) || text.match(/playlist\?list=([^&#]+)/) || text.match(/^(PL|UU|OLAK|RD)[A-Za-z0-9_-]+$/);
+    return match ? decodeURIComponent(match[1] || match[0]).trim() : text.replace(/^list=/, '').trim();
   }
   function toggleTag(tag) {
     const current = String(form.tags || '').split(',').map(x => x.trim()).filter(Boolean);
     const next = current.includes(tag) ? current.filter(x => x !== tag) : [...current, tag];
     set('tags', next.join(', '));
+  }
+  function normalizeListText(value) {
+    if (Array.isArray(value)) return value.map(x => String(x || '').trim()).filter(Boolean).join(', ');
+    return String(value || '').split(',').map(x => x.trim()).filter(Boolean).join(', ');
+  }
+  function safeGamePayload(row) {
+    return {
+      ...row,
+      genres: normalizeListText(row.genres),
+      tags: normalizeListText(row.tags),
+      metacritic: row.metacritic ? String(row.metacritic) : '',
+      rating: row.rating ? String(row.rating) : '',
+      release_date: row.release_date || null
+    };
   }
   async function autoFillRawg() {
     const query = form.title.trim();
@@ -372,6 +392,7 @@ function AdminQuickManager({ session }) {
     const response = await fetch(`/api/youtube-playlist?playlistId=${encodeURIComponent(playlistId)}`);
     const json = await response.json();
     if (!response.ok) return { saved: 0, error: json?.error || 'YouTube API hatası.' };
+    if (!Array.isArray(json.items) || json.items.length === 0) return { saved: 0, error: 'Playlist bulundu ama bölüm gelmedi. Playlist herkese açık mı ve YOUTUBE_API_KEY doğru mu kontrol et.' };
     let saved = 0;
     for (const item of json.items || []) {
       const payload = {
@@ -467,11 +488,11 @@ function AdminQuickManager({ session }) {
     const categorySlug = slugify(form.category_slug || form.category_title || 'arsiv');
     const channelSlug = slugify(form.channel_slug || form.channel_title || 'hayatimiz-oyun');
     const seriesSlug = slugify(form.series_slug || form.series_title || form.title);
-    const payload = {
+    const payload = safeGamePayload({
       ...form, slug, category_slug: categorySlug, channel_slug: channelSlug, series_slug: seriesSlug,
       category_title: form.category_title || 'Arşiv', channel_title: form.channel_title || 'Hayatımız Oyun', series_title: form.series_title || form.title,
       sort_order: Number(form.sort_order) || 100, release_date: form.release_date || null, is_public: Boolean(form.is_public)
-    };
+    });
     const r = edit ? await updateRow('public_games', edit, payload, session) : await createRow('public_games', payload, session);
     if (r.error) return setMsg(r.error);
     await upsertRow('public_categories', { slug: categorySlug, title: payload.category_title, description: `${payload.category_title} kategorisindeki oyunlar.`, is_public: true, sort_order: payload.sort_order }, session, 'slug');
@@ -515,7 +536,7 @@ function AdminQuickManager({ session }) {
     </div>
     <div className="form-two-col"><label>Seri/Oyun Sırası<input type="number" value={form.sort_order} onChange={e => set('sort_order', e.target.value)} /></label><label className="inline-check"><input type="checkbox" checked={form.is_public} onChange={e => set('is_public', e.target.checked)} /> Public görünsün</label></div>
     <button className="primary-btn">{edit ? 'Oyunu Güncelle' : 'Oyunu Ekle ve Her Şeyi Otomatik Kur'}</button>{msg ? <p className={msg.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{msg}</p> : null}</form>
-    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori/Seri</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}<small>{r.series_title || 'Seri yok'}</small></td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, release_date: r.release_date || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
+    <div className="admin-card admin-table-card"><h2>Oyun Listesi</h2><button className="ghost-btn" onClick={load}>{loading ? 'Yükleniyor...' : 'Yenile'}</button><table className="admin-table"><thead><tr><th>Oyun</th><th>Kategori/Seri</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.title}</strong><small>{r.slug}</small></td><td>{r.category_title || '—'}<small>{r.series_title || 'Seri yok'}</small></td><td>{r.status}</td><td><button onClick={() => { setEdit(r.id); setForm({ ...empty, ...r, genres: normalizeListText(r.genres), tags: normalizeListText(r.tags), release_date: r.release_date || '' }); }}>Düzenle</button><button onClick={() => del(r)}>Sil</button></td></tr>)}{!rows.length ? <tr><td colSpan="4">Henüz oyun yok.</td></tr> : null}</tbody></table></div></section>;
 }
 
 
@@ -1304,8 +1325,14 @@ function AdminYouTubePlaylistsPage() {
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
   function extractPlaylistId(value) {
     const text = String(value || '').trim();
-    const match = text.match(/[?&]list=([^&]+)/) || text.match(/playlist\?list=([^&]+)/);
-    return match ? decodeURIComponent(match[1]) : text;
+    if (!text) return '';
+    try {
+      const url = new URL(text);
+      const list = url.searchParams.get('list');
+      if (list) return list.trim();
+    } catch {}
+    const match = text.match(/[?&]list=([^&#]+)/) || text.match(/playlist\?list=([^&#]+)/) || text.match(/^(PL|UU|OLAK|RD)[A-Za-z0-9_-]+$/);
+    return match ? decodeURIComponent(match[1] || match[0]).trim() : text.replace(/^list=/, '').trim();
   }
   async function syncCurrentPlaylistOnly() {
     const slug = slugify(form.slug || form.title);
