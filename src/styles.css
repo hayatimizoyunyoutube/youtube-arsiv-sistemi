@@ -3641,3 +3641,148 @@ select, option {
   .fixed-shell .v4-stats-grid,
   .fixed-shell .v4-quick-grid { grid-template-columns: 1fr !important; }
 }
+
+/* FIX: profesyonel kategori ve taşma toparlama - yeni sürüm değildir */
+html, body, #root { width: 100%; max-width: 100%; overflow-x: hidden; }
+body { font-size: 14px; }
+.fixed-shell, .page-shell { width: min(1180px, calc(100% - 32px)) !important; max-width: 1180px !important; overflow: visible !important; }
+.fixed-shell * { min-width: 0; }
+
+/* Üst menü: tek satırda sıkışırsa taşmadan yeni satıra iner */
+.site-header.fixed-header { margin: 10px auto 22px !important; }
+.fixed-header-top { flex-wrap: wrap !important; }
+.fixed-header-actions { flex: 1 1 360px !important; }
+.fixed-nav { grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)) !important; }
+.fixed-nav a, .header-chip, .role-chip, .header-logout { box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+
+/* Ana hero: metin ve butonlar iç içe girmez */
+.fixed-shell .v4-hero { align-items: center !important; min-height: auto !important; }
+.fixed-shell .v4-hero-copy, .fixed-shell .v4-hero-side { min-width: 0 !important; }
+.fixed-shell .v4-hero h1 { max-width: 100% !important; overflow-wrap: normal !important; word-break: normal !important; hyphens: none !important; }
+.fixed-shell .v4-hero p { overflow-wrap: anywhere !important; }
+.fixed-shell .v4-side-icon { flex: 0 0 auto !important; }
+.primary-btn, .ghost-btn, .nav a, button { cursor: pointer; }
+.primary-btn, .ghost-btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 7px !important; text-align: center !important; line-height: 1.15 !important; }
+
+/* İstatistik/hızlı kartlar profesyonel ve taşmasız */
+.fixed-shell .v4-stats-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important; }
+.fixed-shell .v4-quick-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important; }
+.v4-stat, .v4-quick-card, .v4-panel, .notes-card, .admin-card, .admin-hero, .status-check-card { overflow: hidden !important; }
+.v4-stat strong { font-size: clamp(24px, 3vw, 30px) !important; }
+.v4-quick-card { min-height: 126px !important; }
+.v4-quick-card h3, .v4-stat b, .v4-stat small, .v4-quick-card p { word-break: normal !important; overflow-wrap: anywhere !important; }
+
+/* Kategoriler/Koleksiyon kartları: premium görünüm */
+.category-pro-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+.category-pro-card {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 120px minmax(0, 1fr) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+  min-height: 150px !important;
+  padding: 14px !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(148, 163, 184, .22) !important;
+  background: linear-gradient(145deg, rgba(15,23,42,.92), rgba(17,24,39,.72)) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.28) !important;
+  overflow: hidden !important;
+}
+.category-pro-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 12% 0%, rgba(239,68,68,.18), transparent 38%), radial-gradient(circle at 100% 0%, rgba(56,189,248,.14), transparent 34%);
+  pointer-events: none;
+}
+.category-pro-card img {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 120px !important;
+  height: 122px !important;
+  border-radius: 16px !important;
+  object-fit: cover !important;
+  opacity: .92 !important;
+}
+.category-pro-card div { position: relative !important; z-index: 1 !important; padding: 2px 0 !important; min-width: 0 !important; }
+.category-pro-card span {
+  display: inline-flex !important;
+  width: fit-content !important;
+  margin-bottom: 8px !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(59,130,246,.15) !important;
+  border: 1px solid rgba(96,165,250,.22) !important;
+  color: #bfdbfe !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+.category-pro-card h2 { margin: 0 0 8px !important; font-size: clamp(20px, 2.3vw, 28px) !important; line-height: 1.05 !important; letter-spacing: -.045em !important; overflow-wrap: anywhere !important; }
+.category-pro-card p { margin: 0 0 10px !important; color: #cbd5e1 !important; line-height: 1.5 !important; display: -webkit-box !important; -webkit-line-clamp: 3 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
+.category-pro-card b { display: inline-flex !important; width: fit-content !important; padding: 7px 10px !important; border-radius: 999px !important; color: #bbf7d0 !important; background: rgba(34,197,94,.12) !important; border: 1px solid rgba(34,197,94,.22) !important; }
+.category-pro-card:hover { transform: translateY(-2px) !important; border-color: rgba(96,165,250,.45) !important; }
+
+/* Arşiv/seri kartları: dev banner yerine kompakt */
+.v4-card-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important; gap: 16px !important; }
+.v4-card-grid .series-card, .compact-public-card { min-width: 0 !important; max-width: 100% !important; text-decoration: none !important; }
+.v4-card-grid .series-image-wrap, .compact-public-card .series-image-wrap { min-height: 150px !important; }
+.v4-card-grid .series-card img, .compact-public-card img { height: 150px !important; object-fit: cover !important; }
+.series-content h3 { overflow-wrap: anywhere !important; }
+.series-content p { min-height: 0 !important; }
+.card-info-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; color: var(--muted); }
+
+/* Yönetim paneli: kutular ve tablolar taşmasın */
+.admin-shell { width: 100% !important; max-width: 100% !important; overflow: hidden !important; }
+.admin-grid, .admin-grid.three-col {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)) !important;
+  gap: 18px !important;
+  align-items: start !important;
+}
+.admin-card { max-width: 100% !important; }
+.form-two-col { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important; }
+.admin-card input, .admin-card textarea, .admin-card select, .login-card input, .series-form-card textarea, .series-form-card select {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+.admin-table-card {
+  max-width: 100% !important;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+.admin-table {
+  width: 100% !important;
+  min-width: 620px !important;
+  table-layout: fixed !important;
+}
+.admin-table th, .admin-table td { overflow-wrap: anywhere !important; }
+.admin-table td:last-child { width: 170px !important; min-width: 170px !important; }
+.admin-table td:last-child button { margin: 3px !important; white-space: nowrap !important; }
+.admin-button-bar.single-row-admin {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 9px !important;
+  overflow: visible !important;
+  max-width: 100% !important;
+}
+.admin-button-bar.single-row-admin .admin-mini-btn { flex: 0 1 auto !important; max-width: 190px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+
+/* Filtreler ve seçim kutuları */
+.v4-filter-panel { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important; align-items: end !important; }
+select, option { background-color: #111827 !important; color: #f8fafc !important; }
+
+@media (max-width: 760px) {
+  .fixed-shell, .page-shell { width: min(100% - 18px, 1180px) !important; }
+  .fixed-nav { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .fixed-header-actions { flex-basis: 100% !important; justify-content: flex-start !important; }
+  .fixed-shell .v4-hero { grid-template-columns: 1fr !important; padding: 22px 16px !important; border-radius: 22px !important; }
+  .fixed-shell .v4-hero h1 { font-size: clamp(32px, 11vw, 42px) !important; }
+  .category-pro-card { grid-template-columns: 1fr !important; }
+  .category-pro-card img { width: 100% !important; height: 170px !important; }
+  .admin-table { min-width: 560px !important; }
+}
