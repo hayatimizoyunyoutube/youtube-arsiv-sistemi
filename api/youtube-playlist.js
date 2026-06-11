@@ -4,9 +4,20 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'YOUTUBE_API_KEY Vercel Environment Variables içinde eksik.' });
   }
 
-  const playlistId = String(req.query.playlistId || '').trim();
+  function extractPlaylistId(value) {
+    const text = String(value || '').trim();
+    if (!text) return '';
+    try {
+      const url = new URL(text);
+      const list = url.searchParams.get('list');
+      if (list) return list.trim();
+    } catch {}
+    const match = text.match(/[?&]list=([^&\s]+)/) || text.match(/(PL[A-Za-z0-9_-]{12,})/);
+    return match ? decodeURIComponent(match[1]).trim() : text.trim();
+  }
+  const playlistId = extractPlaylistId(req.query.playlistId || req.query.playlistUrl || req.query.url || '');
   if (!playlistId) {
-    return res.status(400).json({ error: 'playlistId gerekli.' });
+    return res.status(400).json({ error: 'Playlist URL veya playlistId gerekli.' });
   }
 
   try {

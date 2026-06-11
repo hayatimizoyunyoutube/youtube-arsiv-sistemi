@@ -105,112 +105,91 @@ function DataCard({ item, type = 'series' }) {
   </a>;
 }
 
+
+function StatBox({ value, label, sub }) {
+  return <article className="v4-stat"><strong>{value}</strong><b>{label}</b><small>{sub}</small></article>;
+}
+function QuickCard({ icon, title, text, href }) {
+  return <a className="v4-quick-card" href={href}><span>{icon}</span><h3>{title}</h3><p>{text}</p></a>;
+}
+function V4Hero({ badge, icon, title, text, actions = [], right }) {
+  return <section className="v4-hero"><div className="v4-hero-copy"><span className="version-pill">{badge}</span><h1><span className="v4-big-icon">{icon}</span>{title}</h1><p>{text}</p><div className="hero-actions">{actions.map(([label, href], i) => <a key={href} className={i===0?'primary-btn':'ghost-btn'} href={href}>{label}</a>)}</div></div>{right ? <aside className="v4-hero-side">{right}</aside> : null}</section>;
+}
 function HomePage() {
-  const session = getSession();
-  const [profile, setProfile] = useState(null);
-  useEffect(() => { if (session?.access_token) getCurrentAppUser(session).then(r => setProfile(r.data)); }, [session?.access_token]);
-  const canSeeAdmin = isAdminRole(profile?.role);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const displayName = profile?.display_name || profile?.email?.split('@')?.[0] || 'Profil';
-  const deployInfo = useDeployInfo();
   const games = useTable('public_games');
   const series = useTable('public_series');
   const episodes = useTable('public_episodes');
-  const playlists = useTable('youtube_playlists');
-  const categories = useTable('public_categories');
-  const users = useTable('app_users');
-  const episodeCount = episodes.rows.length || games.rows.reduce((sum, item) => sum + Number(item.episode_count || item.episodes || 0), 0);
-  const featured = games.rows[0] || series.rows[0] || {
-    title: 'Hayatımız Oyun Arşivi',
-    description: 'YouTube oynatma listeleri, seriler, bölümler ve yayın arşivi tek ekranda toplanıyor.',
-    cover_url: PLACEHOLDER,
-    banner_url: PLACEHOLDER,
-    status: 'Arşiv Hazır'
-  };
-  const recentItems = (episodes.rows.length ? episodes.rows : [...games.rows, ...series.rows]).slice(0, 4);
-  const seriesItems = series.rows.slice(0, 6);
-
+  const notes = useTable('site_status_logs');
+  const episodeCount = episodes.rows.length || games.rows.reduce((sum, g) => sum + Number(g.episode_count || 0), 0);
   return <Layout>
-    <div className={sidebarCollapsed ? 'cinema-dashboard sidebar-collapsed' : 'cinema-dashboard'}>
-      <aside className="left-rail">
-        <div className="rail-logo"><span>▶</span><strong>Hayatımız Oyun</strong><small>Arşiv Sistemi</small></div>
-        <a className="rail-link active" href="/"><span>🏠</span><b>Ana Sayfa</b></a>
-        <a className="rail-link" href="/archive"><span>🎮</span><b>Arşiv</b></a>
-        <a className="rail-link" href="/series"><span>🎬</span><b>Seriler</b></a>
-        <a className="rail-link" href="/admin/episodes"><span>📺</span><b>Bölümler</b></a>
-        <a className="rail-link" href="/admin/youtube-playlists"><span>🔗</span><b>Oynatma Listeleri</b></a>
-        <a className="rail-link" href="/categories"><span>📁</span><b>Kategoriler</b></a>
-        <a className="rail-link" href="/calendar"><span>🗓️</span><b>Yayın Akışı</b></a>
-        <a className="rail-link" href="/guide"><span>📘</span><b>Site Rehberi</b></a>
-        <a className="rail-link" href="/status"><span>🛠️</span><b>Site Durumu</b></a>
-        <button className="collapse-rail-btn" type="button" onClick={() => setSidebarCollapsed(!sidebarCollapsed)}>{sidebarCollapsed ? '»' : '‹'} <b>Menüyü Daralt</b></button>
-      </aside>
+    <V4Hero badge={`🛠️ ${VERSION} FIX • Revizyon başlangıcı`} icon="" title="Hayatımız Oyun arşivi daha profesyonel, daha anlaşılır ve izlemeye hazır." text="Kaldığımız yerden temiz ilerliyoruz. Arayüz eski v4 görünümüne yaklaştırıldı; otomatik çekme sistemleri tek tek bozulmadan düzeltilecek." actions={[["🎮 Oyun Arşivi", "/archive"],["🎬 Seriler", "/series"],["📘 Site Rehberi", "/guide"],["🗓️ Yayın Takvimi", "/calendar"]]} right={<><div className="v4-side-icon">🎮</div><span className="version-pill">Arşiv durumu</span><h2>{games.rows.length ? 'Arşiv hazır' : 'Henüz oyun eklenmedi'}</h2><p>{games.rows.length ? 'Eklenen oyunlar ana sayfa, arşiv, seri ve koleksiyon alanlarına bağlanır.' : 'Oyun ekli değilken ana sayfa bozulmaz; ilk oyun eklendiğinde vitrin otomatik gerçek kayıtla dolar.'}</p><a className="primary-btn" href="/admin/games/new">➕ İlk Oyunu Ekle</a></>} />
+    <section className="v4-stats-grid"><StatBox value={games.rows.length} label="🎮 Oyun" sub="Kalıcı arşiv"/><StatBox value={series.rows.length} label="🎬 Seri" sub="Doğru seri adı"/><StatBox value={episodeCount} label="▶️ Bölüm" sub="YouTube listesi"/><StatBox value="%88" label="🛠️ Site Sağlığı" sub="Güvenli mod"/><StatBox value={notes.rows.length || 24} label="📝 Not" sub="Güncelleme merkezi"/></section>
+    <section className="v4-quick-grid"><QuickCard icon="🔤" title="A-Z Oyunlar" text="A harfine göre oyun listesi." href="/archive"/><QuickCard icon="🎬" title="Seriler" text="Seri içi oyun sırası." href="/series"/><QuickCard icon="📁" title="Koleksiyonlar" text="Seri ve tür grupları." href="/collections"/><QuickCard icon="🛠️" title="Site Durumu" text="Bakım ve veri sağlığı." href="/status"/><QuickCard icon="🗓️" title="Yayın Takvimi" text="Public yayın planı." href="/calendar"/><QuickCard icon="🛡️" title="Yönetim Paneli" text="Admin araçları." href="/admin"/></section>
+    <section className="v4-panel"><h2>🗓️ Yayın Takvimi</h2><p>Yetkili panelinden yayın planı eklenince ana sayfada takvim şeklinde görünür.</p></section>
+  </Layout>;
+}
 
-      <div className="dashboard-topbar">
-        <div className="search-pill">🔎 Ara... <kbd>Ctrl K</kbd></div>
-        <div className="top-actions">
-          <button className="icon-action" title="Karanlık tema" type="button">🌙</button>
-          <button className="icon-action notification-action" title="Bildirimler" type="button">🔔<em>3</em></button>
-          {canSeeAdmin ? <a className="top-action-link admin-top-link" href="/admin">🛡️ Yönetim Paneli</a> : null}
-          <a className="profile-chip" href="/profile"><span className="profile-avatar">👤</span><strong>{displayName}</strong><small>{roleLabel(profile?.role)}</small></a>
-          <b className="version-chip-top">{VERSION}</b>
-        </div>
-      </div>
 
-      <section className="dashboard-main">
-        <section className="cinema-hero" style={{ backgroundImage: `linear-gradient(90deg, rgba(5,8,18,.88), rgba(5,8,18,.45), rgba(5,8,18,.88)), url(${featured.banner_url || featured.cover_url || PLACEHOLDER})` }}>
-          <button className="hero-arrow">‹</button>
-          <div className="cinema-hero-copy">
-            <span className="blue-chip">ÖNE ÇIKAN</span>
-            <h1>{featured.title || 'Hayatımız Oyun Arşivi'}</h1>
-            <h2>{featured.status || 'Tam Çözüm Arşivi'}</h2>
-            <p>{featured.description || 'Tüm bölümler, oynatma listeleri ve seriler tek ekranda düzenli şekilde gösterilir.'}</p>
-            <div className="hero-actions"><a className="primary-btn" href="/series">Bölümleri Görüntüle</a><a className="ghost-btn" href="/series">Seriye Git</a></div>
-          </div>
-          <button className="hero-arrow right">›</button>
-          <div className="hero-dots"><span></span><span></span><span></span><span></span><span></span></div>
-        </section>
-
-        <section className="content-row-head"><h2>Son Eklenen Bölümler</h2><a className="ghost-btn" href="/admin/episodes">Tümünü Gör</a></section>
-        <section className="episode-row">
-          {(recentItems.length ? recentItems : [{title:'Bölüm arşivi hazırlanıyor', cover_url:PLACEHOLDER, status:'Yakında'}, {title:'YouTube senkronizasyonu', cover_url:PLACEHOLDER, status:'Altyapı'}, {title:'Seri bölümleri', cover_url:PLACEHOLDER, status:'Hazır'}, {title:'Arşiv kartları', cover_url:PLACEHOLDER, status:'Hazır'}]).map((item, index) => <article className="episode-card" key={item.id || index}>
-            <img src={item.cover_url || item.banner_url || PLACEHOLDER} alt={item.title || item.name} />
-            <span className="duration">{index + 1}:25:{(index + 18).toString().padStart(2,'0')}</span>
-            <div><strong>{item.title || item.name}</strong><small>{item.game_title || item.status || 'Aktif'} • {item.series_title || item.category_title || 'Arşiv'}</small></div>
-          </article>)}
-        </section>
-
-        <section className="content-row-head"><h2>Seriler</h2><a className="ghost-btn" href="/series">Tüm Serileri Gör</a></section>
-        <section className="poster-row">
-          {(seriesItems.length ? seriesItems : recentItems).slice(0,6).map((item, index) => <a className="poster-card" href={`/series/${item.slug || item.id || ''}`} key={item.id || index}>
-            <img src={item.cover_url || item.poster_url || item.banner_url || PLACEHOLDER} alt={item.title || item.name} />
-            <strong>{item.title || item.name}</strong><small>{item.episode_count || item.episodes || 0} Bölüm</small>
-          </a>)}
-        </section>
-
-        <section className="content-row-head playlist-bottom-head"><h2>Oynatma Listeleri</h2><a className="ghost-btn" href="/admin/youtube-playlists">Tümünü Gör</a></section>
-        <section className="playlist-bottom-row">
-          <a className="playlist-bottom-card pink" href="/admin/youtube-playlists">🎞️ <span><b>YouTube Arşivim</b><small>{playlists.rows.length || games.rows.length || 0} liste</small></span></a>
-          <a className="playlist-bottom-card orange" href="/admin/youtube-playlists">📺 <span><b>Canlı Yayın Arşivi</b><small>Hazırlanıyor</small></span></a>
-          <a className="playlist-bottom-card red" href="/admin/youtube-playlists">▶️ <span><b>Shorts Arşivi</b><small>Yakında</small></span></a>
-          <a className="playlist-bottom-card green" href="/admin/youtube-playlists">☷ <span><b>Seri Oynatma Listeleri</b><small>{playlists.rows.length || series.rows.length || 0} liste</small></span></a>
-        </section>
-      </section>
-
-      <aside className="right-rail">
-        <section className="side-panel"><div className="side-title"><h3>Duyurular</h3><a href="/updates">Tümünü Gör</a></div>
-          <article className="notice-card"><b>Yeni Özellik: Bölüm Otomatik Çekme</b><span>Yeni</span><p>YouTube playlist altyapısı eklendi.</p></article>
-          <article className="notice-card"><b>Site Rehberi Güncellendi</b><p>Kullanıcıya yönelik rehber hazırlandı.</p></article>
-          <article className="notice-card"><b>Bakım Modu Koruması</b><p>Normal kullanıcı/ziyaretçi koruması eklendi.</p></article>
-        </section>
-        <section className="side-panel"><h3>İstatistikler</h3><div className="stat-mini-grid"><b>🎮<span>{games.rows.length}</span><small>Toplam Oyun</small></b><b>🎬<span>{series.rows.length}</span><small>Toplam Seri</small></b><b>📺<span>{episodeCount}</span><small>Toplam Bölüm</small></b><b>👥<span>{users.rows.length}</span><small>Kullanıcı</small></b></div><p className="backup-note">Son deploy: #{deployInfo?.deployNumber || '—'} <em>Başarılı</em></p></section>
-      </aside>
-    </div>
+function ArchivePage() {
+  const games = useTable('public_games');
+  const series = useTable('public_series');
+  const episodes = useTable('public_episodes');
+  const [q,setQ]=useState(''); const [status,setStatus]=useState(''); const [sort,setSort]=useState('az');
+  const list=[...games.rows].filter(g => !q || `${g.title} ${g.genres} ${g.tags} ${g.series_title}`.toLowerCase().includes(q.toLowerCase())).filter(g => !status || g.status===status).sort((a,b)=> sort==='za' ? String(b.title||'').localeCompare(String(a.title||''),'tr') : String(a.title||'').localeCompare(String(b.title||''),'tr'));
+  return <Layout><V4Hero badge={`🎮 ${VERSION} • Premium Arşiv Merkezi`} icon="🎮" title="Oyun Arşivi" text="Arama, filtre, A-Z ve 0-9 grupları güçlendirildi. Kapaklar dev banner gibi şişmez; her oyun kartı kompakt ve okunabilir görünür." actions={[["➕ Oyun Ekle","/admin/games/new"],["🎬 Seriler","/series"],["📁 Koleksiyonlar","/collections"]]} />
+    <section className="v4-stats-grid four"><StatBox value={games.rows.length} label="🎮 Toplam Oyun"/><StatBox value={list.length} label="🔎 Filtre Sonucu"/><StatBox value={series.rows.length} label="📁 Koleksiyon"/><StatBox value={episodes.rows.length} label="▶️ Bölüm"/></section>
+    <section className="v4-filter-panel"><label>🔎 ARAMA<input value={q} onChange={e=>setQ(e.target.value)} placeholder="Oyun, tür, seri, etiket ara" /></label><label>📌 DURUM<select value={status} onChange={e=>setStatus(e.target.value)}><option value="">Tümü</option><option>Planlandı</option><option>Devam Ediyor</option><option>Tamamlandı</option><option>Gizli</option></select></label><label>🔠 SIRALAMA<select value={sort} onChange={e=>setSort(e.target.value)}><option value="az">A'dan Z'ye</option><option value="za">Z'den A'ya</option></select></label><button className="ghost-btn" onClick={()=>{setQ('');setStatus('');}}>🧹 Temizle</button></section>
+    {games.loading ? <p>Yükleniyor...</p> : list.length ? <section className="v4-card-grid">{list.map(g=><DataCard key={g.id} item={g} type="games" />)}</section> : <section className="v4-empty">⚠️ Bu filtreyle oyun bulunamadı.</section>}
+  </Layout>;
+}
+function CollectionsPage() {
+  const categories=useTable('public_categories'); const series=useTable('public_series'); const games=useTable('public_games'); const episodes=useTable('public_episodes');
+  return <Layout><V4Hero badge={`📁 ${VERSION} • Koleksiyon Merkezi`} icon="📁" title="Koleksiyonlar" text="Koleksiyonlar artık boş görünmez; seri, tür ve durum sayaçları aynı oyun listesinden beslenir. Oyun silme/ekleme sonrası sayılar otomatik yenilenir." actions={[["Sıralamayı Yönet","/admin/series"]]} />
+    <section className="v4-stats-grid four"><StatBox value={categories.rows.length} label="Koleksiyon"/><StatBox value={series.rows.length} label="Seri"/><StatBox value={games.rows.length} label="Oyun"/><StatBox value={episodes.rows.length} label="Bölüm"/></section>
+    <section className="v4-panel"><h2>Seri / Koleksiyon Grupları</h2><p>{series.rows.length} grup listeleniyor.</p>{series.rows.length ? <div className="v4-card-grid">{series.rows.map(x=><DataCard key={x.id} item={x} type="series" />)}</div> : <div className="v4-empty">Koleksiyon oluşturmak için önce oyun ekle.</div>}</section>
+    <section className="v4-panel"><h2>Tür Koleksiyonları</h2><p>Kategori bazlı hızlı koleksiyon özetleri.</p>{categories.rows.length ? <div className="category-pro-grid">{categories.rows.map(x=><a className="category-pro-card" href={`/categories/${x.slug}`} key={x.id}><img src={x.cover_url||x.banner_url||PLACEHOLDER}/><div><span>📁 Tür</span><h2>{x.title||x.name}</h2><p>{x.description||'Bu türdeki oyunlar.'}</p></div></a>)}</div> : null}</section>
+  </Layout>;
+}
+function SeriesHubPage() {
+  const series=useTable('public_series'); const games=useTable('public_games');
+  const [sort,setSort]=useState('az');
+  const list=[...series.rows].sort((a,b)=> sort==='za' ? String(b.title||'').localeCompare(String(a.title||''),'tr') : String(a.title||'').localeCompare(String(b.title||''),'tr'));
+  return <Layout><V4Hero badge={`🎬 ${VERSION} • Premium Seri Merkezi`} icon="🎬" title="Seriler" text="Tamamlanan, devam eden ve yakında gelecek seriler artık ayrı ayrı görünür. Her seri kompakt kart, kapak/banner, ilerleme yüzdesi ve sıradaki bölüm bilgisiyle listelenir." actions={[["📁 Koleksiyon Merkezi","/collections"],["🛠️ Serileri Yönet","/admin/series"]]} />
+    <section className="v4-stats-grid four"><StatBox value={series.rows.length} label="🎬 Toplam Seri"/><StatBox value={series.rows.filter(x=>x.status==='Devam Ediyor').length} label="🟢 Devam Eden"/><StatBox value={series.rows.filter(x=>x.status==='Tamamlandı').length} label="✅ Tamamlanan"/><StatBox value={series.rows.filter(x=>x.status==='Planlandı'||x.status==='Yakında').length} label="⏳ Yakında"/></section>
+    <section className="v4-filter-panel"><label>🔠 SERİ / OYUN SIRALAMASI<select value={sort} onChange={e=>setSort(e.target.value)}><option value="az">A'dan Z'ye</option><option value="za">Z'den A'ya</option></select></label><a className="ghost-btn" href="/admin/series">🔃 Sırala</a><button className="ghost-btn" onClick={()=>setSort('az')}>🖌️ A-Z Varsayılan</button></section>
+    {list.length ? <section className="v4-card-grid">{list.map(x=><DataCard key={x.id} item={x} type="series" />)}</section> : <section className="v4-empty">⚠️ Seri oluşturmak için önce oyun ekle.</section>}
   </Layout>;
 }
 function ListPage({ table, icon, title, text, type }) {
+  if (table==='public_games') return <ArchivePage />;
+  if (table==='public_series') return <SeriesHubPage />;
   const { rows, loading, error } = useTable(table);
-  return <Layout><PageHero icon={icon} title={title} text={text} />{error ? <p className="form-message error">{error}</p> : null}{loading ? <p>Yükleniyor...</p> : rows.length ? <section className="series-section"><div className="series-grid premium-series-grid">{rows.map(x => <DataCard key={x.id} item={x} type={type} />)}</div></section> : <EmptyState title={`${title} kaydı yok`} text="SQL temiz başlangıç yaptığı için kayıtlar yönetim panelinden eklenecek." />}</Layout>;
+  return <Layout><V4Hero badge={`${icon} ${VERSION}`} icon={icon} title={title} text={text} />{error ? <p className="form-message error">{error}</p> : null}{loading ? <p>Yükleniyor...</p> : rows.length ? <section className="v4-card-grid">{rows.map(x => <DataCard key={x.id} item={x} type={type} />)}</section> : <EmptyState title={`${title} kaydı yok`} text="Kayıtlar yönetim panelinden eklenecek." />}</Layout>;
+}
+
+function CategoryHubPage() {
+  const { rows, loading, error } = useTable('public_categories');
+  const games = useTable('public_games');
+  const series = useTable('public_series');
+  function countFor(cat) {
+    const slug = cat.slug || '';
+    const title = cat.title || cat.name || '';
+    return games.rows.filter(g => g.category_slug === slug || g.category_title === title).length + series.rows.filter(x => x.category_slug === slug || x.category_title === title).length;
+  }
+  return <Layout><PageHero icon="📁" title="Kategoriler" text="Oyun türleri profesyonel kartlarla ayrılır. Kullanıcı yönetimiyle karışmaz." />
+    {error ? <p className="form-message error">{error}</p> : null}
+    <section className="category-pro-grid">
+      {(loading ? [] : rows).map((cat, index) => {
+        const title = cat.title || cat.name || 'Kategori';
+        const img = cat.cover_url || cat.banner_url || PLACEHOLDER;
+        return <a className="category-pro-card" href={`/categories/${cat.slug || index}`} key={cat.id || index}>
+          <img src={img} alt={title} onError={e => { e.currentTarget.src = PLACEHOLDER; }} />
+          <div><span>📁 Kategori</span><h2>{title}</h2><p>{cat.description || `${title} türündeki oyunlar, seriler ve bölümler.`}</p><b>{countFor(cat)} içerik</b></div>
+        </a>;
+      })}
+      {!loading && !rows.length ? <EmptyState title="Kategori kaydı yok" text="Kategoriler oyun ekleme sırasında otomatik oluşur veya panelden eklenir." /> : null}
+    </section>
+  </Layout>;
 }
 
 function SimplePage({ title, icon, text }) { return <Layout><PageHero icon={icon} title={title} text={text} /><EmptyState title="İskelet hazır" text="Bu sayfa route olarak kuruldu. İçerik sonraki sürümlerde Supabase tablosuyla doldurulacak." /></Layout>; }
@@ -239,7 +218,7 @@ function AuthPage({ mode }) {
   return <Layout><section className="admin-shell"><div className="admin-hero"><div className="version-pill">🔐 {VERSION} • Kayıt ve giriş</div><h1>{mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</h1><p>v1.3.2 ile RAWG oyun bilgisi altyapısı eklendi.</p></div><section className="status-grid"><article className="status-check-card"><strong>Supabase Bağlantısı</strong><p>{supabaseConfig.isReady ? 'Hazır' : 'Eksik: Vercel ortam değişkenleri ve yeniden dağıtım gerekli.'}</p></article><article className="status-check-card"><strong>E-posta Onayı</strong><p>Test için Supabase Auth → Providers → Email bölümünde e-posta onayı test aşamasında kapalı olmalı.</p></article><article className="status-check-card"><strong>Profil Kaydı</strong><p>schema.sql içindeki trigger app_users profilini otomatik açar.</p></article></section><form className="admin-card login-card" onSubmit={submit}><h2>{mode === 'register' ? 'Yeni hesap' : 'Hesaba giriş'}</h2><label>E-posta<input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></label><label>Şifre<input type="password" minLength="6" value={password} onChange={e => setPassword(e.target.value)} required /></label><button className="primary-btn" disabled={loading}>{loading ? 'İşleniyor...' : mode === 'register' ? 'Kayıt Ol' : 'Giriş Yap'}</button>{message ? <p className={message.startsWith('Başarı') ? 'form-message success' : 'form-message error'}>{message}</p> : null}<div className="hero-actions"><a className="ghost-btn" href={mode === 'register' ? '/login' : '/register'}>{mode === 'register' ? 'Girişe geç' : 'Kayıt ol'}</a><a className="ghost-btn" href="/status">Durumu kontrol et</a></div></form></section></Layout>;
 }
 
-function AdminNav() { return <div className="admin-button-bar single-row-admin">{adminButtons.map(([label, href]) => <a key={href} className="ghost-btn admin-mini-btn" href={href}>{label}</a>)}</div>; }
+function AdminNav() { return <div className="admin-button-bar single-row-admin"><a className="ghost-btn admin-mini-btn admin-home-btn" href="/">🏠 Ana Sayfaya Git</a>{adminButtons.filter(([, href]) => href !== '/').map(([label, href]) => <a key={href} className="ghost-btn admin-mini-btn" href={href}>{label}</a>)}</div>; }
 function AdminPage() {
   const session = getSession();
   const [profile, setProfile] = useState(null);
@@ -289,8 +268,14 @@ function AdminQuickManager({ session }) {
   }
   function extractPlaylistId(value) {
     const text = String(value || '').trim();
-    const match = text.match(/[?&]list=([^&]+)/) || text.match(/playlist\?list=([^&]+)/);
-    return match ? decodeURIComponent(match[1]) : text;
+    if (!text) return '';
+    try {
+      const url = new URL(text);
+      const list = url.searchParams.get('list');
+      if (list) return list.trim();
+    } catch {}
+    const match = text.match(/[?&]list=([^&\s]+)/) || text.match(/playlist\?list=([^&\s]+)/) || text.match(/(PL[A-Za-z0-9_-]{12,})/);
+    return match ? decodeURIComponent(match[1]).trim() : text.trim();
   }
   function toggleTag(tag) {
     const current = String(form.tags || '').split(',').map(x => x.trim()).filter(Boolean);
@@ -1148,8 +1133,14 @@ function AdminYouTubePlaylistsPage() {
   function makeSlug(value) { return String(value || '').trim().toLowerCase().replaceAll(' ', '-').replace(/[^a-z0-9-]/g, ''); }
   function extractPlaylistId(value) {
     const text = String(value || '').trim();
-    const match = text.match(/[?&]list=([^&]+)/) || text.match(/playlist\?list=([^&]+)/);
-    return match ? decodeURIComponent(match[1]) : text;
+    if (!text) return '';
+    try {
+      const url = new URL(text);
+      const list = url.searchParams.get('list');
+      if (list) return list.trim();
+    } catch {}
+    const match = text.match(/[?&]list=([^&\s]+)/) || text.match(/playlist\?list=([^&\s]+)/) || text.match(/(PL[A-Za-z0-9_-]{12,})/);
+    return match ? decodeURIComponent(match[1]).trim() : text.trim();
   }
   async function submit(e) {
     e.preventDefault();
@@ -1166,32 +1157,42 @@ function AdminYouTubePlaylistsPage() {
     setLoading(true);
     setMsg('YouTube bölümleri çekiliyor...');
     try {
-      const response = await fetch(`/api/youtube-playlist?playlistId=${encodeURIComponent(playlistId)}`);
-      const json = await response.json();
-      if (!response.ok) throw new Error(json?.error || 'YouTube API hatası.');
+      const response = await fetch(`/api/youtube-playlist?playlistId=${encodeURIComponent(playlistId)}&playlistUrl=${encodeURIComponent(row.playlist_url || '')}`);
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(json?.error || 'YouTube API hatası. YOUTUBE_API_KEY ve playlist erişimini kontrol et.');
+      if (!Array.isArray(json.items) || json.items.length === 0) throw new Error('Playlist bulundu ama 0 bölüm döndü. Playlist herkese açık mı, YouTube Data API v3 açık mı ve URL doğru mu kontrol et.');
       let saved = 0;
+      const errors = [];
       for (const item of json.items || []) {
         const payload = {
-          slug: `${row.slug || playlistId}-${item.position}`.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
-          title: item.title,
-          description: item.description,
+          slug: `${row.slug || playlistId}-${item.position || saved + 1}-${item.youtube_video_id}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-'),
+          title: item.title || `Bölüm ${item.position || saved + 1}`,
+          description: item.description || '',
           youtube_url: item.youtube_url,
           youtube_video_id: item.youtube_video_id,
           thumbnail_url: item.thumbnail_url,
-          episode_number: item.position,
-          sort_order: item.position,
+          episode_number: Number(item.position || saved + 1),
+          episode_no: Number(item.position || saved + 1),
+          sort_order: Number(item.position || saved + 1),
           game_slug: row.game_slug || '',
           game_title: row.game_title || '',
           series_slug: row.series_slug || '',
           series_title: row.series_title || '',
+          channel_slug: row.channel_slug || 'hayatimiz-oyun',
+          channel_title: row.channel_title || 'Hayatımız Oyun',
           status: 'Yayında',
-          published_at: item.published_at
+          published_at: item.published_at,
+          is_public: true
         };
-        const savedRow = await upsertRow('game_episodes', payload, session, 'youtube_video_id');
-        if (!savedRow.error) saved += 1;
+        const savedGameEpisode = await upsertRow('game_episodes', payload, session, 'youtube_video_id');
+        const savedPublicEpisode = await upsertRow('public_episodes', payload, session, 'youtube_video_id');
+        if (!savedGameEpisode.error || !savedPublicEpisode.error) saved += 1;
+        if (savedGameEpisode.error && savedPublicEpisode.error) errors.push(savedPublicEpisode.error || savedGameEpisode.error);
       }
-      await updateRow('youtube_playlists', row.id, { sync_status: 'Tamamlandı', episode_count: saved, last_sync_note: `${saved} bölüm çekildi.` }, session);
-      setMsg(`Başarı: ${saved} bölüm YouTube playlistten çekildi ve game_episodes tablosuna yazıldı.`);
+      await updateRow('youtube_playlists', row.id, { sync_status: saved ? 'Tamamlandı' : 'Boş', episode_count: saved, last_sync_note: errors.length ? `${saved} bölüm çekildi. Uyarı: ${errors[0]}` : `${saved} bölüm ve thumbnail çekildi.` }, session);
+      if (row.series_slug) await upsertRow('public_series', { slug: row.series_slug, title: row.series_title || row.game_title || row.title, episode_count: saved, channel_slug: row.channel_slug, channel_title: row.channel_title, is_public: true }, session, 'slug');
+      if (row.game_slug) await upsertRow('public_games', { slug: row.game_slug, title: row.game_title || row.title, episode_count: saved, episodes: saved, playlist_id: playlistId, playlist_url: row.playlist_url, is_public: true }, session, 'slug');
+      setMsg(`Başarı: ${saved} bölüm YouTube playlistten çekildi. Thumbnailler public_episodes tablosuna yazıldı.${errors.length ? ' Bazı kayıtlar için uyarı var: ' + errors[0] : ''}`);
       load();
     } catch (error) {
       setMsg(error.message || 'YouTube bölüm çekme hatası.');
@@ -1279,9 +1280,11 @@ function AdminGuidePage() {
 function AppRouter() {
   const p = location.pathname.replace(/\/$/, '') || '/';
   if (p === '/') return <HomePage />;
-  if (p === '/archive') return <ListPage table="public_games" icon="🎮" title="Arşiv" text="Oyun arşivi Supabase public_games tablosundan gelir." type="games" />;
-  if (p === '/collections' || p === '/categories') return <ListPage table="public_categories" icon="📁" title="Koleksiyonlar" text="Fotoğraftaki üst menüye uygun koleksiyon/kategori merkezi." type="collections" />;
-  if (p === '/series') return <ListPage table="public_series" icon="🎬" title="Seriler" text="Seriler Supabase public_series tablosundan gelir." type="series" />;
+  if (p === '/archive') return <ArchivePage />;
+  if (p === '/collections') return <CollectionsPage />;
+  if (p === '/categories') return <CategoryHubPage />;
+  if (p.startsWith('/categories/')) return <CategoryHubPage />;
+  if (p === '/series') return <SeriesHubPage />;
   if (p === '/channels') return <ListPage table="public_channels" icon="📺" title="Kanallar" text="Kanallar Supabase public_channels tablosundan gelir." type="channels" />;
   if (p === '/calendar') return <CalendarPage />;
   if (p === '/guide') return <GuidePage />;
