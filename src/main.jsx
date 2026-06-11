@@ -42,15 +42,22 @@ function Layout({ children }) {
   const [profile, setProfile] = useState(null);
   useEffect(() => { if (session?.access_token) getCurrentAppUser(session).then(r => setProfile(r.data)); }, [session?.access_token]);
   const canSeeAdmin = isAdminRole(profile?.role);
-  const visibleMenu = topMenu.filter(([, href]) => href !== '/admin' || canSeeAdmin);
-  return <main className="page-shell">
-    <header className="site-header compact-header">
-      <a className="brand compact-brand" href="/"><span className="brand-mark">HO</span><span><strong>{siteConfig.name}</strong><small>{VERSION} • Bakım modu</small></span></a>
-      <nav className="nav one-line-nav">
-        {visibleMenu.map(([label, href]) => <a key={href} href={href}>{label}</a>)}
-        {session?.access_token
-          ? <button className="nav-danger" onClick={() => { clearSession(); location.href = '/login'; }}>🚪 Çıkış Yap</button>
-          : <a className="nav-danger" href="/login">🔐 Giriş Yap</a>}
+  const publicMenu = topMenu.filter(([, href]) => !['/admin', '/profile'].includes(href));
+  return <main className="page-shell fixed-shell">
+    <header className="site-header fixed-header">
+      <div className="fixed-header-top">
+        <a className="brand fixed-brand" href="/"><span className="brand-mark">HO</span><span><strong>{siteConfig.name}</strong><small>{VERSION} • Arşiv Sistemi</small></span></a>
+        <div className="fixed-header-actions">
+          {session?.access_token ? <a className="header-chip" href="/profile">👤 Profil</a> : null}
+          {canSeeAdmin ? <a className="header-chip admin-chip" href="/admin">🛡️ Yönetim Paneli</a> : null}
+          {profile?.role ? <span className="role-chip">{roleLabel(profile.role)}</span> : null}
+          {session?.access_token
+            ? <button className="nav-danger header-logout" onClick={() => { clearSession(); location.href = '/login'; }}>🚪 Çıkış Yap</button>
+            : <a className="nav-danger header-logout" href="/login">🔐 Giriş Yap</a>}
+        </div>
+      </div>
+      <nav className="nav fixed-nav">
+        {publicMenu.map(([label, href]) => <a key={href} href={href}>{label}</a>)}
       </nav>
     </header>
     {children}
