@@ -1,28 +1,25 @@
 @echo off
-setlocal EnableExtensions
+setlocal
+title Hayatimiz Oyun - GitHub Oto Gonder
 cd /d "%~dp0"
-title Hayatimiz Oyun - GitHub Otomatik Gonderme
-set "REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
-set "BRANCH=main"
+echo =====================================
+echo GitHub Otomatik Gonderme
+echo =====================================
 echo.
-echo ================================
-echo  GitHub Otomatik Gonderme
-echo ================================
 where git >nul 2>nul
 if errorlevel 1 (
-  echo HATA: Git bulunamadi. https://git-scm.com/download/win adresinden kur.
+  echo HATA: Git bulunamadi. Git kur: https://git-scm.com/download/win
   pause
   exit /b 1
 )
 if not exist ".git" (
   git init
+  git branch -M main
 )
 git remote remove origin >nul 2>nul
-git remote add origin "%REPO_URL%"
-git branch -M %BRANCH%
-git add -A
-git commit -m "Hayatimiz Oyun site guncelleme v0.0.8 build fix" || echo Commit icin yeni degisiklik olmayabilir.
-git push -u origin %BRANCH%
-echo.
-echo GitHub gonderme islemi tamamlandi.
+git remote add origin https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
+git add .
+git commit -m "v0.0.9 temel test surumu" || echo Commit olusturulmadi, degisiklik olmayabilir.
+git branch -M main
+git push -u origin main
 pause

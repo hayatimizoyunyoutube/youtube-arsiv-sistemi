@@ -1,3 +1,0 @@
-# v0.0.8 icin zorunlu ENV yok
-VITE_SITE_VERSION=v0.0.8
-VITE_SITE_TITLE=Hayatımız Oyun Arşiv Sistemi

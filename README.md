@@ -1,11 +1,16 @@
-# Hayatımız Oyun Site v0.0.8 Build Fix
+# Hayatımız Oyun Arşiv Sistemi v0.0.9
 
-Kurulum:
+## ✅ Eklenenler
+- 🧪 İlk temel sürüm testi yapıldı
+- 🚀 Vercel `dist` hatası kalıcı düzeltildi
+- 📱 Mobil görünüm kontrol edildi
+- 🛡️ BAT dosyaları `.git` ve `.bat` korumalı hazırlandı
+- 🗄️ Supabase şu an gerekli değil, hazırlık notu eklendi
 
-```bash
-npm install
-npm run build
-npm run dev
-```
+## Vercel Ayarları
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Install Command: `npm install`
 
-Vercel ayarı: outputDirectory `dist` olmalı.
+## Supabase
+Şu an zorunlu değil. v0.8.x ile aktif SQL kullanılacak.
