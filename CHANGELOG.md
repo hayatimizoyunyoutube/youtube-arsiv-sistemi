@@ -1,22 +1,15 @@
 # CHANGELOG
 
-## v0.0.4
+## 🎮 v0.0.5
+- 🎮 Oyun kartları sistemi eklendi.
+- 🏷️ Etiket sistemi başladı.
+- 🔍 Arama altyapısı eklendi.
+- 📊 İstatistikler demo oyun verisine bağlandı.
+- 📱 Mobil görünüm güçlendirildi.
+- 🚫 Kullanıcı ekranından GitHub repo bilgisi kaldırılmış şekilde korundu.
 
-📱 Mobil uyum geliştirildi.
-🎨 Ana sayfa daha profesyonel hale getirildi.
-📊 İstatistik kartları eklendi.
-🔒 Kullanıcı ekranından teknik GitHub repo gösterimi kaldırıldı.
-🚀 Vercel build uyumu korundu.
+## 📱 v0.0.4
+- Mobil uyum ve ana sayfa güncellendi.
 
-## v0.0.3
-
-🧭 Menü sistemi eklendi.
-🛠️ Silme BAT dosyası düzeltildi.
-
-## v0.0.2
-
-🏠 Ana sayfa iskeleti oluşturuldu.
-
-## v0.0.1
-
-✅ Temiz proje başlangıcı yapıldı.
+## 🧭 v0.0.3
+- Navigasyon sistemi hazırlandı.

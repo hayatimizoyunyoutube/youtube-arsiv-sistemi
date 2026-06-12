@@ -1,34 +1,25 @@
-# Hayatımız Oyun - Site v0.0.4
+# 🎮 Hayatımız Oyun Site v0.0.5
 
-🎮 YouTube arşiv sistemi için dördüncü geliştirme sürümü.
+Bu sürümde ilk gerçek oyun kartları sistemi eklendi.
 
-## ✅ Eklenenler
-
-- 📱 Mobil uyum güçlendirildi
-- 🎨 Ana sayfa tasarımı yenilendi
-- 📊 İstatistik kartları eklendi
-- 🔒 Kullanıcı ekranından GitHub repo gösterimi kaldırıldı
-- 🛠️ BAT temizlik dosyası korumalı çalışacak şekilde bırakıldı
-- 🚀 Vercel build ayarları güncel tutuldu
-
-## 🚀 Kurulum
-
+## 🚀 Çalıştırma
 ```bash
 npm install
 npm run dev
+```
+
+## ✅ Build Test
+```bash
 npm run build
 ```
 
 ## 🌐 Vercel
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Install Command: `npm install`
 
-Build Command:
+## 🗄️ Supabase
+Bu sürümde Supabase zorunlu değildir. `supabase/schema.sql` hazırlık amaçlıdır.
 
-```bash
-npm run build
-```
-
-Output Directory:
-
-```bash
-dist
-```
+## 🔐 ENV
+Bu sürümde ENV zorunlu değildir. `.env.example` sonraki sürümler için hazır tutuldu.

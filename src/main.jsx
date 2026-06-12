@@ -1,83 +1,153 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Archive, CalendarDays, Gamepad2, Home, MonitorSmartphone, Sparkles, Trophy, Users } from 'lucide-react';
+import { Archive, CalendarDays, Gamepad2, Home, MonitorSmartphone, Search, Sparkles, Trophy } from 'lucide-react';
 import './style.css';
 
-const VERSION = '0.0.4';
+const VERSION = '0.0.5';
 
-const stats = [
-  { label: 'Oyun', value: '0', note: 'Arşiv sistemi hazırlanıyor' },
-  { label: 'Seri', value: '0', note: 'Seri sayfaları sonraki sürümde' },
-  { label: 'Bölüm', value: '0', note: 'Bölüm sistemi planlandı' },
-  { label: 'Durum', value: 'Hazır', note: 'Vercel build uyumlu' },
+const games = [
+  {
+    id: 1,
+    title: 'Resident Evil 5',
+    cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2py3.jpg',
+    release: '2009',
+    series: 'Resident Evil',
+    status: 'Devam Ediyor',
+    genres: ['Aksiyon', 'Korku'],
+    tags: ['Türkçe Altyazılı', 'Co-op']
+  },
+  {
+    id: 2,
+    title: 'Assassin’s Creed Origins',
+    cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1rbe.jpg',
+    release: '2017',
+    series: 'Assassin’s Creed',
+    status: 'Planlandı',
+    genres: ['Açık Dünya', 'Aksiyon'],
+    tags: ['Türkçe Altyazılı', '%100']
+  },
+  {
+    id: 3,
+    title: 'Dead Island 2',
+    cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co5s5v.jpg',
+    release: '2023',
+    series: 'Dead Island',
+    status: 'Tamamlandı',
+    genres: ['Zombi', 'Aksiyon'],
+    tags: ['Co-op', 'Türkçe Altyazılı']
+  },
+  {
+    id: 4,
+    title: 'Silent Hill Homecoming',
+    cover: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co2l6y.jpg',
+    release: '2008',
+    series: 'Silent Hill',
+    status: 'Arşivde',
+    genres: ['Korku', 'Hayatta Kalma'],
+    tags: ['Türkçe Altyazılı']
+  }
 ];
 
+function GameCard({ game }) {
+  return (
+    <article className="game-card">
+      <div className="cover-wrap">
+        <img src={game.cover} alt={`${game.title} kapak görseli`} loading="lazy" />
+        <span className="status">{game.status}</span>
+      </div>
+      <div className="game-body">
+        <h3>{game.title}</h3>
+        <p>{game.series} • {game.release}</p>
+        <div className="chips">
+          {game.genres.map((genre) => <span key={genre}>🎮 {genre}</span>)}
+        </div>
+        <div className="tags">
+          {game.tags.map((tag) => <span key={tag}>{tag}</span>)}
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function App() {
+  const [search, setSearch] = useState('');
+  const filteredGames = useMemo(() => {
+    const q = search.trim().toLocaleLowerCase('tr-TR');
+    if (!q) return games;
+    return games.filter((game) =>
+      [game.title, game.series, game.status, ...game.genres, ...game.tags]
+        .join(' ')
+        .toLocaleLowerCase('tr-TR')
+        .includes(q)
+    );
+  }, [search]);
+
   return (
     <main className="page">
       <header className="topbar">
         <div className="brand">🎮 Hayatımız Oyun</div>
         <nav className="nav" aria-label="Ana Menü">
           <a href="#anasayfa"><Home size={16} /> Ana Sayfa</a>
-          <a href="#arsiv"><Archive size={16} /> Arşiv</a>
+          <a href="#oyunlar"><Archive size={16} /> Oyunlar</a>
           <a href="#takvim"><CalendarDays size={16} /> Takvim</a>
         </nav>
       </header>
 
       <section id="anasayfa" className="hero">
-        <div className="badge">v{VERSION} • Mobil Uyum ve Ana Sayfa</div>
+        <div className="badge">v{VERSION} • Oyun Kartları Sistemi</div>
         <h1>Hayatımız Oyun Arşiv Sistemi</h1>
         <p>
-          Bu sürümde ana sayfa daha profesyonel hale getirildi, mobil görünüm güçlendirildi
-          ve kullanıcı ekranında teknik GitHub repo bağlantıları gösterilmeden temiz bir tanıtım alanı hazırlandı.
+          İlk gerçek oyun kartları, etiketler, durum rozetleri ve arama altyapısı eklendi.
+          Kullanıcı ekranında teknik GitHub repo bağlantısı gösterilmez.
         </p>
         <div className="actions" aria-label="Sistem Durumu">
+          <span><Gamepad2 size={18} /> Oyun Kartları</span>
+          <span><Search size={18} /> Arama Hazır</span>
           <span><MonitorSmartphone size={18} /> Mobil Uyumlu</span>
-          <span><Sparkles size={18} /> Tasarım Yenilendi</span>
-          <span><Trophy size={18} /> v{VERSION} Hazır</span>
+          <span><Trophy size={18} /> v{VERSION}</span>
         </div>
       </section>
 
       <section className="stats" aria-label="Site İstatistikleri">
-        {stats.map((item) => (
-          <article key={item.label}>
-            <strong>{item.value}</strong>
-            <h2>{item.label}</h2>
-            <p>{item.note}</p>
-          </article>
-        ))}
+        <article><strong>{games.length}</strong><h2>Oyun</h2><p>Demo arşiv kartı</p></article>
+        <article><strong>4</strong><h2>Seri</h2><p>Seri bilgisi hazır</p></article>
+        <article><strong>5</strong><h2>Etiket</h2><p>TR, Co-op, DLC, %100</p></article>
+        <article><strong>Hazır</strong><h2>Durum</h2><p>Vercel build uyumlu</p></article>
       </section>
 
-      <section id="arsiv" className="cards">
-        <article>
-          <Gamepad2 />
-          <h2>Arşiv Başlangıcı</h2>
-          <p>Oyun kartları için alan hazırlandı. v0.0.5 sürümünde ilk oyun kart sistemi başlayacak.</p>
-        </article>
-        <article>
-          <CalendarDays />
-          <h2>Yayın Takvimi Hazırlığı</h2>
-          <p>Takvim görünümü için kullanıcıya açık alan ayrıldı. Gelecek sürümlerde planlama sistemi eklenecek.</p>
-        </article>
-        <article>
-          <Users />
-          <h2>Kullanıcı Dostu Ekran</h2>
-          <p>Teknik bağlantılar ziyaretçi ekranından kaldırıldı, sadece site özellikleri gösteriliyor.</p>
-        </article>
+      <section id="oyunlar" className="archive-panel">
+        <div className="section-title">
+          <div>
+            <span className="mini-badge">🎮 v0.0.5</span>
+            <h2>Oyun Kartları</h2>
+          </div>
+          <label className="search-box">
+            <Search size={18} />
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Oyun, seri veya etiket ara..." />
+          </label>
+        </div>
+
+        {filteredGames.length > 0 ? (
+          <div className="game-grid">
+            {filteredGames.map((game) => <GameCard key={game.id} game={game} />)}
+          </div>
+        ) : (
+          <div className="empty-state">🔍 Aradığın kritere uygun oyun bulunamadı.</div>
+        )}
       </section>
 
       <section id="takvim" className="preview">
-        <h2>📌 Sıradaki Plan</h2>
+        <h2>📌 Sonraki Plan</h2>
         <div className="preview-grid">
-          <span>🎮 v0.0.5 Oyun Kartları</span>
-          <span>📚 v0.0.6 Arşiv Temeli</span>
-          <span>🔍 v0.0.7 Arama Sistemi</span>
+          <span>📚 v0.0.6 Arşiv Sayfası</span>
+          <span>🔍 v0.0.7 Arama Geliştirme</span>
           <span>🏷️ v0.0.8 Kategori Sistemi</span>
+          <span>🧪 v0.0.9 İlk Test</span>
         </div>
       </section>
 
       <footer>
-        <strong>Hayatımız Oyun</strong> • Site Sürümü: v{VERSION} • Vercel Build Hazır
+        <strong>Hayatımız Oyun</strong> • Site Sürümü: v{VERSION} • Vercel Build Hazır • Supabase sonraki sürümlere hazırlanıyor
       </footer>
     </main>
   );
