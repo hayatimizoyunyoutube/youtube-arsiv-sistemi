@@ -1,14 +1,11 @@
-# Hayatımız Oyun Site v0.0.8
+# Hayatımız Oyun Site v0.0.8 Build Fix
 
-## 🧹 Bu Sürüm
-- Dosya temizliği yapıldı
-- Klasör yapısı düzenlendi
-- Kullanıcı ekranında GitHub repo bilgisi gizli tutuldu
-- BAT dosyaları koruma mantığı güncellendi
-- Vercel için statik site uyumu korundu
+Kurulum:
 
-## 🚀 Çalıştırma
-`index.html` dosyasını açabilir veya Vercel'e yükleyebilirsin.
+```bash
+npm install
+npm run build
+npm run dev
+```
 
-## 🗄️ Supabase
-Bu sürümde Supabase SQL zorunlu değildir. Hazırlık dosyası klasörde tutulur.
+Vercel ayarı: outputDirectory `dist` olmalı.

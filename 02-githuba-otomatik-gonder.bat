@@ -1,27 +1,28 @@
 @echo off
-chcp 65001 >nul
+setlocal EnableExtensions
 cd /d "%~dp0"
-echo =====================================
-echo Hayatimiz Oyun - GitHub Gonderme
-echo =====================================
+title Hayatimiz Oyun - GitHub Otomatik Gonderme
+set "REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
+set "BRANCH=main"
 echo.
+echo ================================
+echo  GitHub Otomatik Gonderme
+echo ================================
 where git >nul 2>nul
 if errorlevel 1 (
-  echo Git kurulu degil. Git kurup tekrar dene.
+  echo HATA: Git bulunamadi. https://git-scm.com/download/win adresinden kur.
   pause
-  exit /b
+  exit /b 1
 )
-if not exist ".git" git init
-git remote remove origin 2>nul
-git remote add origin https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
-git branch -M main
-git add .
-git commit -m "v0.0.8 dosya temizligi" 2>nul
-git push -u origin main
-if errorlevel 1 (
-  echo Gonderme basarisiz. GitHub girisi veya yetki gerekebilir.
-  pause
-  exit /b
+if not exist ".git" (
+  git init
 )
-echo GitHub gonderme tamamlandi.
+git remote remove origin >nul 2>nul
+git remote add origin "%REPO_URL%"
+git branch -M %BRANCH%
+git add -A
+git commit -m "Hayatimiz Oyun site guncelleme v0.0.8 build fix" || echo Commit icin yeni degisiklik olmayabilir.
+git push -u origin %BRANCH%
+echo.
+echo GitHub gonderme islemi tamamlandi.
 pause
