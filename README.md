@@ -1,26 +1,32 @@
-# Hayatımız Oyun v4.0.5 - Supabase Constraint + Temiz Paket Fix
+# Hayatımız Oyun Site Paneli v0.0.1
 
-Bu paket v4.0.5 üstüne temizlenmiş kesin fix paketidir.
+Bu paket tamamen sıfırdan temiz başlangıçtır. Eski v4 dosyaları, eski Supabase karmaşası ve bozuk playlist kodları yoktur.
 
-## Önce Supabase'de çalıştır
-1. Supabase > SQL Editor aç.
-2. `supabase/schema.sql` dosyasının tamamını çalıştır.
-3. Bu dosya sadece `games` ve `episodes` tablolarını temiz resetler. Yetki/kullanıcı tablolarını silmez.
+## Bu sürümde .env gerekli mi?
+Hayır. v0.0.1 sadece temel arayüz, menü, form ve yerel önizleme sürümüdür.
 
-## Düzeltilen hata
-- `relation "episodes_game_number_unique" already exists` hatası düzeltildi.
-- Eski constraint güvenli kaldırılıp idempotent unique index ile yeniden kuruluyor.
-- Aynı SQL tekrar çalıştırıldığında aynı constraint hatasını vermez.
+## Ne var?
+- Temiz ana menü
+- Temiz oyun formu
+- Steam App ID yazınca kapak önizleme mantığı
+- RAWG ID / RAWG Slug alanları hazır
+- YouTube Playlist URL alanı hazır
+- LocalStorage ile geçici yerel kayıt
+- 10 sürümlük plan dosyası
 
-## API değişkenleri
-Vercel'de görünen değişkenler yeterli:
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `YOUTUBE_API_KEY`
-- `RAWG_API_KEY`
-- `ADMIN_PASSWORD`
+## Ne yok?
+- Supabase bağlantısı yok
+- YouTube API bağlantısı yok
+- RAWG API bağlantısı yok
+- Vercel Environment Variables zorunlu değil
 
-SteamDB için API key gerekmez. SteamDB linkinden App ID alınır: `https://steamdb.info/app/123456/`
+## Kurulum
+1. ZIP'i aç.
+2. Terminalde klasöre gir.
+3. `npm install`
+4. `npm run dev`
 
-## Temizlenenler
-Eski v4.0.5/v4.0.5/v4.0.5 not dosyaları paketten kaldırıldı. Sadece gerekli kurulum ve schema dosyaları bırakıldı.
+## Vercel
+Bu sürüm Vercel'e yüklenebilir ama Environment Variables gerekmez.
+Build Command: `npm run build`
+Output Directory: `dist`
