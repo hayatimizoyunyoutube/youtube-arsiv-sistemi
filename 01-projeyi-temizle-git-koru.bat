@@ -1,31 +1,67 @@
 @echo off
 chcp 65001 >nul
-setlocal
+setlocal enabledelayedexpansion
 
-echo ========================================
-echo Hayatimiz Oyun - Temiz Kurulum Hazirligi
-echo .git ve guvenli dosyalar korunacak
-echo ========================================
+echo.
+echo ==================================================
+echo  HAYATIMIZ OYUN - PROJE TEMIZLE / GIT KORU
+echo ==================================================
 echo.
 
-echo Bu islem mevcut klasordeki eski proje dosyalarini temizler.
-echo Korunacaklar: .git, .env.local, 01-projeyi-temizle-git-koru.bat, 02-githuba-gonder.bat
+echo Bu islem gereksiz gecici dosyalari temizler.
+echo .git klasoru, README, docs ve kaynak dosyalar korunur.
+echo.
 pause
 
-for /d %%D in (*) do (
-  if /I not "%%D"==".git" (
-    echo Klasor siliniyor: %%D
+REM Ana dizine gec
+cd /d "%~dp0"
+
+echo.
+echo [1/8] Gecici Windows dosyalari temizleniyor...
+for /r %%F in (Thumbs.db desktop.ini .DS_Store) do (
+  if exist "%%F" del /f /q "%%F" >nul 2>nul
+)
+
+echo [2/8] Node/Vite/Next build klasorleri temizleniyor...
+for %%D in (node_modules dist build .next out .vercel .turbo coverage .cache) do (
+  if exist "%%D" (
+    echo  - Siliniyor: %%D
     rmdir /s /q "%%D"
   )
 )
 
-for %%F in (*) do (
-  if /I not "%%F"=="01-projeyi-temizle-git-koru.bat" if /I not "%%F"=="02-githuba-gonder.bat" if /I not "%%F"==".env.local" (
-    echo Dosya siliniyor: %%F
-    del /f /q "%%F"
-  )
+echo [3/8] Log dosyalari temizleniyor...
+for /r %%F in (*.log npm-debug.log* yarn-debug.log* yarn-error.log* pnpm-debug.log*) do (
+  if exist "%%F" del /f /q "%%F" >nul 2>nul
 )
 
+echo [4/8] Eski ZIP paketleri temizleniyor...
+for /r %%F in (*.zip *.rar *.7z) do (
+  if exist "%%F" del /f /q "%%F" >nul 2>nul
+)
+
+echo [5/8] Ortam dosyalari korunuyor mu kontrol ediliyor...
+if exist ".env" (
+  echo  - .env bulundu: SILINMEDI.
+) else (
+  echo  - .env yok: sorun degil, bu surum envsiz baslangic.
+)
+
+echo [6/8] Git klasoru kontrol ediliyor...
+if exist ".git" (
+  echo  - .git bulundu: KORUNDU.
+) else (
+  echo  - .git yok: 02-githuba-gonder.bat ilk gonderimde git init yapacak.
+)
+
+echo [7/8] README ve docs kontrol ediliyor...
+if exist "README.md" echo  - README.md tamam.
+if exist "docs" echo  - docs klasoru tamam.
+
+echo [8/8] Temizlik tamamlandi.
 echo.
-echo Temizlik tamamlandi. Simdi yeni ZIP icerigini bu klasore cikartabilirsin.
+echo ==================================================
+echo  TAMAM: Proje temizlendi, .git korunarak hazirlandi.
+echo ==================================================
+echo.
 pause

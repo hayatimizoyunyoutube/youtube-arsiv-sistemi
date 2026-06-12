@@ -1,32 +1,19 @@
-# Hayatımız Oyun Site Paneli v0.0.1
+# Hayatımız Oyun - v0.0.1
 
-Bu paket tamamen sıfırdan temiz başlangıçtır. Eski v4 dosyaları, eski Supabase karmaşası ve bozuk playlist kodları yoktur.
+Sıfırdan temiz başlangıç paketi.
 
-## Bu sürümde .env gerekli mi?
-Hayır. v0.0.1 sadece temel arayüz, menü, form ve yerel önizleme sürümüdür.
+## Bu paket ne?
+Eski bozuk sürümler sıfırlandı. Bundan sonra her şey adım adım, sürüm sürüm ilerleyecek.
 
-## Ne var?
-- Temiz ana menü
-- Temiz oyun formu
-- Steam App ID yazınca kapak önizleme mantığı
-- RAWG ID / RAWG Slug alanları hazır
-- YouTube Playlist URL alanı hazır
-- LocalStorage ile geçici yerel kayıt
-- 10 sürümlük plan dosyası
+## Şu an lazım olanlar
+- `.env` lazım değil.
+- Supabase lazım değil.
+- API key lazım değil.
+- Vercel değişkeni lazım değil.
 
-## Ne yok?
-- Supabase bağlantısı yok
-- YouTube API bağlantısı yok
-- RAWG API bağlantısı yok
-- Vercel Environment Variables zorunlu değil
-
-## Kurulum
-1. ZIP'i aç.
-2. Terminalde klasöre gir.
-3. `npm install`
-4. `npm run dev`
-
-## Vercel
-Bu sürüm Vercel'e yüklenebilir ama Environment Variables gerekmez.
-Build Command: `npm run build`
-Output Directory: `dist`
+## Klasörler
+- `docs/PLANLANANLAR`: 0.0.1 → 4.0.0 planları
+- `docs/GUNCELLEME-NOTLARI`: yapılan sürüm notları
+- `docs/TAMAMLANANLAR`: tamamlanan sürümler
+- `src`: site stil dosyaları
+- `assets`: görseller için boş klasör

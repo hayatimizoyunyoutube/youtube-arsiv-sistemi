@@ -1,66 +1,99 @@
 @echo off
 chcp 65001 >nul
-setlocal
+setlocal enabledelayedexpansion
 
-set VERSION=v1.3.2
-set REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
-
-echo ========================================
-echo Hayatimiz Oyun - GitHub'a Gonder - %VERSION%
-echo Repo: %REPO_URL%
-echo ========================================
+echo.
+echo ==================================================
+echo  HAYATIMIZ OYUN - GITHUB'A GONDER
+echo ==================================================
 echo.
 
-git --version >nul 2>&1
+echo Bu dosya projeyi GitHub'a gonderir.
+echo Ilk kullanimda repo adresini sorar.
+echo Ornek repo adresi:
+echo https://github.com/kullanici/repo-adi.git
+echo.
+pause
+
+cd /d "%~dp0"
+
+where git >nul 2>nul
 if errorlevel 1 (
-  echo Git bulunamadi. Once Git for Windows kurulmali.
-  echo Indirme: https://git-scm.com/download/win
+  echo.
+  echo HATA: Git yuklu degil veya PATH'e ekli degil.
+  echo Git indir: https://git-scm.com/downloads
+  echo.
   pause
   exit /b 1
 )
 
-if not exist package.json (
-  echo package.json bulunamadi. Bu BAT dosyasini proje klasorunun icinde calistir.
-  pause
-  exit /b 1
-)
-
-if not exist .git (
-  echo .git bulunamadi. Git baslatiliyor...
+if not exist ".git" (
+  echo.
+  echo [1/7] Git deposu baslatiliyor...
   git init
+) else (
+  echo.
+  echo [1/7] Git deposu zaten var.
 )
 
-git branch -M main
+echo [2/7] Branch main olarak ayarlaniyor...
+git branch -M main >nul 2>nul
 
-git remote remove origin >nul 2>&1
-git remote add origin %REPO_URL%
+REM Remote kontrol
+for /f "tokens=*" %%R in ('git remote get-url origin 2^>nul') do set CURRENT_REMOTE=%%R
 
-echo Guvenlik kontrolu yapiliyor...
-git rm --cached .env >nul 2>&1
-git rm --cached .env.local >nul 2>&1
-git rm --cached .env.production >nul 2>&1
-git rm --cached .env.development >nul 2>&1
-git rm -r --cached node_modules >nul 2>&1
-git rm -r --cached dist >nul 2>&1
+if "%CURRENT_REMOTE%"=="" (
+  echo.
+  set /p REPO_URL=GitHub repo adresini yapistir: 
+  if "%REPO_URL%"=="" (
+    echo HATA: Repo adresi bos birakildi.
+    pause
+    exit /b 1
+  )
+  git remote add origin "%REPO_URL%"
+) else (
+  echo [3/7] Mevcut remote bulundu:
+  echo %CURRENT_REMOTE%
+  echo.
+  set /p CHANGE_REMOTE=Remote degissin mi? E/H: 
+  if /i "%CHANGE_REMOTE%"=="E" (
+    set /p REPO_URL=Yeni GitHub repo adresini yapistir: 
+    git remote set-url origin "%REPO_URL%"
+  )
+)
 
-echo Dosyalar ekleniyor...
+echo.
+echo [4/7] Dosyalar hazirlaniyor...
 git add .
 
-echo Commit olusturuluyor...
-git commit -m "%VERSION% youtube bolum cekme altyapisi"
-if errorlevel 1 (
-  echo Commit olusturulamadi. Degisiklik yoksa bu normal olabilir.
-)
+echo [5/7] Commit mesaji hazirlaniyor...
+set COMMIT_MSG=v0.0.1 temiz baslangic
+set /p CUSTOM_MSG=Commit mesaji yaz veya bos birak: 
+if not "%CUSTOM_MSG%"=="" set COMMIT_MSG=%CUSTOM_MSG%
 
-echo GitHub'a gonderiliyor...
-git push -u origin main
+git commit -m "%COMMIT_MSG%"
 if errorlevel 1 (
-  echo Normal push basarisiz oldu.
-  choice /C EH /M "E=Force push dene, H=Iptal"
-  if errorlevel 2 exit /b 1
-  git push -f origin main
+  echo.
+  echo Commit olusturulamadi. Muhtemelen yeni degisiklik yok.
+  echo Devam edip push denenecek.
 )
 
 echo.
-echo GitHub gonderimi tamamlandi. Vercel otomatik deploy baslatmali.
+echo [6/7] GitHub'a gonderiliyor...
+git push -u origin main
+if errorlevel 1 (
+  echo.
+  echo HATA: Push basarisiz oldu.
+  echo Kontrol et:
+  echo - GitHub repo adresi dogru mu?
+  echo - GitHub hesabina giris yaptin mi?
+  echo - Repo bos mu veya yetkin var mi?
+  echo.
+  pause
+  exit /b 1
+)
+
+echo.
+echo [7/7] TAMAM: Proje GitHub'a gonderildi.
+echo.
 pause
