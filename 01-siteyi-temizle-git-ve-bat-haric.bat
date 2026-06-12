@@ -3,14 +3,13 @@ setlocal EnableExtensions DisableDelayedExpansion
 chcp 65001 >nul
 title Hayatimiz Oyun - Site Temizle
 
-REM Bu dosya proje klasorunun icinden calisir. PROJECT_DIR ayarlamana gerek yok.
+REM Bu BAT dosyasini proje klasorunun icinde calistir.
+REM Amac: .git klasoru ve .bat dosyalari HARIC her seyi silmek.
 set "PROJECT_DIR=%~dp0"
-
 if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 
 if not exist "%PROJECT_DIR%\" (
   echo HATA: Proje klasoru bulunamadi.
-  echo BAT dosyasini proje klasorunun icine koyup tekrar calistir.
   pause
   exit /b 1
 )
@@ -25,25 +24,38 @@ echo ============================================
 echo  Hayatimiz Oyun - Site Temizleme
 echo ============================================
 echo Proje klasoru: %CD%
-echo Korunacaklar: .git klasoru ve .bat dosyalari
-echo Silinecekler: node_modules, dist, .vercel, .vite, coverage, log/tmp dosyalari
 echo.
+echo KORUNACAKLAR:
+echo  - .git klasoru
+echo  - Tum .bat dosyalari
+echo.
+echo SILINECEKLER:
+echo  - .git ve .bat haric tum dosya/klasorler
+echo.
+echo Devam etmek icin bir tusa bas.
+echo Iptal icin pencereyi kapat.
+pause >nul
 
-for /d %%D in (node_modules dist .vercel .vite coverage) do (
-  if exist "%%D" (
-    echo Siliniyor: %%D
-    rmdir /s /q "%%D"
+echo.
+echo Klasorler siliniyor...
+for /d %%D in (*) do (
+  if /I not "%%~nxD"==".git" (
+    echo Siliniyor klasor: %%D
+    rmdir /s /q "%%D" 2>nul
   )
 )
 
-for %%F in (*.log *.tmp npm-debug.log yarn-error.log pnpm-debug.log) do (
-  if exist "%%F" (
-    echo Siliniyor: %%F
-    del /q "%%F"
+echo.
+echo Dosyalar siliniyor...
+for %%F in (*) do (
+  if /I not "%%~xF"==".bat" (
+    echo Siliniyor dosya: %%F
+    del /f /q "%%F" 2>nul
   )
 )
 
 echo.
-echo TAMAM: .git ve BAT dosyalari korunarak temizlik tamamlandi.
+echo TAMAM: .git klasoru ve .bat dosyalari korundu.
+echo Diger tum dosya ve klasorler temizlendi.
 popd
 pause

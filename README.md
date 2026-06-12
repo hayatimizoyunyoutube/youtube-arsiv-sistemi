@@ -1,10 +1,10 @@
 # Hayatımız Oyun Arşiv Sistemi
 
-**Sürüm:** v0.0.2
+**Sürüm:** v0.0.3
 
-## ✅ v0.0.2 İçeriği
+## ✅ v0.0.3 İçeriği
 
-- 🏠 Ana sayfa iskeleti geliştirildi.
+- 🏠 Menü sistemi başlangıcı geliştirildi.
 - 🔒 Kullanıcı ekranından GitHub repo butonu kaldırıldı.
 - 🧹 Temizleme BAT dosyası `.git` ve `.bat` dosyalarını korur.
 - 📤 GitHub gönderme BAT dosyası bulunduğu klasörü proje klasörü kabul eder.
@@ -27,8 +27,8 @@ npm run dev
 
 ## Supabase Durumu
 
-v0.0.2 için zorunlu tablo yoktur.
+v0.0.3 için zorunlu tablo yoktur.
 
 ## Vercel ENV Durumu
 
-v0.0.2 için zorunlu ENV yoktur.
+v0.0.3 için zorunlu ENV yoktur.

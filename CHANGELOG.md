@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.0.3
+- 🧭 Menü sistemi başlangıcı eklendi.
+- 🏠 Ana Sayfa / Arşiv / Takvim bağlantıları eklendi.
+- 🧹 01-siteyi-temizle-git-ve-bat-haric.bat düzeltildi.
+- ✅ .git klasörü ve .bat dosyaları korunarak temizleme sağlandı.
+
+# CHANGELOG
+
 ## v0.0.2
 
 ### Eklenenler

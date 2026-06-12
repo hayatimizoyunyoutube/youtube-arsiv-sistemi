@@ -7,7 +7,7 @@ REM Bu dosya proje klasorunun icinden calisir. PROJECT_DIR ayarlamana gerek yok.
 set "PROJECT_DIR=%~dp0"
 set "REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
 set "BRANCH=main"
-set "COMMIT_MSG=v0.0.2 ana sayfa iskeleti"
+set "COMMIT_MSG=v0.0.3 ana sayfa iskeleti"
 
 if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 
