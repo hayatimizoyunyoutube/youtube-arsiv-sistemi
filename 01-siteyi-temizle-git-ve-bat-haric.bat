@@ -3,44 +3,32 @@ setlocal EnableExtensions DisableDelayedExpansion
 chcp 65001 >nul
 title Hayatimiz Oyun - Site Temizle
 
-REM Bu BAT dosyasini proje klasorunun icinde calistir.
-REM .git klasoru ve .bat dosyalari HARIC her seyi siler.
-set "PROJECT_DIR=%~dp0"
-cd /d "%PROJECT_DIR%" || (
-  echo HATA: Proje klasorune girilemedi.
+echo.
+echo ===============================================
+echo  HAYATIMIZ OYUN - SITE TEMIZLEME
+echo ===============================================
+echo Bu islem .git klasorunu ve .bat dosyalarini SILMEZ.
+echo Proje klasoru: %~dp0
+echo.
+set /p ONAY=Devam etmek icin EVET yaz: 
+if /I not "%ONAY%"=="EVET" (
+  echo Islem iptal edildi.
   pause
-  exit /b 1
+  exit /b 0
 )
-
-echo ============================================
-echo  Hayatimiz Oyun - Site Temizleme
-echo ============================================
-echo Proje klasoru: %CD%
-echo.
-echo KORUNACAKLAR: .git klasoru ve .bat dosyalari
-echo SILINECEKLER: diger tum dosya ve klasorler
-echo.
-echo Devam etmek icin bir tusa bas.
-pause >nul
-
-echo.
-echo Klasorler siliniyor...
-for /f "delims=" %%D in ('dir /ad /b') do (
-  if /I not "%%D"==".git" (
-    echo Siliniyor klasor: %%D
+cd /d "%~dp0"
+for /d %%D in (*) do (
+  if /I not "%%~nxD"==".git" (
+    echo Klasor siliniyor: %%D
     rmdir /s /q "%%D"
   )
 )
-
-echo.
-echo Dosyalar siliniyor...
-for /f "delims=" %%F in ('dir /a-d /b') do (
+for %%F in (*) do (
   if /I not "%%~xF"==".bat" (
-    echo Siliniyor dosya: %%F
+    echo Dosya siliniyor: %%F
     del /f /q "%%F"
   )
 )
-
 echo.
-echo TAMAM: .git klasoru ve .bat dosyalari korundu.
+echo Temizleme tamamlandi. .git ve .bat dosyalari korundu.
 pause

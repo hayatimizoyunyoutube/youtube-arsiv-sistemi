@@ -2,48 +2,34 @@
 setlocal EnableExtensions DisableDelayedExpansion
 chcp 65001 >nul
 title Hayatimiz Oyun - GitHub Otomatik Gonderme
+cd /d "%~dp0"
 
-set "REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
-set "PROJECT_DIR=%~dp0"
-cd /d "%PROJECT_DIR%" || (
-  echo HATA: Proje klasorune girilemedi.
-  pause
-  exit /b 1
-)
-
-where git >nul 2>nul || (
-  echo HATA: Git bilgisayarda bulunamadi.
-  echo Git indirip kur: https://git-scm.com/download/win
-  pause
-  exit /b 1
-)
-
-echo ============================================
-echo  Hayatimiz Oyun - GitHub Otomatik Gonderme
-echo ============================================
-echo Proje klasoru: %CD%
 echo.
-
+echo ===============================================
+echo  HAYATIMIZ OYUN - GITHUB GONDERME
+echo ===============================================
+echo.
+where git >nul 2>nul
+if errorlevel 1 (
+  echo Git bulunamadi. Once Git for Windows kur.
+  pause
+  exit /b 1
+)
 if not exist ".git" (
-  git init || goto hata
+  git init
 )
-
-git branch -M main || goto hata
 git remote remove origin >nul 2>nul
-git remote add origin "%REPO_URL%" || goto hata
-
-git add . || goto hata
-git commit -m "site v0.0.4 guncellemesi" || echo Commit icin yeni degisiklik olmayabilir, devam ediliyor.
-git push -u origin main || goto hata
-
+git remote add origin https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
+git branch -M main
+git add .
+git commit -m "Hayatimiz Oyun site guncellemesi v0.0.6" || echo Commit icin yeni degisiklik olmayabilir.
+git push -u origin main
+if errorlevel 1 (
+  echo.
+  echo Gonderme basarisiz oldu. GitHub girisi, repo yetkisi veya internet baglantisini kontrol et.
+  pause
+  exit /b 1
+)
 echo.
-echo TAMAM: GitHub gonderme islemi bitti.
+echo GitHub gonderme tamamlandi.
 pause
-exit /b 0
-
-:hata
-echo.
-echo HATA: GitHub gonderme tamamlanamadi.
-echo GitHub girisi, repo yetkisi veya internet baglantisini kontrol et.
-pause
-exit /b 1

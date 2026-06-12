@@ -1,6 +1,15 @@
-# 🎮 Hayatımız Oyun Site v0.0.5
+# 🎮 Hayatımız Oyun Site v0.0.6
 
-Bu sürümde ilk gerçek oyun kartları sistemi eklendi.
+Bu sürümde arşiv sayfası ve listeleme sistemi geliştirildi.
+
+## ✅ Eklenenler
+- 📚 Arşiv sayfası düzenlendi
+- 🔍 Arama + durum filtresi eklendi
+- 🎮 Demo oyun listesi genişletildi
+- 📊 Bölüm sayacı eklendi
+- 📱 Mobil görünüm korundu
+- 🚀 Vercel build ayarları güncel tutuldu
+- 🗄️ Supabase SQL şu an zorunlu değil bilgisi eklendi
 
 ## 🚀 Çalıştırma
 ```bash
@@ -8,18 +17,10 @@ npm install
 npm run dev
 ```
 
-## ✅ Build Test
-```bash
-npm run build
-```
-
-## 🌐 Vercel
+## 🌐 Vercel Build
 - Build Command: `npm run build`
 - Output Directory: `dist`
 - Install Command: `npm install`
 
 ## 🗄️ Supabase
-Bu sürümde Supabase zorunlu değildir. `supabase/schema.sql` hazırlık amaçlıdır.
-
-## 🔐 ENV
-Bu sürümde ENV zorunlu değildir. `.env.example` sonraki sürümler için hazır tutuldu.
+Bu sürümde Supabase kurulumu zorunlu değildir. `supabase/schema.sql` sadece durum mesajı içerir.
