@@ -1,20 +1,17 @@
 {
-  "name": "hayatimiz-oyun-youtube-arsivi-v130",
+  "name": "hayatimiz-oyun-v405-steamdb-youtube-kesin-fix",
   "private": true,
-  "version": "1.3.2",
   "type": "module",
+  "version": "4.0.5",
+  "engines": {
+    "node": "20.x"
+  },
+  "description": "Hayatımız Oyun v4.0.5 SteamDB kapak öncelikli, YouTube playlistItems gerçek bölüm fix ve site sürüm senkron paketi",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0",
-    "prebuild": "node scripts/update-deploy-info.mjs"
+    "build": "echo Vercel static build disabled - files served from root",
+    "dev": "node scripts/dev-server.mjs",
+    "preview": "node scripts/dev-server.mjs"
   },
-  "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest"
-  },
-  "devDependencies": {},
-  "description": "Hayatımız Oyun v1.3.2 RAWG Oyun Bilgisi Hazırlığı"
+  "dependencies": {},
+  "devDependencies": {}
 }

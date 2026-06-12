@@ -1,0 +1,26 @@
+[
+  {
+    "version": "v4.0.5",
+    "title": "🎉 Ana Açılış Final",
+    "summary": "Site v4.0.5 ana açılışa hazırlandı. Ana sayfa, arşiv, seriler, kategoriler, profil, favoriler, başarımlar, yayın takvimi, yönetim paneli ve bakım/ban güvenliği güncellendi.",
+    "status": "Tamamlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "🎨 Profesyonel Tasarım Finali",
+    "summary": "Kategori butonları, yönetim paneli menüsü, arşiv kartları, seri görünümü, profil merkezi ve mobil/tablet düzeni profesyonel hale getirildi.",
+    "status": "Tamamlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "🏷️ Sürüm Senkronizasyonu",
+    "summary": "Site, Vercel etiketi, schema.sql Results, status, health, README ve güncelleme notları v4.0.5 olarak eşitlendi.",
+    "status": "Tamamlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "🛠️ Açılış Sonrası Stabilite",
+    "summary": "Canlı kullanımdan sonra küçük görünüm, veri ve mobil düzeltmeleri yapılacak.",
+    "status": "Planlandı"
+  }
+]

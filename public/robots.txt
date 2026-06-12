@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://hayatimiz-oyun.vercel.app/sitemap.xml
+Sitemap: /sitemap.xml

@@ -1,0 +1,87 @@
+[
+  {
+    "version": "v4.0.5",
+    "title": "Revizyon 3 - YouTube cevap vermeme + Steam kapak önizleme fix",
+    "summary": "YouTube playlist çekme artık uzun süre takılmaz; API key yoksa/yanlışsa net hata döner. Steam App ID girildiğinde servis cevap vermese bile önizleme Steam CDN kapağıyla dolar. RAWG ID boş kalmasın diye slug/yerel eşleşme güvenli ID alanına yazılır.",
+    "status": "Tamamlandı",
+    "id": "revizyon-3-youtube-steam-onizleme-rawg-id-fix"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "SteamDB kapak + YouTube playlist revizyonu",
+    "summary": "SteamDB/Steam App ID alanı URL içinden ID ayıklar; kapak Hayatımız Oyun fallback yerine Steam CDN header/capsule görselinden gelir. YouTube API çalışmazsa gerçek playlist sayfasındaki video ID yedeği denenir.",
+    "status": "Tamamlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Form alanları dolum fix",
+    "summary": "Steam App ID, RAWG slug, puan, kapak, banner, tür, tarih ve platform alanları meta panelinden forma doğrudan yazılır.",
+    "status": "Tamamlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Bölüm kayıt akışı fix",
+    "summary": "Çekilen gerçek YouTube videoları episodesJson içine alınır, mevcut oyun düzenleniyorsa Supabase episodes tablosuna yazılacak şekilde korunur.",
+    "status": "Tamamlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 01 - Playlist hata paneli",
+    "summary": "YouTube API hata detayını yönetim panelinde daha açık gösterecek tanılama ekranı eklenecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 02 - SteamDB arama seçici",
+    "summary": "Steam App ID bilinmiyorsa oyun adına göre çıkan Steam sonuçları seçilebilir liste halinde gösterilecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 03 - Kapak kalite kontrolü",
+    "summary": "Steam CDN görseli bozuksa otomatik header, capsule, library sırası ile kontrol edilecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 04 - Bölüm başlığı temizleyici",
+    "summary": "YouTube başlıklarından gereksiz kanal adı, canlı etiketi ve tekrar eden seri adı otomatik temizlenecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 05 - Toplu playlist senkronizasyonu",
+    "summary": "Tüm oyunların playlistleri tek panelden sırayla yenilenebilecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 06 - Takvim bölüm eşleştirme",
+    "summary": "Yayın takvimindeki oyunlar episodes tablosundaki sıradaki bölümle otomatik eşleştirilecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 07 - Eksik meta raporu",
+    "summary": "Steam App ID, kapak, tarih, tür veya playlist eksiği olan oyunlar tek tabloda listelenecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 08 - Seri sayfası iyileştirme",
+    "summary": "Serilerde kapak, bölüm ilerleme ve sıradaki video daha kompakt gösterilecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 09 - Yönetim paneli hızlandırma",
+    "summary": "Büyük oyun listelerinde arama, filtre ve kaydırma performansı iyileştirilecek.",
+    "status": "Planlandı"
+  },
+  {
+    "version": "v4.0.5",
+    "title": "Plan 10 - Yedek/geri alma sistemi",
+    "summary": "Oyun ve bölüm güncellemesinden önce otomatik JSON yedeği alınıp geri yükleme butonu eklenecek.",
+    "status": "Planlandı"
+  }
+]
