@@ -1,16 +1,22 @@
-# Hayatımız Oyun Arşiv Sistemi v0.0.9
+# Hayatımız Oyun Arşiv Sistemi - v0.1.0
+
+## 🚀 Sürüm
+v0.1.0 - Arşiv Sistemi Başlangıcı
 
 ## ✅ Eklenenler
-- 🧪 İlk temel sürüm testi yapıldı
-- 🚀 Vercel `dist` hatası kalıcı düzeltildi
-- 📱 Mobil görünüm kontrol edildi
-- 🛡️ BAT dosyaları `.git` ve `.bat` korumalı hazırlandı
-- 🗄️ Supabase şu an gerekli değil, hazırlık notu eklendi
+- 📚 Arşiv sayfası başlangıcı
+- 🔍 Oyun arama sistemi
+- 🏷️ Durum filtresi
+- 🎮 Tür filtresi
+- 📊 Dinamik istatistik sayacı
+- 📱 Mobil uyum korundu
+- 🚀 Vercel dist build düzeltmesi korundu
+- 🛡️ .git ve .bat korumalı temizleme BAT dosyası
 
-## Vercel Ayarları
+## 🧪 Vercel Ayarı
 - Build Command: `npm run build`
 - Output Directory: `dist`
 - Install Command: `npm install`
 
-## Supabase
-Şu an zorunlu değil. v0.8.x ile aktif SQL kullanılacak.
+## 🗄️ Supabase
+Bu sürümde gerekli değil. `.env.example` sadece hazırlık için eklendi.

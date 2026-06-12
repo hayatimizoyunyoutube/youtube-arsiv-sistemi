@@ -3,37 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hayatımız Oyun Arşiv Sistemi v0.0.9</title>
+  <title>Hayatımız Oyun Arşiv Sistemi v0.1.0</title>
+  <meta name="description" content="Hayatımız Oyun YouTube arşiv sistemi - v0.1.0 arşiv başlangıcı" />
   <style>
-    *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0d111b;color:white} .wrap{max-width:1180px;margin:auto;padding:30px 20px}.badge{display:inline-block;background:#163b72;border:1px solid #3675d6;color:#dcecff;padding:10px 16px;border-radius:999px;font-weight:800}.hero{padding:45px 0}.hero h1{font-size:clamp(38px,7vw,78px);line-height:.95;margin:25px 0 18px}.hero p{color:#d6e2ff;font-size:18px;line-height:1.7;max-width:900px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:25px}.card{background:linear-gradient(180deg,#202635,#151a25);border:1px solid #343d53;border-radius:18px;padding:20px;box-shadow:0 18px 40px #0005}.card h3{margin:0 0 10px}.ok{color:#8ff0b3}.warn{color:#ffd36b}.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}.game{background:#141a25;border:1px solid #283246;border-radius:18px;padding:18px}.cover{height:135px;border-radius:14px;background:linear-gradient(135deg,#244b9b,#7c2bd6);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:12px}.tags span{display:inline-block;margin:4px 4px 0 0;padding:6px 9px;background:#22304a;border-radius:999px;font-size:12px}.test{border-left:5px solid #6ea8ff}.footer{margin-top:35px;color:#8fa0bf;font-size:14px}@media(max-width:650px){.hero{padding-top:25px}.card{padding:16px}}
+    :root{--bg:#0d111a;--panel:#151c2b;--panel2:#1d2638;--text:#f7f7fb;--muted:#aab4c8;--blue:#4da3ff;--green:#43d17a;--line:#2b3850;--red:#ff5c7a}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,#1b3159,#0d111a 45%,#080b11);color:var(--text)}.wrap{max-width:1180px;margin:auto;padding:28px 20px}.badge{display:inline-flex;gap:8px;align-items:center;background:#18345f;border:1px solid #2f6ec2;color:#cfe5ff;border-radius:999px;padding:9px 14px;font-weight:800;font-size:14px}.hero{padding:34px 0 18px}.hero h1{font-size:clamp(38px,7vw,72px);line-height:.95;margin:24px 0 18px}.hero p{color:#d8e4ff;font-size:18px;max-width:900px;line-height:1.7}.nav{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}.nav a,.btn{background:var(--panel2);border:1px solid #3b4863;color:#fff;padding:13px 16px;border-radius:14px;text-decoration:none;font-weight:800}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat,.card,.filter{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 35px rgba(0,0,0,.25)}.stat b{display:block;font-size:30px}.stat span{color:var(--muted)}.section{margin-top:34px}.section h2{font-size:32px;margin:0 0 14px}.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:16px}.filters input,.filters select{width:100%;background:#0f1624;border:1px solid #34425f;color:#fff;border-radius:14px;padding:14px;font-size:15px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cover{height:150px;border-radius:16px;background:linear-gradient(135deg,#315b99,#8b3bd1);display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:14px}.card h3{margin:0 0 8px;font-size:22px}.meta{color:var(--muted);line-height:1.6}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.tag{font-size:12px;background:#172640;border:1px solid #365e9e;color:#d7e9ff;border-radius:999px;padding:7px 10px;font-weight:800}.status{color:#111;background:var(--green);border:0}.soon{background:#ffd166;color:#241a00}.done{background:#82e0ff;color:#001d26}.empty{display:none;text-align:center;color:var(--muted);padding:25px}.note{color:var(--muted);line-height:1.7}.footer{margin-top:40px;padding:20px;color:#96a1b8;border-top:1px solid var(--line)}@media(max-width:900px){.grid,.cards,.filters{grid-template-columns:1fr}.hero h1{font-size:44px}}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="hero">
-      <span class="badge">v0.0.9 • İlk Temel Sürüm Testi</span>
+      <span class="badge">v0.1.0 • Arşiv Sistemi Başlangıcı</span>
       <h1>Hayatımız Oyun Arşiv Sistemi</h1>
-      <p>Bu sürümde temel site testleri, Vercel build düzeltmesi, dosya kontrolü, mobil görünüm kontrolü ve ilk kararlı başlangıç paketi tamamlandı. Kullanıcı ekranında GitHub repo bilgisi gösterilmez.</p>
-      <div class="grid">
-        <div class="card"><h3>🧪 Build Testi</h3><p class="ok">dist klasörü otomatik oluşturulur.</p></div>
-        <div class="card"><h3>📱 Mobil Test</h3><p class="ok">Kartlar ekrana göre dizilir.</p></div>
-        <div class="card"><h3>🛡️ BAT Koruma</h3><p class="ok">.git ve .bat dosyaları korunur.</p></div>
-        <div class="card"><h3>🗄️ Supabase</h3><p class="warn">Şu an gerekli değil, not dosyası var.</p></div>
+      <p>Bu sürümle 0.1.x arşiv dönemine geçildi. Ana sayfaya gerçek arşiv alanı, oyun arama, durum filtresi ve kategori filtresi eklendi. GitHub repo bilgisi kullanıcı ekranında gösterilmez.</p>
+      <div class="nav">
+        <a href="#arsiv">🎮 Arşive Git</a>
+        <a href="#plan">📝 Sürüm Notları</a>
+        <a href="#durum">✅ Sistem Durumu</a>
       </div>
     </section>
-    <section class="card test">
-      <h2>✅ v0.0.9 Test Sonuçları</h2>
-      <p>Site başlığı, paket sürümü, Vercel build komutu ve doküman sürümü 0.0.9 olarak güncellendi.</p>
+
+    <section class="grid" id="durum">
+      <div class="stat"><b id="totalGames">0</b><span>Toplam Oyun</span></div>
+      <div class="stat"><b id="totalSeries">0</b><span>Toplam Seri</span></div>
+      <div class="stat"><b id="totalEpisodes">0</b><span>Toplam Bölüm</span></div>
+      <div class="stat"><b>0.1.0</b><span>Güncel Sürüm</span></div>
     </section>
-    <section>
-      <h2>🎮 Demo Arşiv Kartları</h2>
-      <div class="games">
-        <div class="game"><div class="cover">🎮</div><h3>Resident Evil 5</h3><div class="tags"><span>Co-op</span><span>Türkçe Altyazılı</span></div></div>
-        <div class="game"><div class="cover">🧟</div><h3>Dead Island 2</h3><div class="tags"><span>Co-op</span><span>Devam Ediyor</span></div></div>
-        <div class="game"><div class="cover">🏺</div><h3>Assassin's Creed Origins</h3><div class="tags"><span>Seri</span><span>Arşiv</span></div></div>
+
+    <section class="section" id="arsiv">
+      <h2>🎮 Oyun Arşivi</h2>
+      <p class="note">Şimdilik demo veriler kullanılır. Supabase bağlantısı ileriki sürümlerde açılacak.</p>
+      <div class="filters">
+        <input id="search" placeholder="Oyun ara... örn: Resident Evil" />
+        <select id="statusFilter"><option value="all">Tüm Durumlar</option><option value="Devam Ediyor">Devam Ediyor</option><option value="Tamamlandı">Tamamlandı</option><option value="Planlandı">Planlandı</option></select>
+        <select id="typeFilter"><option value="all">Tüm Türler</option><option value="Korku">Korku</option><option value="Aksiyon">Aksiyon</option><option value="Co-op">Co-op</option></select>
+      </div>
+      <div class="cards" id="gameList"></div>
+      <div class="empty" id="empty">Sonuç bulunamadı.</div>
+    </section>
+
+    <section class="section" id="plan">
+      <h2>📝 v0.1.0 Eklenenler</h2>
+      <div class="card">
+        <p>📚 Arşiv sayfası başlangıcı eklendi.</p>
+        <p>🔍 Oyun adına göre arama eklendi.</p>
+        <p>🏷️ Durum ve tür filtreleri eklendi.</p>
+        <p>📊 İstatistik sayacı dinamik hale getirildi.</p>
+        <p>🚀 Vercel için dist output düzeltmesi korundu.</p>
+        <p>🛡️ BAT dosyaları .git ve .bat korumalı bırakıldı.</p>
       </div>
     </section>
-    <div class="footer">Hayatımız Oyun • v0.0.9 • Sonraki sürüm: v0.1.0 Arşiv Sistemi başlangıcı</div>
+
+    <footer class="footer">Hayatımız Oyun • v0.1.0 • Arşiv Sistemi Başlangıcı</footer>
   </main>
+
+  <script>
+    const games = [
+      {name:'Resident Evil 5', year:'2009', type:['Aksiyon','Co-op'], status:'Devam Ediyor', series:'Resident Evil', episodes:4, icon:'🧟', tags:['TR Altyazı','Co-op']},
+      {name:'Dead Island 2', year:'2023', type:['Aksiyon','Co-op'], status:'Tamamlandı', series:'Dead Island', episodes:6, icon:'🏝️', tags:['Co-op','Final']},
+      {name:'Silent Hill Homecoming', year:'2008', type:['Korku'], status:'Devam Ediyor', series:'Silent Hill', episodes:2, icon:'🌫️', tags:['TR Altyazı']},
+      {name:'Assassin’s Creed Origins', year:'2017', type:['Aksiyon'], status:'Planlandı', series:'Assassin’s Creed', episodes:1, icon:'🦅', tags:['TR Altyazı']},
+      {name:'Icarus', year:'2021', type:['Co-op'], status:'Devam Ediyor', series:'Icarus', episodes:4, icon:'🚀', tags:['Co-op']},
+      {name:'Resident Evil 0 HD Remaster', year:'2016', type:['Korku'], status:'Devam Ediyor', series:'Resident Evil', episodes:4, icon:'🚂', tags:['TR Altyazı']}
+    ];
+    const list = document.getElementById('gameList');
+    const search = document.getElementById('search');
+    const statusFilter = document.getElementById('statusFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    const empty = document.getElementById('empty');
+    function render(){
+      const q = search.value.toLowerCase().trim();
+      const st = statusFilter.value;
+      const ty = typeFilter.value;
+      const filtered = games.filter(g => (g.name.toLowerCase().includes(q) || g.series.toLowerCase().includes(q)) && (st==='all' || g.status===st) && (ty==='all' || g.type.includes(ty)));
+      list.innerHTML = filtered.map(g => `<article class="card"><div class="cover">${g.icon}</div><h3>${g.name}</h3><div class="meta">📅 ${g.year}<br>📚 Seri: ${g.series}<br>🎬 Bölüm: ${g.episodes}<br>🎮 Tür: ${g.type.join(', ')}</div><div class="tags"><span class="tag status ${g.status==='Planlandı'?'soon':g.status==='Tamamlandı'?'done':''}">${g.status}</span>${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></article>`).join('');
+      empty.style.display = filtered.length ? 'none':'block';
+    }
+    document.getElementById('totalGames').textContent = games.length;
+    document.getElementById('totalSeries').textContent = new Set(games.map(g=>g.series)).size;
+    document.getElementById('totalEpisodes').textContent = games.reduce((a,b)=>a+b.episodes,0);
+    [search,statusFilter,typeFilter].forEach(el=>el.addEventListener('input',render));
+    render();
+  </script>
 </body>
 </html>
