@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Github, Database, Rocket, FileText } from 'lucide-react';
+import { Database, Rocket, FileText } from 'lucide-react';
 import './style.css';
 
 const VERSION = '0.0.1';
@@ -18,7 +18,7 @@ function App() {
         </p>
         <div className="actions">
           <a href="https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi" target="_blank" rel="noreferrer">
-            <Github size={18} /> GitHub Repo
+            <span className="emoji-icon">🐙</span> GitHub Repo
           </a>
           <span><Rocket size={18} /> Vercel Hazır</span>
           <span><Database size={18} /> Supabase Notları Hazır</span>

@@ -1,61 +1,49 @@
 @echo off
 setlocal EnableExtensions DisableDelayedExpansion
-chcp 1254 >nul
+chcp 65001 >nul
 title Hayatimiz Oyun - Site Temizle
 
-REM ==========================================================
-REM  Hayatimiz Oyun - Site Temizleme
-REM  SILINMEYECEKLER: .git klasoru ve tum .bat dosyalari
-REM ==========================================================
+REM Bu dosya proje klasorunun icinden calisir. PROJECT_DIR ayarlamana gerek yok.
+set "PROJECT_DIR=%~dp0"
 
-set "PROJECT_DIR=C:\Users\Mevlüt Yeni Pc\Desktop\Youtube Yayýn Hazýrlýklarý\Youtube\projeler\youtube-arsive"
+if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 
 if not exist "%PROJECT_DIR%\" (
-    echo HATA: Proje klasoru bulunamadi:
-    echo %PROJECT_DIR%
-    echo.
-    echo BAT dosyasini proje klasorunun icine kopyalayip tekrar calistirabilirsin.
-    pause
-    exit /b 1
+  echo HATA: Proje klasoru bulunamadi.
+  echo BAT dosyasini proje klasorunun icine koyup tekrar calistir.
+  pause
+  exit /b 1
 )
 
-cd /d "%PROJECT_DIR%" || (
-    echo HATA: Proje klasorune girilemedi.
-    pause
-    exit /b 1
+pushd "%PROJECT_DIR%" || (
+  echo HATA: Proje klasorune girilemedi.
+  pause
+  exit /b 1
 )
 
+echo ============================================
+echo  Hayatimiz Oyun - Site Temizleme
+echo ============================================
+echo Proje klasoru: %CD%
+echo Korunacaklar: .git klasoru ve .bat dosyalari
+echo Silinecekler: node_modules, dist, .vercel, .vite, coverage, log/tmp dosyalari
 echo.
-echo Temizlenecek klasor:
-echo %CD%
-echo.
-echo .git klasoru ve .bat dosyalari KORUNACAK.
-echo.
-set /p CONFIRM=Devam etmek icin EVET yaz: 
-if /I not "%CONFIRM%"=="EVET" (
-    echo Islem iptal edildi.
-    pause
-    exit /b 0
+
+for /d %%D in (node_modules dist .vercel .vite coverage) do (
+  if exist "%%D" (
+    echo Siliniyor: %%D
+    rmdir /s /q "%%D"
+  )
 )
 
-echo.
-echo Dosyalar temizleniyor...
-
-for /f "delims=" %%F in ('dir /a:-d /b') do (
-    if /I not "%%~xF"==".bat" (
-        del /f /q "%%F" 2^>nul
-    )
-)
-
-for /f "delims=" %%D in ('dir /a:d /b') do (
-    if /I not "%%D"==".git" (
-        rmdir /s /q "%%D" 2^>nul
-    )
+for %%F in (*.log *.tmp npm-debug.log yarn-error.log pnpm-debug.log) do (
+  if exist "%%F" (
+    echo Siliniyor: %%F
+    del /q "%%F"
+  )
 )
 
 echo.
-echo TEMIZLIK TAMAMLANDI.
-echo Korundu: .git klasoru ve .bat dosyalari.
-echo.
+echo TAMAM: .git ve BAT dosyalari korunarak temizlik tamamlandi.
+popd
 pause
-exit /b 0
