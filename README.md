@@ -1,34 +1,34 @@
-# Hayatımız Oyun Arşiv Sistemi
+# Hayatımız Oyun - Site v0.0.4
 
-**Sürüm:** v0.0.3
+🎮 YouTube arşiv sistemi için dördüncü geliştirme sürümü.
 
-## ✅ v0.0.3 İçeriği
+## ✅ Eklenenler
 
-- 🏠 Menü sistemi başlangıcı geliştirildi.
-- 🔒 Kullanıcı ekranından GitHub repo butonu kaldırıldı.
-- 🧹 Temizleme BAT dosyası `.git` ve `.bat` dosyalarını korur.
-- 📤 GitHub gönderme BAT dosyası bulunduğu klasörü proje klasörü kabul eder.
-- 🚀 Vercel için `npm run build` hazırdır.
-- 🗄️ Supabase için güvenli kontrol SQL dosyası vardır.
+- 📱 Mobil uyum güçlendirildi
+- 🎨 Ana sayfa tasarımı yenilendi
+- 📊 İstatistik kartları eklendi
+- 🔒 Kullanıcı ekranından GitHub repo gösterimi kaldırıldı
+- 🛠️ BAT temizlik dosyası korumalı çalışacak şekilde bırakıldı
+- 🚀 Vercel build ayarları güncel tutuldu
 
-## Kurulum
+## 🚀 Kurulum
 
-```bat
+```bash
 npm install
 npm run dev
+npm run build
 ```
 
-## Vercel Deploy Ayarı
+## 🌐 Vercel
 
-- Framework Preset: **Vite**
-- Build Command: **npm run build**
-- Output Directory: **dist**
-- Install Command: **npm install**
+Build Command:
 
-## Supabase Durumu
+```bash
+npm run build
+```
 
-v0.0.3 için zorunlu tablo yoktur.
+Output Directory:
 
-## Vercel ENV Durumu
-
-v0.0.3 için zorunlu ENV yoktur.
+```bash
+dist
+```

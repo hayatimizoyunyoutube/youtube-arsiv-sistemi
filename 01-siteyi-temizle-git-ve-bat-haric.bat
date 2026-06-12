@@ -4,17 +4,9 @@ chcp 65001 >nul
 title Hayatimiz Oyun - Site Temizle
 
 REM Bu BAT dosyasini proje klasorunun icinde calistir.
-REM Amac: .git klasoru ve .bat dosyalari HARIC her seyi silmek.
+REM .git klasoru ve .bat dosyalari HARIC her seyi siler.
 set "PROJECT_DIR=%~dp0"
-if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
-
-if not exist "%PROJECT_DIR%\" (
-  echo HATA: Proje klasoru bulunamadi.
-  pause
-  exit /b 1
-)
-
-pushd "%PROJECT_DIR%" || (
+cd /d "%PROJECT_DIR%" || (
   echo HATA: Proje klasorune girilemedi.
   pause
   exit /b 1
@@ -25,37 +17,30 @@ echo  Hayatimiz Oyun - Site Temizleme
 echo ============================================
 echo Proje klasoru: %CD%
 echo.
-echo KORUNACAKLAR:
-echo  - .git klasoru
-echo  - Tum .bat dosyalari
-echo.
-echo SILINECEKLER:
-echo  - .git ve .bat haric tum dosya/klasorler
+echo KORUNACAKLAR: .git klasoru ve .bat dosyalari
+echo SILINECEKLER: diger tum dosya ve klasorler
 echo.
 echo Devam etmek icin bir tusa bas.
-echo Iptal icin pencereyi kapat.
 pause >nul
 
 echo.
 echo Klasorler siliniyor...
-for /d %%D in (*) do (
-  if /I not "%%~nxD"==".git" (
+for /f "delims=" %%D in ('dir /ad /b') do (
+  if /I not "%%D"==".git" (
     echo Siliniyor klasor: %%D
-    rmdir /s /q "%%D" 2>nul
+    rmdir /s /q "%%D"
   )
 )
 
 echo.
 echo Dosyalar siliniyor...
-for %%F in (*) do (
+for /f "delims=" %%F in ('dir /a-d /b') do (
   if /I not "%%~xF"==".bat" (
     echo Siliniyor dosya: %%F
-    del /f /q "%%F" 2>nul
+    del /f /q "%%F"
   )
 )
 
 echo.
 echo TAMAM: .git klasoru ve .bat dosyalari korundu.
-echo Diger tum dosya ve klasorler temizlendi.
-popd
 pause

@@ -1,9 +1,5 @@
--- Hayatımız Oyun Arşiv Sistemi
--- Sürüm: v0.0.2
--- Durum: Bu sürümde zorunlu tablo yoktur.
--- Güvenlik: DROP TABLE / TRUNCATE / veri sıfırlama yoktur.
+-- Hayatımız Oyun Site v0.0.4
+-- Bu sürümde Supabase zorunlu değildir.
+-- SQL dosyası ilerideki sürümlere hazırlık için tutulur.
 
-DO $$
-BEGIN
-  RAISE NOTICE '✅ Hayatımız Oyun Arşiv Sistemi v0.0.2 Supabase kontrolü başarılı. Bu sürümde tablo kurulumu gerekmiyor.';
-END $$;
+select 'Hayatımız Oyun v0.0.4 - Supabase şu an zorunlu değil, hazırlık dosyası başarılı.' as status;
