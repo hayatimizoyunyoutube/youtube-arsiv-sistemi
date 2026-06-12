@@ -1,6 +1,8 @@
 # BAT Düzeltme Notu
 
-✅ Silme BAT dosyası bulunduğu klasörü proje klasörü kabul eder.  
-✅ `.git` klasörü silinmez.  
-✅ `.bat` dosyaları silinmez.  
-✅ GitHub gönderme BAT dosyası repo adresini içerir ama kullanıcı sitesinde gösterilmez.
+✅ `01-siteyi-temizle-git-ve-bat-haric.bat` bulunduğu klasörü proje klasörü kabul eder.
+✅ `.git` klasörünü silmez.
+✅ `.bat` dosyalarını silmez.
+✅ Diğer dosya ve klasörleri temizler.
+
+✅ `02-githuba-otomatik-gonder.bat` repo adresini kullanıcı ekranında göstermez; sadece BAT içinde kullanır.

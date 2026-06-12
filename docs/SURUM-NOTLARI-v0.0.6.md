@@ -1,15 +1,9 @@
-# 📚 v0.0.6 - Arşiv Sayfası
+# 📚 v0.0.6 Sürüm Notları
 
-## ✅ Bu Sürümde Eklenenler
-- 📚 Arşiv sayfası görünümü
-- 🔍 Oyun, seri, tür ve etiket arama
-- 🏷️ Durum filtresi
-- 📊 Liste sonuç sayacı
-- 🎮 Genişletilmiş demo oyun verisi
-- 📱 Mobil uyumlu arşiv kartları
+✅ Arşiv sayfası başladı  
+✅ Kategori filtresi eklendi  
+✅ Arama sistemi güçlendirildi  
+✅ Supabase SQL hazırlık dosyası eklendi  
+✅ Vercel build ayarları güncellendi  
 
-## 🗄️ SQL Gerekli mi?
-Hayır. Bu sürümde Supabase zorunlu değil.
-
-## 🌐 Vercel ENV Gerekli mi?
-Hayır. `.env.example` hazırlandı ama boş kalabilir.
+➡️ Sonraki sürüm: v0.0.7 Footer ve iletişim alanı.

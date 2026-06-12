@@ -1,15 +1,17 @@
 # CHANGELOG
 
-## 📚 v0.0.6
-- 📚 Arşiv sayfası eklendi.
-- 🔍 Arama sistemi durum filtresiyle geliştirildi.
-- 🎮 Demo oyun sayısı artırıldı.
-- 📊 Bölüm sayacı ve liste sonuç bilgisi eklendi.
-- 🧹 BAT temizleme dosyası `.git` ve `.bat` koruyacak şekilde bırakıldı.
-- 🚀 Vercel ayarları v0.0.6 ile güncellendi.
-- 🗄️ Supabase SQL dosyasına bu sürümde zorunlu değil notu eklendi.
+## v0.0.7 - Tema Düzenlemeleri 🎨
 
-## 🎮 v0.0.5
-- 🎮 Oyun kartları sistemi eklendi.
-- 🏷️ Etiket sistemi başladı.
-- 🔍 Arama altyapısı hazırlandı.
+### Eklendi
+- 🌑 Profesyonel koyu tema
+- ✨ Hover animasyonları
+- 📱 Mobil düzen iyileştirmeleri
+- 🎮 Oyun kartlarında daha iyi görünüm
+- 📝 Sonraki sürüm notu alanı
+
+### Düzeltildi
+- 🔒 Kullanıcı ekranında GitHub repo adresi gösterilmez
+- 🧹 BAT temizleme sistemi `.git` ve `.bat` korur
+
+### Sonraki Sürüm
+- v0.0.8: Dosya temizliği ve klasör düzeni

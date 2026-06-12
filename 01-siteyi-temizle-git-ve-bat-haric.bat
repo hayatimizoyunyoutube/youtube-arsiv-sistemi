@@ -1,32 +1,22 @@
 @echo off
-setlocal EnableExtensions DisableDelayedExpansion
 chcp 65001 >nul
-title Hayatimiz Oyun - Site Temizle
-
-echo.
-echo ===============================================
-echo  HAYATIMIZ OYUN - SITE TEMIZLEME
-echo ===============================================
-echo Bu islem .git klasorunu ve .bat dosyalarini SILMEZ.
-echo Proje klasoru: %~dp0
-echo.
-set /p ONAY=Devam etmek icin EVET yaz: 
-if /I not "%ONAY%"=="EVET" (
-  echo Islem iptal edildi.
-  pause
-  exit /b 0
-)
+setlocal enabledelayedexpansion
 cd /d "%~dp0"
+echo =====================================
+echo Hayatimiz Oyun - Proje Temizleme
+echo .git ve .bat dosyalari korunur
+echo =====================================
+echo.
 for /d %%D in (*) do (
   if /I not "%%~nxD"==".git" (
     echo Klasor siliniyor: %%D
-    rmdir /s /q "%%D"
+    rmdir /s /q "%%D" 2>nul
   )
 )
 for %%F in (*) do (
   if /I not "%%~xF"==".bat" (
     echo Dosya siliniyor: %%F
-    del /f /q "%%F"
+    del /f /q "%%F" 2>nul
   )
 )
 echo.

@@ -1,13 +1,57 @@
 <!doctype html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Hayatımız Oyun YouTube arşiv sistemi v0.0.6" />
-    <title>Hayatımız Oyun Arşiv Sistemi v0.0.6</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hayatımız Oyun Arşiv Sistemi v0.0.7</title>
+  <meta name="description" content="Hayatımız Oyun için oyun, seri ve bölüm arşiv sistemi. Sürüm v0.0.7 tema düzenlemeleri." />
+  <style>
+    :root{
+      --bg:#05070d;--panel:#101522;--panel2:#151c2d;--text:#f4f7fb;--muted:#aab4c8;
+      --brand:#ff2f66;--brand2:#6d5dfc;--ok:#45d483;--warn:#ffd166;--line:rgba(255,255,255,.11);
+      --shadow:0 18px 60px rgba(0,0,0,.36);--radius:22px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at top left,rgba(255,47,102,.22),transparent 32%),radial-gradient(circle at top right,rgba(109,93,252,.20),transparent 34%),var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}.wrap{max-width:1180px;margin:auto;padding:0 18px}
+    header{position:sticky;top:0;z-index:20;background:rgba(5,7,13,.76);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .nav{height:74px;display:flex;align-items:center;justify-content:space-between;gap:16px}.logo{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.2px}.mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;box-shadow:0 0 28px rgba(255,47,102,.35)}
+    .menu{display:flex;gap:10px;flex-wrap:wrap}.menu a{padding:10px 13px;border:1px solid transparent;border-radius:999px;color:var(--muted)}.menu a:hover,.menu a.active{border-color:var(--line);background:rgba(255,255,255,.06);color:#fff}
+    .hero{padding:70px 0 36px}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch}.card{background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.hero-main{padding:34px}.badge{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--muted);font-weight:700}.hero h1{font-size:clamp(34px,5vw,62px);line-height:1.02;margin:22px 0 14px}.hero p{color:var(--muted);font-size:18px;line-height:1.65}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.btn{border:0;border-radius:16px;padding:13px 18px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff}.btn.ghost{background:rgba(255,255,255,.07);border:1px solid var(--line)}
+    .version-box{padding:26px;display:flex;flex-direction:column;justify-content:space-between}.version-box h2{margin:0 0 10px}.version-list{display:grid;gap:10px;color:var(--muted)}.version-list div{padding:12px;border:1px solid var(--line);border-radius:15px;background:rgba(0,0,0,.13)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}.stat{padding:18px}.stat strong{display:block;font-size:28px}.stat span{color:var(--muted)}
+    section{padding:30px 0}.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:16px}.section-title h2{margin:0;font-size:30px}.section-title p{margin:0;color:var(--muted)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.input,.select{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:14px;color:#fff;padding:13px 14px;outline:none}.input{flex:1;min-width:220px}.select option{background:#101522}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.game{overflow:hidden;transition:.25s transform,.25s border-color}.game:hover{transform:translateY(-5px);border-color:rgba(255,47,102,.5)}.cover{height:168px;background:linear-gradient(135deg,rgba(255,47,102,.45),rgba(109,93,252,.45));display:flex;align-items:end;padding:16px;font-size:42px}.game-body{padding:18px}.game h3{margin:0 0 8px}.meta{color:var(--muted);font-size:14px;line-height:1.6}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.tag{font-size:12px;font-weight:800;padding:7px 9px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line)}
+    .theme-panel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.theme-item{padding:22px}.theme-item b{display:block;margin-bottom:8px}.theme-item p{margin:0;color:var(--muted);line-height:1.6}
+    footer{margin-top:40px;border-top:1px solid var(--line);padding:26px 0;color:var(--muted);background:rgba(0,0,0,.18)}
+    @media(max-width:860px){.hero-grid,.grid,.theme-panel{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.nav{height:auto;padding:14px 0;align-items:flex-start;flex-direction:column}.menu{width:100%}.menu a{flex:1;text-align:center}.hero{padding-top:38px}}
+  </style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="logo"><div class="mark">🎮</div><div>Hayatımız Oyun<br><small style="color:var(--muted)">Arşiv Sistemi v0.0.7</small></div></div><nav class="menu"><a class="active" href="#anasayfa">Ana Sayfa</a><a href="#arsiv">Arşiv</a><a href="#tema">Tema</a><a href="#notlar">Notlar</a></nav></div></header>
+<main id="anasayfa" class="wrap">
+  <section class="hero"><div class="hero-grid"><div class="card hero-main"><span class="badge">✨ v0.0.7 Tema Düzenlemeleri Aktif</span><h1>Oyun arşivi artık daha modern, okunabilir ve kullanışlı.</h1><p>Koyu tema, renk sistemi, kart animasyonları, aktif menü vurgusu ve kullanıcıya uygun sade arayüz eklendi. GitHub repo adresi kullanıcı ekranında gösterilmez.</p><div class="actions"><a class="btn" href="#arsiv">Arşive Git</a><a class="btn ghost" href="#tema">Tema Notları</a></div></div><div class="card version-box"><div><h2>✅ Başarılı Çalışma Kontrolü</h2><div class="version-list"><div>🚀 Vercel build: v0.0.7</div><div>🗄️ Supabase hazırlık: Şimdilik gerekli değil</div><div>🔒 Kullanıcı ekranı: Repo bilgisi gizli</div><div>🧹 BAT: .git ve .bat korunur</div></div></div></div></div></section>
+  <div class="stats"><div class="card stat"><strong>8</strong><span>Demo Oyun</span></div><div class="card stat"><strong>4</strong><span>Seri</span></div><div class="card stat"><strong>32</strong><span>Bölüm</span></div><div class="card stat"><strong>v0.0.7</strong><span>Güncel Sürüm</span></div></div>
+  <section id="arsiv"><div class="section-title"><div><h2>🎮 Oyun Kartları</h2><p>Arama ve durum filtresi altyapısı devam ediyor.</p></div></div><div class="toolbar"><input id="q" class="input" placeholder="Oyun ara..." oninput="filterGames()"><select id="status" class="select" onchange="filterGames()"><option value="">Tüm Durumlar</option><option>Devam Ediyor</option><option>Tamamlandı</option><option>Planlandı</option></select></div><div id="games" class="grid"></div></section>
+  <section id="tema"><div class="section-title"><div><h2>🎨 Tema Düzenlemeleri</h2><p>v0.0.7 ile görsel temel güçlendirildi.</p></div></div><div class="theme-panel"><div class="card theme-item"><b>🌑 Koyu Tema</b><p>Göz yormayan koyu arka plan ve profesyonel renk geçişleri.</p></div><div class="card theme-item"><b>✨ Animasyonlar</b><p>Kart hover efektleri ve yumuşak geçişler eklendi.</p></div><div class="card theme-item"><b>📱 Mobil Uyum</b><p>Menü, kartlar ve istatistikler mobilde daha düzgün görünür.</p></div></div></section>
+  <section id="notlar"><div class="card theme-item"><b>📝 Sonraki Sürüm v0.0.8</b><p>Dosya temizliği, klasör düzeni, gereksiz dosyaların ayrılması ve proje yapısının sadeleşmesi yapılacak.</p></div></section>
+</main>
+<footer><div class="wrap">© Hayatımız Oyun — Site Arşiv Sistemi v0.0.7</div></footer>
+<script>
+const games=[
+{icon:'🧟',name:'Resident Evil 5',year:'2009',status:'Devam Ediyor',tags:['Co-op','Türkçe Altyazılı','Seri']},
+{icon:'🏝️',name:'Dead Island 2',year:'2023',status:'Tamamlandı',tags:['Co-op','Final','Aksiyon']},
+{icon:'🏹',name:'Assassin’s Creed Origins',year:'2017',status:'Devam Ediyor',tags:['Türkçe Altyazılı','Açık Dünya']},
+{icon:'🌫️',name:'Silent Hill Homecoming',year:'2008',status:'Planlandı',tags:['Korku','Hikaye']},
+{icon:'🚀',name:'Icarus',year:'2021',status:'Devam Ediyor',tags:['Co-op','Hayatta Kalma']},
+{icon:'🔫',name:'Warface Clutch',year:'2024',status:'Planlandı',tags:['FPS','Co-op']},
+{icon:'🐲',name:'Serious Sam HD',year:'2009',status:'Devam Ediyor',tags:['Co-op','FPS']},
+{icon:'🚂',name:'Resident Evil 0',year:'2016',status:'Devam Ediyor',tags:['Remaster','Korku']}
+];
+function render(list){document.getElementById('games').innerHTML=list.map(g=>`<article class="card game"><div class="cover">${g.icon}</div><div class="game-body"><h3>${g.name}</h3><div class="meta">Çıkış: ${g.year}<br>Durum: ${g.status}</div><div class="tags">${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></article>`).join('')}
+function filterGames(){const q=document.getElementById('q').value.toLowerCase();const s=document.getElementById('status').value;render(games.filter(g=>g.name.toLowerCase().includes(q)&&(!s||g.status===s)))}
+render(games);
+</script>
+</body>
 </html>
