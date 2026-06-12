@@ -994,3 +994,113 @@ html, body, .app, .fullMain, .main, .noSideApp { overflow-x: hidden !important; 
   .archiveGrid .gameCard,.alphaGroup .gameCard,.gamesGrid .gameCard,.proGameCard,.seriesPanel,.proSeriesPanel,.premiumSeriesCard{flex:1 1 100%!important;width:100%!important;max-width:none!important;}
   .topQuickNav a,.fullTopNav a,.adminDock a,.proAdminDock a{flex:1 1 calc(50% - 10px)!important;text-align:center!important;min-width:0!important;}
 }
+
+/* v4.0.5 REV5 - Üst kategori menüsü yan yana kesin fix */
+@media (min-width:721px){
+  .proStickyTop.topOnlyBar,
+  header.topBar.proStickyTop.topOnlyBar{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    padding:10px 12px!important;
+    box-sizing:border-box!important;
+  }
+  .proStickyTop.topOnlyBar .topIdentity{
+    flex:0 0 150px!important;
+    max-width:150px!important;
+    min-width:120px!important;
+    overflow:hidden!important;
+  }
+  .proStickyTop.topOnlyBar .topIdentity b,
+  .proStickyTop.topOnlyBar .topIdentity small{
+    display:block!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  .proStickyTop.topOnlyBar .topIdentity b{font-size:13px!important;line-height:1.1!important;}
+  .proStickyTop.topOnlyBar .topIdentity small{font-size:9px!important;line-height:1.1!important;}
+  .fullTopNav,
+  .topQuickNav.fullTopNav{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    width:auto!important;
+    max-width:none!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:7px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding:0 2px 2px!important;
+    scrollbar-width:none!important;
+  }
+  .fullTopNav::-webkit-scrollbar{display:none!important;}
+  .fullTopNav a,
+  .topQuickNav.fullTopNav a{
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:98px!important;
+    max-width:145px!important;
+    height:36px!important;
+    min-height:36px!important;
+    padding:0 10px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    font-size:11.5px!important;
+    line-height:1!important;
+  }
+  .topAdminOpen{
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:112px!important;
+    max-width:150px!important;
+    height:36px!important;
+    min-height:36px!important;
+    padding:0 10px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    font-size:11.5px!important;
+  }
+  .topUser{
+    flex:0 0 auto!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:6px!important;
+    min-width:0!important;
+    margin-left:0!important;
+  }
+  .topUser .roleChip,
+  .topUser .topBtn{
+    flex:0 0 auto!important;
+    width:auto!important;
+    height:36px!important;
+    min-height:36px!important;
+    padding:0 10px!important;
+    font-size:11.5px!important;
+    white-space:nowrap!important;
+  }
+}
+@media (max-width:720px){
+  .proStickyTop.topOnlyBar,
+  header.topBar.proStickyTop.topOnlyBar{display:grid!important;grid-template-columns:1fr!important;overflow:visible!important;}
+  .fullTopNav,.topQuickNav.fullTopNav{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important;}
+  .fullTopNav a,.topQuickNav.fullTopNav a{width:100%!important;min-width:0!important;max-width:none!important;justify-content:center!important;}
+  .topUser{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;}
+}
