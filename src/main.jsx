@@ -1,25 +1,23 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Database, Rocket, FileText } from 'lucide-react';
+import { Database, Rocket, FileText, Home, ShieldCheck, Sparkles } from 'lucide-react';
 import './style.css';
 
-const VERSION = '0.0.1';
+const VERSION = '0.0.2';
 
 function App() {
   return (
     <main className="page">
       <section className="hero">
-        <div className="badge">v{VERSION} • Temiz Proje Başlangıcı</div>
+        <div className="badge">v{VERSION} • Ana Sayfa İskeleti</div>
         <h1>Hayatımız Oyun Arşiv Sistemi</h1>
         <p>
-          YouTube arşiv sitesi adım adım versiyonlanarak geliştirilecek.
-          Bu paket temel proje altyapısını, GitHub gönderme dosyasını,
-          Vercel build ayarlarını ve Supabase başlangıç notlarını içerir.
+          Oyun videoları, bölümler, seriler ve yayın planları için geliştirilen
+          arşiv sitesinin ana sayfa temeli hazırlandı. Kullanıcı ekranında artık
+          teknik GitHub repo bağlantısı gösterilmez.
         </p>
         <div className="actions">
-          <a href="https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi" target="_blank" rel="noreferrer">
-            <span className="emoji-icon">🐙</span> GitHub Repo
-          </a>
+          <span><Home size={18} /> Ana Sayfa Hazır</span>
           <span><Rocket size={18} /> Vercel Hazır</span>
           <span><Database size={18} /> Supabase Notları Hazır</span>
         </div>
@@ -27,20 +25,30 @@ function App() {
 
       <section className="cards">
         <article>
+          <Sparkles />
+          <h2>Temiz Ana Sayfa</h2>
+          <p>Ziyaretçiye sadece siteye ait bilgiler gösterilir.</p>
+        </article>
+        <article>
+          <ShieldCheck />
+          <h2>Kullanıcıya Uygun Görünüm</h2>
+          <p>GitHub repo butonu ve teknik bağlantı kullanıcı ekranından kaldırıldı.</p>
+        </article>
+        <article>
           <FileText />
-          <h2>README</h2>
-          <p>Kurulum, çalıştırma ve deploy bilgileri yazıldı.</p>
+          <h2>Güncel Sürüm Notları</h2>
+          <p>v0.0.2 için dokümanlar, SQL notu ve ENV örneği güncellendi.</p>
         </article>
-        <article>
-          <Rocket />
-          <h2>Vercel</h2>
-          <p>Build komutu: <code>npm run build</code></p>
-        </article>
-        <article>
-          <Database />
-          <h2>Supabase</h2>
-          <p>v0.0.1 için tablo gerekmiyor. Güvenli SQL bilgilendirme dosyası eklendi.</p>
-        </article>
+      </section>
+
+      <section className="preview">
+        <h2>Yakında Eklenecek Alanlar</h2>
+        <div className="preview-grid">
+          <span>🎮 Oyun Kartları</span>
+          <span>📚 Arşiv Sayfası</span>
+          <span>📅 Yayın Takvimi</span>
+          <span>👑 Yönetim Paneli</span>
+        </div>
       </section>
 
       <footer>

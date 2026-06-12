@@ -1,17 +1,15 @@
 # Hayatımız Oyun Arşiv Sistemi
 
-**Sürüm:** v0.0.1  
-**Repo:** https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi
+**Sürüm:** v0.0.2
 
-## ✅ v0.0.1 İçeriği
+## ✅ v0.0.2 İçeriği
 
-- 🧱 Temiz proje başlangıcı yapıldı.
-- 📁 `docs`, `src`, `public`, `supabase` klasörleri oluşturuldu.
-- 📝 README ve CHANGELOG eklendi.
-- 🚀 Vercel için `npm run build` hazırlandı.
-- 🧹 Projeyi temizlemek için `01-siteyi-temizle-git-ve-bat-haric.bat` eklendi.
-- 📤 GitHub'a otomatik göndermek için `02-githuba-otomatik-gonder.bat` eklendi.
-- 🗄️ Supabase için v0.0.1 durum SQL dosyası eklendi.
+- 🏠 Ana sayfa iskeleti geliştirildi.
+- 🔒 Kullanıcı ekranından GitHub repo butonu kaldırıldı.
+- 🧹 Temizleme BAT dosyası `.git` ve `.bat` dosyalarını korur.
+- 📤 GitHub gönderme BAT dosyası bulunduğu klasörü proje klasörü kabul eder.
+- 🚀 Vercel için `npm run build` hazırdır.
+- 🗄️ Supabase için güvenli kontrol SQL dosyası vardır.
 
 ## Kurulum
 
@@ -29,17 +27,8 @@ npm run dev
 
 ## Supabase Durumu
 
-v0.0.1 için zorunlu tablo yoktur.  
-Bu sürüm sadece temel site başlangıcıdır.
-
-Supabase panelinde çalıştırmak istersen:
-
-```sql
--- supabase/schema.sql dosyasını çalıştır.
--- Bu dosya tablo silmez, veri sıfırlamaz.
-```
+v0.0.2 için zorunlu tablo yoktur.
 
 ## Vercel ENV Durumu
 
-v0.0.1 için zorunlu ENV yoktur.  
-Yine de sonraki sürümlere hazırlık için `.env.example` eklendi.
+v0.0.2 için zorunlu ENV yoktur.
