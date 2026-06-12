@@ -1,19 +1,45 @@
-# Hayatımız Oyun - v0.0.1
+# Hayatımız Oyun Arşiv Sistemi
 
-Sıfırdan temiz başlangıç paketi.
+**Sürüm:** v0.0.1  
+**Repo:** https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi
 
-## Bu paket ne?
-Eski bozuk sürümler sıfırlandı. Bundan sonra her şey adım adım, sürüm sürüm ilerleyecek.
+## ✅ v0.0.1 İçeriği
 
-## Şu an lazım olanlar
-- `.env` lazım değil.
-- Supabase lazım değil.
-- API key lazım değil.
-- Vercel değişkeni lazım değil.
+- 🧱 Temiz proje başlangıcı yapıldı.
+- 📁 `docs`, `src`, `public`, `supabase` klasörleri oluşturuldu.
+- 📝 README ve CHANGELOG eklendi.
+- 🚀 Vercel için `npm run build` hazırlandı.
+- 🧹 Projeyi temizlemek için `01-siteyi-temizle-git-ve-bat-haric.bat` eklendi.
+- 📤 GitHub'a otomatik göndermek için `02-githuba-otomatik-gonder.bat` eklendi.
+- 🗄️ Supabase için v0.0.1 durum SQL dosyası eklendi.
 
-## Klasörler
-- `docs/PLANLANANLAR`: 0.0.1 → 4.0.0 planları
-- `docs/GUNCELLEME-NOTLARI`: yapılan sürüm notları
-- `docs/TAMAMLANANLAR`: tamamlanan sürümler
-- `src`: site stil dosyaları
-- `assets`: görseller için boş klasör
+## Kurulum
+
+```bat
+npm install
+npm run dev
+```
+
+## Vercel Deploy Ayarı
+
+- Framework Preset: **Vite**
+- Build Command: **npm run build**
+- Output Directory: **dist**
+- Install Command: **npm install**
+
+## Supabase Durumu
+
+v0.0.1 için zorunlu tablo yoktur.  
+Bu sürüm sadece temel site başlangıcıdır.
+
+Supabase panelinde çalıştırmak istersen:
+
+```sql
+-- supabase/schema.sql dosyasını çalıştır.
+-- Bu dosya tablo silmez, veri sıfırlamaz.
+```
+
+## Vercel ENV Durumu
+
+v0.0.1 için zorunlu ENV yoktur.  
+Yine de sonraki sürümlere hazırlık için `.env.example` eklendi.

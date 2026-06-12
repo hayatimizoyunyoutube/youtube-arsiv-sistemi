@@ -1,0 +1,12 @@
+Hayatýmýz Oyun - BAT Düzeltme Paketi
+
+Bu paket sürüm deðildir. Sadece BAT dosyalarý düzeltildi.
+
+Düzeltmeler:
+- Proje klasörü artýk boþ görünmez.
+- .git klasörü korunur.
+- .bat dosyalarý korunur.
+- GitHub gönderme origin adresini otomatik düzeltir.
+
+Klasör:
+C:\Users\Mevlüt Yeni Pc\Desktop\Youtube Yayýn Hazýrlýklarý\Youtube\projeler\youtube-arsive
