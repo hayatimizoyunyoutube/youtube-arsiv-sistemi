@@ -1,11 +1,7 @@
-# Supabase SQL Durumu - v0.0.7
+# Supabase SQL Durumu
 
-🗄️ Bu sürümde Supabase SQL çalıştırmak gerekli değildir.
+## v0.0.8
+Şu anda SQL gerekli değil.
 
-Sebep:
-- Henüz sadece statik arayüz, demo oyun kartları ve tema düzenlemeleri var.
-- Kalıcı veri sistemi sonraki büyük sürümlerde eklenecek.
-
-Hazırlık:
-- `.env.example` içine Supabase alanları eklendi.
-- SQL dosyası şimdilik bilinçli olarak eklenmedi.
+Supabase tabloları v0.8.x serisinde aktif hazırlanacak.
+Bu sürüm sadece statik site, arayüz ve dosya düzeni sürümüdür.

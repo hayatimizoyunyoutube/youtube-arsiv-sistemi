@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hayatımız Oyun Arşiv Sistemi v0.0.7</title>
-  <meta name="description" content="Hayatımız Oyun için oyun, seri ve bölüm arşiv sistemi. Sürüm v0.0.7 tema düzenlemeleri." />
+  <title>Hayatımız Oyun Arşiv Sistemi v0.0.8</title>
+  <meta name="description" content="Hayatımız Oyun için oyun, seri ve bölüm arşiv sistemi. Sürüm v0.0.8 dosya temizliği." />
   <style>
     :root{
       --bg:#05070d;--panel:#101522;--panel2:#151c2d;--text:#f4f7fb;--muted:#aab4c8;
@@ -29,15 +29,15 @@
   </style>
 </head>
 <body>
-<header><div class="wrap nav"><div class="logo"><div class="mark">🎮</div><div>Hayatımız Oyun<br><small style="color:var(--muted)">Arşiv Sistemi v0.0.7</small></div></div><nav class="menu"><a class="active" href="#anasayfa">Ana Sayfa</a><a href="#arsiv">Arşiv</a><a href="#tema">Tema</a><a href="#notlar">Notlar</a></nav></div></header>
+<header><div class="wrap nav"><div class="logo"><div class="mark">🎮</div><div>Hayatımız Oyun<br><small style="color:var(--muted)">Arşiv Sistemi v0.0.8</small></div></div><nav class="menu"><a class="active" href="#anasayfa">Ana Sayfa</a><a href="#arsiv">Arşiv</a><a href="#tema">Tema</a><a href="#notlar">Notlar</a></nav></div></header>
 <main id="anasayfa" class="wrap">
-  <section class="hero"><div class="hero-grid"><div class="card hero-main"><span class="badge">✨ v0.0.7 Tema Düzenlemeleri Aktif</span><h1>Oyun arşivi artık daha modern, okunabilir ve kullanışlı.</h1><p>Koyu tema, renk sistemi, kart animasyonları, aktif menü vurgusu ve kullanıcıya uygun sade arayüz eklendi. GitHub repo adresi kullanıcı ekranında gösterilmez.</p><div class="actions"><a class="btn" href="#arsiv">Arşive Git</a><a class="btn ghost" href="#tema">Tema Notları</a></div></div><div class="card version-box"><div><h2>✅ Başarılı Çalışma Kontrolü</h2><div class="version-list"><div>🚀 Vercel build: v0.0.7</div><div>🗄️ Supabase hazırlık: Şimdilik gerekli değil</div><div>🔒 Kullanıcı ekranı: Repo bilgisi gizli</div><div>🧹 BAT: .git ve .bat korunur</div></div></div></div></div></section>
-  <div class="stats"><div class="card stat"><strong>8</strong><span>Demo Oyun</span></div><div class="card stat"><strong>4</strong><span>Seri</span></div><div class="card stat"><strong>32</strong><span>Bölüm</span></div><div class="card stat"><strong>v0.0.7</strong><span>Güncel Sürüm</span></div></div>
+  <section class="hero"><div class="hero-grid"><div class="card hero-main"><span class="badge">✨ v0.0.8 Dosya Temizliği Aktif</span><h1>Proje dosyaları artık daha düzenli ve temiz.</h1><p>Gereksiz dosyalar ayrıldı, klasör yapısı düzenlendi, BAT güvenliği korundu. Kullanıcı ekranında teknik GitHub repo bilgisi gösterilmez.</p><div class="actions"><a class="btn" href="#arsiv">Arşive Git</a><a class="btn ghost" href="#tema">Tema Notları</a></div></div><div class="card version-box"><div><h2>✅ Başarılı Çalışma Kontrolü</h2><div class="version-list"><div>🚀 Vercel build: v0.0.8</div><div>🗄️ Supabase hazırlık: Şimdilik gerekli değil</div><div>🔒 Kullanıcı ekranı: Repo bilgisi gizli</div><div>🧹 BAT: .git ve .bat korunur</div></div></div></div></div></section>
+  <div class="stats"><div class="card stat"><strong>8</strong><span>Demo Oyun</span></div><div class="card stat"><strong>4</strong><span>Seri</span></div><div class="card stat"><strong>32</strong><span>Bölüm</span></div><div class="card stat"><strong>v0.0.8</strong><span>Güncel Sürüm</span></div></div>
   <section id="arsiv"><div class="section-title"><div><h2>🎮 Oyun Kartları</h2><p>Arama ve durum filtresi altyapısı devam ediyor.</p></div></div><div class="toolbar"><input id="q" class="input" placeholder="Oyun ara..." oninput="filterGames()"><select id="status" class="select" onchange="filterGames()"><option value="">Tüm Durumlar</option><option>Devam Ediyor</option><option>Tamamlandı</option><option>Planlandı</option></select></div><div id="games" class="grid"></div></section>
-  <section id="tema"><div class="section-title"><div><h2>🎨 Tema Düzenlemeleri</h2><p>v0.0.7 ile görsel temel güçlendirildi.</p></div></div><div class="theme-panel"><div class="card theme-item"><b>🌑 Koyu Tema</b><p>Göz yormayan koyu arka plan ve profesyonel renk geçişleri.</p></div><div class="card theme-item"><b>✨ Animasyonlar</b><p>Kart hover efektleri ve yumuşak geçişler eklendi.</p></div><div class="card theme-item"><b>📱 Mobil Uyum</b><p>Menü, kartlar ve istatistikler mobilde daha düzgün görünür.</p></div></div></section>
-  <section id="notlar"><div class="card theme-item"><b>📝 Sonraki Sürüm v0.0.8</b><p>Dosya temizliği, klasör düzeni, gereksiz dosyaların ayrılması ve proje yapısının sadeleşmesi yapılacak.</p></div></section>
+  <section id="tema"><div class="section-title"><div><h2>🎨 Dosya Temizliği</h2><p>v0.0.8 ile görsel temel güçlendirildi.</p></div></div><div class="theme-panel"><div class="card theme-item"><b>🧹 Temiz Klasör</b><p>Gereksiz geçici dosyalar ayrıldı, ana proje dosyaları sade tutuldu.</p></div><div class="card theme-item"><b>📁 Düzenli Yapı</b><p>docs, src ve supabase klasörleri daha anlaşılır hale getirildi.</p></div><div class="card theme-item"><b>🛡️ BAT Koruması</b><p>.git ve .bat dosyaları temizleme sırasında korunur.</p></div></div></section>
+  <section id="notlar"><div class="card theme-item"><b>📝 Sonraki Sürüm v0.0.9</b><p>İlk temel sürüm testi, hata kontrolü ve Vercel yayın kontrolü yapılacak.</p></div></section>
 </main>
-<footer><div class="wrap">© Hayatımız Oyun — Site Arşiv Sistemi v0.0.7</div></footer>
+<footer><div class="wrap">© Hayatımız Oyun — Site Arşiv Sistemi v0.0.8</div></footer>
 <script>
 const games=[
 {icon:'🧟',name:'Resident Evil 5',year:'2009',status:'Devam Ediyor',tags:['Co-op','Türkçe Altyazılı','Seri']},

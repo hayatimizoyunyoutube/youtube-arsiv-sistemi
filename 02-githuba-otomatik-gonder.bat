@@ -1,39 +1,27 @@
 @echo off
 chcp 65001 >nul
-setlocal
 cd /d "%~dp0"
-set REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
-set COMMIT_MSG=Hayatimiz Oyun site v0.0.7 guncellemesi
-
 echo =====================================
 echo Hayatimiz Oyun - GitHub Gonderme
 echo =====================================
 echo.
 where git >nul 2>nul
 if errorlevel 1 (
-  echo HATA: Git kurulu degil veya PATH icinde yok.
+  echo Git kurulu degil. Git kurup tekrar dene.
   pause
-  exit /b 1
+  exit /b
 )
-if not exist ".git" (
-  git init
-)
+if not exist ".git" git init
+git remote remove origin 2>nul
+git remote add origin https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
 git branch -M main
-git remote get-url origin >nul 2>nul
-if errorlevel 1 (
-  git remote add origin %REPO_URL%
-) else (
-  git remote set-url origin %REPO_URL%
-)
-git add -A
-git commit -m "%COMMIT_MSG%" || echo Commit atlanmis olabilir, degisiklik yoksa normaldir.
+git add .
+git commit -m "v0.0.8 dosya temizligi" 2>nul
 git push -u origin main
 if errorlevel 1 (
-  echo.
-  echo HATA: GitHub gonderme basarisiz. GitHub girisi veya repo yetkisini kontrol et.
+  echo Gonderme basarisiz. GitHub girisi veya yetki gerekebilir.
   pause
-  exit /b 1
+  exit /b
 )
-echo.
-echo Basarili: GitHub'a gonderildi.
+echo GitHub gonderme tamamlandi.
 pause

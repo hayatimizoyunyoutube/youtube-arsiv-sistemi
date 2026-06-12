@@ -1,21 +1,14 @@
-# Hayatımız Oyun Site v0.0.7
+# Hayatımız Oyun Site v0.0.8
 
-## 🎨 Bu Sürümde Eklenenler
-- 🌑 Koyu tema renk sistemi güncellendi
-- ✨ Kart hover animasyonları eklendi
-- 📱 Mobil görünüm iyileştirildi
-- 🔒 Kullanıcı ekranından GitHub repo bilgisi gizli tutuldu
-- 🧹 Silme BAT dosyası `.git` ve `.bat` koruyacak şekilde bırakıldı
+## 🧹 Bu Sürüm
+- Dosya temizliği yapıldı
+- Klasör yapısı düzenlendi
+- Kullanıcı ekranında GitHub repo bilgisi gizli tutuldu
+- BAT dosyaları koruma mantığı güncellendi
+- Vercel için statik site uyumu korundu
 
 ## 🚀 Çalıştırma
-```bash
-npm install
-npm run dev
-npm run build
-```
+`index.html` dosyasını açabilir veya Vercel'e yükleyebilirsin.
 
 ## 🗄️ Supabase
-Bu sürümde Supabase SQL zorunlu değildir. Sadece hazırlık dosyası vardır.
-
-## 🔐 Vercel ENV
-Bu sürüm statik çalışır. `.env.example` içinde ileride kullanılacak alanlar hazırdır.
+Bu sürümde Supabase SQL zorunlu değildir. Hazırlık dosyası klasörde tutulur.

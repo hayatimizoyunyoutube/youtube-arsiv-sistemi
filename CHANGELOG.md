@@ -1,17 +1,14 @@
 # CHANGELOG
 
-## v0.0.7 - Tema Düzenlemeleri 🎨
+## v0.0.8 🧹
+- 🧹 Dosya temizliği yapıldı
+- 📁 Klasör düzeni iyileştirildi
+- 🛡️ `.git` ve `.bat` koruması devam ediyor
+- 🚀 Vercel uyumu korundu
+- 🔒 Kullanıcı ekranından teknik repo bilgisi gizli tutuldu
 
-### Eklendi
-- 🌑 Profesyonel koyu tema
-- ✨ Hover animasyonları
-- 📱 Mobil düzen iyileştirmeleri
-- 🎮 Oyun kartlarında daha iyi görünüm
-- 📝 Sonraki sürüm notu alanı
-
-### Düzeltildi
-- 🔒 Kullanıcı ekranında GitHub repo adresi gösterilmez
-- 🧹 BAT temizleme sistemi `.git` ve `.bat` korur
-
-### Sonraki Sürüm
-- v0.0.8: Dosya temizliği ve klasör düzeni
+## Sonraki v0.0.9 🧪
+- İlk temel sürüm testi
+- Mobil kontrol
+- Arama/filtre kontrolü
+- Deploy kontrolü

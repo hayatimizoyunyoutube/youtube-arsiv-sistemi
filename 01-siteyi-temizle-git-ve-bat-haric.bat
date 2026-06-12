@@ -1,24 +1,26 @@
 @echo off
 chcp 65001 >nul
-setlocal enabledelayedexpansion
 cd /d "%~dp0"
 echo =====================================
-echo Hayatimiz Oyun - Proje Temizleme
+echo Hayatimiz Oyun - Temizleme Araci
 echo .git ve .bat dosyalari korunur
 echo =====================================
 echo.
-for /d %%D in (*) do (
-  if /I not "%%~nxD"==".git" (
-    echo Klasor siliniyor: %%D
-    rmdir /s /q "%%D" 2>nul
+set /p ONAY=Bu klasor temizlenecek. Devam etmek icin EVET yaz: 
+if /I not "%ONAY%"=="EVET" (
+  echo Islem iptal edildi.
+  pause
+  exit /b
+)
+for /d %%d in (*) do (
+  if /I not "%%d"==".git" (
+    rmdir /s /q "%%d" 2>nul
   )
 )
-for %%F in (*) do (
-  if /I not "%%~xF"==".bat" (
-    echo Dosya siliniyor: %%F
-    del /f /q "%%F" 2>nul
+for %%f in (*) do (
+  if /I not "%%~xf"==".bat" (
+    del /f /q "%%f" 2>nul
   )
 )
-echo.
-echo Temizleme tamamlandi. .git ve .bat dosyalari korundu.
+echo Temizleme tamamlandi.
 pause
