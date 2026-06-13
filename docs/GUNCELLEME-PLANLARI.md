@@ -1,11 +1,10 @@
 # Güncelleme Planları
 
-## v0.1.2
-- 🧩 Kategoriler ayrı sekme yapısına alındı.
-- 🟢 Devam Ediyor
-- ✅ Tamamlandı
-- 🕒 Yakında
+## v0.1.3 ✅
+🎬 Bölüm arşivi eklendi.
 
-## Sonraki v0.1.3
-- 📚 Kart listeleme düzeni geliştirilecek.
-- 🔍 Arama sonuçları daha net gösterilecek.
+## v0.1.4 🔜
+📚 Seri detay sayfaları geliştirilecek.
+
+## v0.1.5 🔜
+🗂️ Koleksiyon sistemi başlayacak.

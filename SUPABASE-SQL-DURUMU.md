@@ -1,4 +1,4 @@
-# Supabase SQL Durumu - v0.1.2
+# Supabase SQL Durumu - v0.1.3
 
 Şu an zorunlu SQL gerekmiyor. Site demo verilerle çalışır.
 

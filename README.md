@@ -1,12 +1,16 @@
-# Hayatımız Oyun Site v0.1.2
+# Hayatımız Oyun Arşiv Sistemi v0.1.3
 
-Bu sürümde kategori sistemi düzeltildi. Durum filtresi açılır menüden çıkarıldı ve ayrı sekmeler halinde gösterildi.
+🎬 Bölüm listeleme sürümü.
 
-## Kategoriler
-- 🟢 Devam Ediyor
-- ✅ Tamamlandı
-- 🕒 Yakında
+## Eklenenler
+- 🎬 Bölüm Arşivi alanı
+- 📌 Oyun kartına bağlı bölüm listesi
+- 📊 İlerleme çubuğu
+- 🟢 Devam Ediyor / ✅ Tamamlandı / 🕒 Yakında sekmeleri
+- 🚀 Vercel dist build fix
 
-## Vercel
-Build Command: `npm run build`
-Output Directory: `dist`
+## Kurulum
+```bash
+npm install
+npm run build
+```

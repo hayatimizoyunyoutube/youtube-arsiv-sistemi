@@ -1,9 +1,9 @@
-# CHANGELOG - v0.1.2
+# CHANGELOG
 
-## Eklenenler
-- 🧩 Durum kategorileri artık tek açılır listede değil, ayrı sekmelerde açılıyor.
-- 🟢 Devam Ediyor sekmesi eklendi.
-- ✅ Tamamlandı sekmesi eklendi.
-- 🕒 Yakında sekmesi eklendi.
-- 🔍 Arama ve tür filtresi sekmelerle birlikte çalışıyor.
-- 🚀 Vercel dist build fix korundu.
+## v0.1.3
+- 🎬 Bölüm arşivi eklendi.
+- 📌 Bölümler ayrı kartlarda listelenir hale getirildi.
+- 📊 Oyun detayına ilerleme çubuğu eklendi.
+- 🟢 Kategori sekmeleri korundu: Devam Ediyor, Tamamlandı, Yakında.
+- 🚀 Vercel outputDirectory dist ayarı korundu.
+- 🛡️ BAT dosyaları .git ve .bat korumalıdır.

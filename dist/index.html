@@ -3,98 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hayatımız Oyun Arşiv Sistemi v0.1.2</title>
-  <meta name="description" content="Hayatımız Oyun YouTube arşiv sistemi - v0.1.2 kategori sekmeleri" />
+  <title>Hayatımız Oyun Arşiv Sistemi v0.1.3</title>
+  <meta name="description" content="Hayatımız Oyun YouTube arşiv sistemi - v0.1.3 bölüm arşivi" />
   <style>
-    :root{--bg:#0d111a;--panel:#151c2b;--panel2:#1d2638;--text:#f7f7fb;--muted:#aab4c8;--blue:#4da3ff;--green:#43d17a;--line:#2b3850;--red:#ff5c7a;--yellow:#ffd166}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,#1b3159,#0d111a 45%,#080b11);color:var(--text)}.wrap{max-width:1180px;margin:auto;padding:28px 20px}.badge{display:inline-flex;gap:8px;align-items:center;background:#18345f;border:1px solid #2f6ec2;color:#cfe5ff;border-radius:999px;padding:9px 14px;font-weight:800;font-size:14px}.hero{padding:34px 0 18px}.hero h1{font-size:clamp(38px,7vw,72px);line-height:.95;margin:24px 0 18px}.hero p{color:#d8e4ff;font-size:18px;max-width:900px;line-height:1.7}.nav{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}.nav a,.btn{cursor:pointer;background:var(--panel2);border:1px solid #3b4863;color:#fff;padding:13px 16px;border-radius:14px;text-decoration:none;font-weight:800}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat,.card,.filter,.detail{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 35px rgba(0,0,0,.25)}.stat b{display:block;font-size:30px}.stat span,.muted{color:var(--muted)}.section{margin-top:34px}.section h2{font-size:32px;margin:0 0 14px}.filters{display:grid;grid-template-columns:1.4fr 2fr 1fr;gap:12px;margin-bottom:16px}.filters input,.filters select{width:100%;background:#0f1624;border:1px solid #34425f;color:#fff;border-radius:14px;padding:14px;font-size:15px}.category-tabs{display:flex;gap:10px;flex-wrap:wrap}.tab{cursor:pointer;background:#111a2b;border:1px solid #354768;color:#fff;border-radius:14px;padding:12px 14px;font-weight:900}.tab.active{background:#2368d8;border-color:#62a1ff;box-shadow:0 0 0 3px rgba(77,163,255,.12)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cover{height:150px;border-radius:16px;background:linear-gradient(135deg,#315b99,#8b3bd1);display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:14px}.card{transition:.2s;cursor:pointer}.card:hover{transform:translateY(-4px);border-color:#4d7ed8}.card h3{margin:0 0 8px;font-size:22px}.meta{color:var(--muted);line-height:1.6}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.tag{font-size:12px;background:#172640;border:1px solid #365e9e;color:#d7e9ff;border-radius:999px;padding:7px 10px;font-weight:800}.status{color:#111;background:var(--green);border:0}.soon{background:var(--yellow);color:#241a00}.done{background:#82e0ff;color:#001d26}.empty{display:none;text-align:center;color:var(--muted);padding:25px}.note{color:var(--muted);line-height:1.7}.footer{margin-top:40px;padding:20px;color:#96a1b8;border-top:1px solid var(--line)}.detail{display:none;margin-top:16px;border-color:#4776c8}.detail.active{display:block}.detail-head{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:center}.bigcover{height:180px;border-radius:18px;background:linear-gradient(135deg,#315b99,#8b3bd1);display:flex;align-items:center;justify-content:center;font-size:70px}.detail h3{font-size:34px;margin:0 0 10px}.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.info{background:#0f1624;border:1px solid #32415e;border-radius:16px;padding:14px}.episodes{margin-top:18px}.episode{display:flex;justify-content:space-between;gap:12px;border:1px solid #30405d;background:#111827;border-radius:14px;padding:13px;margin-top:8px}.close{float:right;background:#2b3850;color:white;border:0;border-radius:10px;padding:9px 12px;cursor:pointer}@media(max-width:900px){.grid,.cards,.filters,.detail-grid,.detail-head{grid-template-columns:1fr}.hero h1{font-size:44px}}
+    :root{--bg:#0d111a;--panel:#151c2b;--panel2:#1d2638;--text:#f7f7fb;--muted:#aab4c8;--blue:#4da3ff;--green:#43d17a;--line:#2b3850;--yellow:#ffd166}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top left,#1b3159,#0d111a 45%,#080b11);color:var(--text)}.wrap{max-width:1180px;margin:auto;padding:28px 20px}.badge{display:inline-flex;gap:8px;align-items:center;background:#18345f;border:1px solid #2f6ec2;color:#cfe5ff;border-radius:999px;padding:9px 14px;font-weight:800;font-size:14px}.hero{padding:34px 0 18px}.hero h1{font-size:clamp(38px,7vw,72px);line-height:.95;margin:24px 0 18px}.hero p{color:#d8e4ff;font-size:18px;max-width:900px;line-height:1.7}.nav{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}.nav a,.btn{cursor:pointer;background:var(--panel2);border:1px solid #3b4863;color:#fff;padding:13px 16px;border-radius:14px;text-decoration:none;font-weight:800}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat,.card,.episodeCard,.detail{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 35px rgba(0,0,0,.25)}.stat b{display:block;font-size:30px}.stat span,.muted{color:var(--muted)}.section{margin-top:34px}.section h2{font-size:32px;margin:0 0 14px}.filters{display:grid;grid-template-columns:1.2fr 2fr 1fr;gap:12px;margin-bottom:16px}.filters input,.filters select{width:100%;background:#0f1624;border:1px solid #34425f;color:#fff;border-radius:14px;padding:14px;font-size:15px}.category-tabs{display:flex;gap:10px;flex-wrap:wrap}.tab{cursor:pointer;background:#111a2b;border:1px solid #354768;color:#fff;border-radius:14px;padding:12px 14px;font-weight:900}.tab.active{background:#2368d8;border-color:#62a1ff;box-shadow:0 0 0 3px rgba(77,163,255,.12)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cover{height:150px;border-radius:16px;background:linear-gradient(135deg,#315b99,#8b3bd1);display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:14px}.card{transition:.2s;cursor:pointer}.card:hover,.episodeCard:hover{transform:translateY(-4px);border-color:#4d7ed8}.card h3{margin:0 0 8px;font-size:22px}.meta{color:var(--muted);line-height:1.6}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.tag{font-size:12px;background:#172640;border:1px solid #365e9e;color:#d7e9ff;border-radius:999px;padding:7px 10px;font-weight:800}.status{color:#111;background:var(--green);border:0}.soon{background:var(--yellow);color:#241a00}.done{background:#82e0ff;color:#001d26}.empty{display:none;text-align:center;color:var(--muted);padding:25px}.note{color:var(--muted);line-height:1.7}.footer{margin-top:40px;padding:20px;color:#96a1b8;border-top:1px solid var(--line)}.detail{display:none;margin-top:16px;border-color:#4776c8}.detail.active{display:block}.episodeGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.episodeCard{transition:.2s}.episodeTop{display:flex;align-items:center;justify-content:space-between;gap:12px}.episodeNo{font-weight:900;background:#2368d8;border:1px solid #62a1ff;border-radius:12px;padding:8px 10px}.progress{height:10px;background:#101827;border:1px solid #33425c;border-radius:999px;overflow:hidden;margin-top:12px}.bar{height:100%;background:linear-gradient(90deg,#4da3ff,#43d17a)}.close{float:right;background:#2b3850;color:white;border:0;border-radius:10px;padding:9px 12px;cursor:pointer}@media(max-width:900px){.grid,.cards,.filters,.episodeGrid{grid-template-columns:1fr}.hero h1{font-size:44px}}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="hero">
-      <span class="badge">v0.1.2 • Kategori Sekmeleri</span>
+      <span class="badge">v0.1.3 • Bölüm Listeleme</span>
       <h1>Hayatımız Oyun Arşiv Sistemi</h1>
-      <p>Bu sürümde durum filtresi açılır liste olmaktan çıkarıldı. Kategoriler ayrı sekmeler halinde gösterilir: Devam Ediyor, Tamamlandı ve Yakında.</p>
-      <div class="nav">
-        <a href="#arsiv">🎮 Arşive Git</a>
-        <a href="#plan">📝 Sürüm Notları</a>
-        <a href="#durum">✅ Sistem Durumu</a>
-      </div>
+      <p>Bu sürümde oyunların bölümleri ayrı arşiv alanında listelenir. Kategoriler yine ayrı sekme olarak kalır: Devam Ediyor, Tamamlandı ve Yakında.</p>
+      <div class="nav"><a href="#arsiv">🎮 Oyun Arşivi</a><a href="#bolumler">🎬 Bölüm Arşivi</a><a href="#plan">📝 Sürüm Notları</a></div>
     </section>
 
-    <section class="grid" id="durum">
+    <section class="grid">
       <div class="stat"><b id="totalGames">0</b><span>Toplam Oyun</span></div>
       <div class="stat"><b id="totalSeries">0</b><span>Toplam Seri</span></div>
       <div class="stat"><b id="totalEpisodes">0</b><span>Toplam Bölüm</span></div>
-      <div class="stat"><b>0.1.1</b><span>Güncel Sürüm</span></div>
+      <div class="stat"><b>0.1.3</b><span>Güncel Sürüm</span></div>
     </section>
 
     <section class="section" id="arsiv">
       <h2>🎮 Oyun Arşivi</h2>
-      <p class="note">Kartlara tıklayarak oyun detayını, seri bilgisini, bölüm listesini ve etiketleri görebilirsin.</p>
-      <div class="filters">
-        <input id="search" placeholder="Oyun ara... örn: Resident Evil" />
-        <div class="category-tabs" id="categoryTabs"><button class="tab active" data-status="all">🎮 Tümü</button><button class="tab" data-status="Devam Ediyor">🟢 Devam Ediyor</button><button class="tab" data-status="Tamamlandı">✅ Tamamlandı</button><button class="tab" data-status="Yakında">🕒 Yakında</button></div>
-        <select id="typeFilter"><option value="all">Tüm Türler</option><option value="Korku">Korku</option><option value="Aksiyon">Aksiyon</option><option value="Co-op">Co-op</option></select>
-      </div>
-      <div class="detail" id="detailBox"></div>
-      <div class="cards" id="gameList"></div>
-      <div class="empty" id="empty">Sonuç bulunamadı.</div>
+      <p class="note">Açılır kategori yerine ayrı sekmeler korunur. Oyun kartına tıklayınca bölüm detayları açılır.</p>
+      <div class="filters"><input id="search" placeholder="Oyun ara..." /><div class="category-tabs" id="categoryTabs"><button class="tab active" data-status="all">🎮 Tümü</button><button class="tab" data-status="Devam Ediyor">🟢 Devam Ediyor</button><button class="tab" data-status="Tamamlandı">✅ Tamamlandı</button><button class="tab" data-status="Yakında">🕒 Yakında</button></div><select id="typeFilter"><option value="all">Tüm Türler</option><option value="Korku">Korku</option><option value="Aksiyon">Aksiyon</option><option value="Co-op">Co-op</option></select></div>
+      <div class="detail" id="detailBox"></div><div class="cards" id="gameList"></div><div class="empty" id="empty">Sonuç bulunamadı.</div>
     </section>
 
-    <section class="section" id="plan">
-      <h2>📝 v0.1.2 Eklenenler</h2>
-      <div class="card" style="cursor:default">
-        <p>🧩 Kategoriler tek açılır listeden çıkarıldı.</p>
-        <p>🟢 Devam Ediyor, ✅ Tamamlandı ve 🕒 Yakında sekmeleri eklendi.</p>
-        <p>🎬 Oyun detay ve bölüm listesi sistemi korundu.</p>
-        <p>🔍 Arama ve tür filtresi sekmelerle uyumlu çalışır hale getirildi.</p>
-        <p>🚀 Vercel build için <b>dist</b> çıktısı korundu.</p>
-        <p>🛡️ BAT dosyaları .git ve .bat korumalı bırakıldı.</p>
-      </div>
+    <section class="section" id="bolumler">
+      <h2>🎬 Bölüm Arşivi</h2>
+      <p class="note">v0.1.3 ile bölümler oyunlardan ayrı bir bölüm listesi olarak görünür.</p>
+      <div class="episodeGrid" id="episodeList"></div>
     </section>
 
-    <footer class="footer">Hayatımız Oyun • v0.1.2 • Kategori Sekmeleri</footer>
+    <section class="section" id="plan"><h2>📝 v0.1.3 Eklenenler</h2><div class="card" style="cursor:default"><p>🎬 Bölüm arşivi alanı eklendi.</p><p>📌 Her bölüm için oyun adı, seri adı ve durum etiketi gösterildi.</p><p>📊 Oyun detayında ilerleme çubuğu eklendi.</p><p>🟢 Devam Ediyor, ✅ Tamamlandı, 🕒 Yakında sekmeleri korundu.</p><p>🚀 Vercel <b>dist</b> build fix korundu.</p><p>🛡️ BAT dosyaları .git ve .bat korumalı kaldı.</p></div></section>
+    <footer class="footer">Hayatımız Oyun • v0.1.3 • Bölüm Listeleme</footer>
   </main>
-
   <script>
-    const games = [
-      {id:1,name:'Resident Evil 5', year:'2009', platform:'PC', type:['Aksiyon','Co-op'], status:'Devam Ediyor', series:'Resident Evil', icon:'🧟', tags:['TR Altyazı','Co-op'], desc:'Chris ve Sheva ile co-op aksiyon/korku serisi arşivi.', episodes:['1. Bölüm - Başlangıç','2. Bölüm - Tehlikeli Bölge','3. Bölüm - Takip','4. Bölüm - Mücadele']},
-      {id:2,name:'Dead Island 2', year:'2023', platform:'PC', type:['Aksiyon','Co-op'], status:'Tamamlandı', series:'Dead Island', icon:'🏝️', tags:['Co-op','Final'], desc:'Zombi istilasında geçen co-op aksiyon serisi.', episodes:['1. Bölüm','2. Bölüm','3. Bölüm','4. Bölüm','5. Bölüm','Final']},
-      {id:3,name:'Silent Hill Homecoming', year:'2008', platform:'PC', type:['Korku'], status:'Devam Ediyor', series:'Silent Hill', icon:'🌫️', tags:['TR Altyazı'], desc:'Karanlık atmosferli korku oyunu arşiv serisi.', episodes:['1. Bölüm','2. Bölüm']},
-      {id:4,name:'Assassin’s Creed Origins', year:'2017', platform:'PC', type:['Aksiyon'], status:'Yakında', series:'Assassin’s Creed', icon:'🦅', tags:['TR Altyazı'], desc:'Bayek’in hikâyesini konu alan planlı seri.', episodes:['1. Bölüm - Yakında']},
-      {id:5,name:'Icarus', year:'2021', platform:'PC', type:['Co-op'], status:'Devam Ediyor', series:'Icarus', icon:'🚀', tags:['Co-op'], desc:'Hayatta kalma ve keşif odaklı co-op seri.', episodes:['1. Bölüm','2. Bölüm','3. Bölüm','4. Bölüm']},
-      {id:6,name:'Resident Evil 0 HD Remaster', year:'2016', platform:'PC', type:['Korku'], status:'Devam Ediyor', series:'Resident Evil', icon:'🚂', tags:['TR Altyazı'], desc:'Resident Evil 0 HD Remaster bölüm arşivi.', episodes:['1. Bölüm','2. Bölüm','3. Bölüm','4. Bölüm - Training Facility']}
-    ];
-    const list = document.getElementById('gameList');
-    const search = document.getElementById('search');
-    let activeStatus = 'all';
-    const categoryTabs = document.getElementById('categoryTabs');
-    const typeFilter = document.getElementById('typeFilter');
-    const empty = document.getElementById('empty');
-    const detailBox = document.getElementById('detailBox');
+    const games=[{id:1,name:'Resident Evil 5',year:'2009',platform:'PC',type:['Aksiyon','Co-op'],status:'Devam Ediyor',series:'Resident Evil',icon:'🧟',tags:['TR Altyazı','Co-op'],episodes:['1. Bölüm - Başlangıç','2. Bölüm - Tehlikeli Bölge','3. Bölüm - Takip','4. Bölüm - Mücadele']},{id:2,name:'Dead Island 2',year:'2023',platform:'PC',type:['Aksiyon','Co-op'],status:'Tamamlandı',series:'Dead Island',icon:'🏝️',tags:['Co-op','Final'],episodes:['1. Bölüm','2. Bölüm','3. Bölüm','4. Bölüm','5. Bölüm','Final']},{id:3,name:'Silent Hill Homecoming',year:'2008',platform:'PC',type:['Korku'],status:'Devam Ediyor',series:'Silent Hill',icon:'🌫️',tags:['TR Altyazı'],episodes:['1. Bölüm','2. Bölüm']},{id:4,name:'Assassin’s Creed Origins',year:'2017',platform:'PC',type:['Aksiyon'],status:'Yakında',series:'Assassin’s Creed',icon:'🦅',tags:['TR Altyazı'],episodes:['1. Bölüm - Yakında']},{id:5,name:'Icarus',year:'2021',platform:'PC',type:['Co-op'],status:'Devam Ediyor',series:'Icarus',icon:'🚀',tags:['Co-op'],episodes:['1. Bölüm','2. Bölüm','3. Bölüm','4. Bölüm']},{id:6,name:'Resident Evil 0 HD Remaster',year:'2016',platform:'PC',type:['Korku'],status:'Devam Ediyor',series:'Resident Evil',icon:'🚂',tags:['TR Altyazı'],episodes:['1. Bölüm','2. Bölüm','3. Bölüm','4. Bölüm - Training Facility']}];
+    const list=document.getElementById('gameList'),search=document.getElementById('search'),categoryTabs=document.getElementById('categoryTabs'),typeFilter=document.getElementById('typeFilter'),empty=document.getElementById('empty'),detailBox=document.getElementById('detailBox'),episodeList=document.getElementById('episodeList');let activeStatus='all';
     function statusClass(s){return s==='Yakında'?'soon':s==='Tamamlandı'?'done':''}
-    function openDetail(id){
-      const g = games.find(x=>x.id===id);
-      detailBox.className='detail active';
-      detailBox.innerHTML = `<button class="close" onclick="closeDetail()">Kapat ✕</button><div class="detail-head"><div class="bigcover">${g.icon}</div><div><h3>${g.name}</h3><p class="muted">${g.desc}</p><div class="tags"><span class="tag status ${statusClass(g.status)}">${g.status}</span>${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></div><div class="detail-grid"><div class="info">📅 Çıkış Yılı<br><b>${g.year}</b></div><div class="info">📚 Seri<br><b>${g.series}</b></div><div class="info">💻 Platform<br><b>${g.platform}</b></div></div><div class="episodes"><h3 style="font-size:24px">🎬 Bölümler</h3>${g.episodes.map((e,i)=>`<div class="episode"><span>${e}</span><b>#${i+1}</b></div>`).join('')}</div>`;
-      detailBox.scrollIntoView({behavior:'smooth',block:'center'});
-    }
     function closeDetail(){detailBox.className='detail';detailBox.innerHTML=''}
-    function render(){
-      const q = search.value.toLowerCase().trim();
-      const st = activeStatus;
-      const ty = typeFilter.value;
-      const filtered = games.filter(g => (g.name.toLowerCase().includes(q) || g.series.toLowerCase().includes(q)) && (st==='all' || g.status===st) && (ty==='all' || g.type.includes(ty)));
-      list.innerHTML = filtered.map(g => `<article class="card" onclick="openDetail(${g.id})"><div class="cover">${g.icon}</div><h3>${g.name}</h3><div class="meta">📅 ${g.year}<br>📚 Seri: ${g.series}<br>🎬 Bölüm: ${g.episodes.length}<br>🎮 Tür: ${g.type.join(', ')}</div><div class="tags"><span class="tag status ${statusClass(g.status)}">${g.status}</span>${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></article>`).join('');
-      empty.style.display = filtered.length ? 'none':'block';
-    }
-    document.getElementById('totalGames').textContent = games.length;
-    document.getElementById('totalSeries').textContent = new Set(games.map(g=>g.series)).size;
-    document.getElementById('totalEpisodes').textContent = games.reduce((a,b)=>a+b.episodes.length,0);
-    categoryTabs.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{categoryTabs.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeStatus=btn.dataset.status;closeDetail();render();}));
-    [search,typeFilter].forEach(el=>el.addEventListener('input',render));
-    render();
+    function openDetail(id){const g=games.find(x=>x.id===id),pct=g.status==='Tamamlandı'?100:g.status==='Yakında'?10:65;detailBox.className='detail active';detailBox.innerHTML=`<button class="close" onclick="closeDetail()">Kapat ✕</button><h3>${g.icon} ${g.name}</h3><p class="muted">${g.series} • ${g.platform} • ${g.year}</p><div class="tags"><span class="tag status ${statusClass(g.status)}">${g.status}</span>${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><div class="progress"><div class="bar" style="width:${pct}%"></div></div><p class="muted">İlerleme: %${pct}</p>${g.episodes.map((e,i)=>`<div class="episodeCard"><div class="episodeTop"><b>🎬 ${e}</b><span class="episodeNo">#${i+1}</span></div></div>`).join('')}`;detailBox.scrollIntoView({behavior:'smooth',block:'center'})}
+    function render(){const q=search.value.toLowerCase().trim(),ty=typeFilter.value;const filtered=games.filter(g=>(g.name.toLowerCase().includes(q)||g.series.toLowerCase().includes(q))&&(activeStatus==='all'||g.status===activeStatus)&&(ty==='all'||g.type.includes(ty)));list.innerHTML=filtered.map(g=>`<article class="card" onclick="openDetail(${g.id})"><div class="cover">${g.icon}</div><h3>${g.name}</h3><div class="meta">📅 ${g.year}<br>📚 ${g.series}<br>🎬 ${g.episodes.length} Bölüm<br>🎮 ${g.type.join(', ')}</div><div class="tags"><span class="tag status ${statusClass(g.status)}">${g.status}</span>${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></article>`).join('');empty.style.display=filtered.length?'none':'block';renderEpisodes(filtered)}
+    function renderEpisodes(source=games){episodeList.innerHTML=source.flatMap(g=>g.episodes.map((e,i)=>`<article class="episodeCard"><div class="episodeTop"><b>${g.icon} ${e}</b><span class="episodeNo">#${i+1}</span></div><p class="muted">${g.name} • ${g.series}</p><div class="tags"><span class="tag status ${statusClass(g.status)}">${g.status}</span></div></article>`)).join('')}
+    document.getElementById('totalGames').textContent=games.length;document.getElementById('totalSeries').textContent=new Set(games.map(g=>g.series)).size;document.getElementById('totalEpisodes').textContent=games.reduce((a,b)=>a+b.episodes.length,0);
+    categoryTabs.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{categoryTabs.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeStatus=btn.dataset.status;closeDetail();render()}));[search,typeFilter].forEach(el=>el.addEventListener('input',render));render();
   </script>
 </body>
 </html>
