@@ -6,4 +6,4 @@ http.createServer((req, res) => {
   const file = path.join(__dirname, 'index.html');
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
   res.end(fs.readFileSync(file));
-}).listen(port, () => console.log('Hayatımız Oyun v0.1.8 çalışıyor: http://localhost:' + port));
+}).listen(port, () => console.log('Hayatımız Oyun v0.1.9 çalışıyor: http://localhost:' + port));

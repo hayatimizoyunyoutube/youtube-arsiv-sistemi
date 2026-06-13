@@ -6,7 +6,7 @@ REM Bu BAT dosyasi hangi klasordeyse o klasoru GitHub'a gonderir.
 
 cd /d "%~dp0"
 set "REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
-set "VERSION=v0.1.8"
+set "VERSION=v0.1.9"
 
 echo =========================================
 echo Hayatimiz Oyun - GitHub Otomatik Gonderme

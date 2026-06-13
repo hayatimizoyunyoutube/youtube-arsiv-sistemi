@@ -1,9 +1,10 @@
-# Supabase SQL Durumu - v0.1.8
+# 🗄️ Supabase SQL Durumu - v0.1.9
 
-🟡 Bu sürümde Supabase SQL zorunlu değildir.
+✅ Bu sürümde Supabase dosya hazırlığı korunmuştur.
+⚠️ Gerçek tablo kurulumuna henüz geçilmedi.
 
-✅ Site demo veriyle çalışır.
-✅ Vercel deploy için package.json + vercel.json + build.js hazırdır.
-✅ .env.example dosyası hazırdır ama doldurmak zorunlu değildir.
-
-🗄️ Gerçek Supabase tablo kurulumu v0.2.0 sürümünde başlayacak.
+## Ne zaman eklenecek?
+🚀 **v0.2.0** sürümünde:
+- `supabase/schema.sql` aktif tablo yapısına geçecek.
+- `.env.example` gerçek Vercel ENV anahtarlarını gösterecek.
+- Demo veriden çıkış başlayacak.
