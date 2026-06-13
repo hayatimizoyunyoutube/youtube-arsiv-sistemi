@@ -1,9 +1,14 @@
 # CHANGELOG
 
-## v0.1.3
-- 🎬 Bölüm arşivi eklendi.
-- 📌 Bölümler ayrı kartlarda listelenir hale getirildi.
-- 📊 Oyun detayına ilerleme çubuğu eklendi.
-- 🟢 Kategori sekmeleri korundu: Devam Ediyor, Tamamlandı, Yakında.
-- 🚀 Vercel outputDirectory dist ayarı korundu.
-- 🛡️ BAT dosyaları .git ve .bat korumalıdır.
+## v0.1.4
+- 🔝 Üst menü sistemi eklendi.
+- 📂 Kategoriler ayrı ekran mantığıyla açılıyor.
+- 🎨 Arayüz modernleştirildi.
+- 🎬 Bölüm arşivi geliştirildi.
+- 🛡️ BAT dosyaları korundu.
+- 🚀 Vercel outputDirectory `dist` ayarı korundu.
+
+## Sonraki Sürüm v0.1.5
+- 📚 Koleksiyon sistemi başlangıcı.
+- 🎮 Demo veriden çıkış hazırlığı.
+- 🧭 Menü geçişleri iyileştirme.
