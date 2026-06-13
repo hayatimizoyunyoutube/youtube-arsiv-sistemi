@@ -1,0 +1,13 @@
+{
+  "name": "hayatimiz-oyun-arsiv-sistemi",
+  "private": true,
+  "version": "0.1.5",
+  "description": "Hayatımız Oyun Arşiv Sistemi v0.1.5 Vercel fix",
+  "scripts": {
+    "build": "node build.js",
+    "vercel-build": "node build.js",
+    "start": "node server.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

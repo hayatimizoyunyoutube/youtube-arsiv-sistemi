@@ -12,3 +12,10 @@
 
 ## Sonraki Sürüm v0.1.6
 🔍 Gelişmiş arama ve filtreleme sistemi yapılacak.
+
+## v0.1.5 Vercel Fix
+✅ package.json eksik hatası düzeltildi  
+✅ Vercel build sistemi eklendi  
+✅ outputDirectory dist olarak sabitlendi  
+✅ Sürüm bilgileri v0.1.5 olarak güncellendi  
+✅ GitHub gönderme BAT dosyası güncellendi  
