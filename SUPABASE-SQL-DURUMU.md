@@ -1,8 +1,8 @@
-# Supabase SQL Durumu - v0.1.6
+# Supabase SQL Durumu - v0.1.7
 
-🟡 Bu sürümde SQL çalıştırmana gerek yok.
+✅ Şu an Supabase SQL zorunlu değil.
 
-Gerçek Supabase SQL başlangıcı: **v0.2.0**
-Vercel `.env.example` gerçek kullanım başlangıcı: **v0.2.0**
-
-Şu an site demo verilerle çalışıyor.
+📌 Plan:
+- v0.2.0 ile `schema.sql` eklenecek.
+- v0.2.0 ile `.env.example` gerçek Supabase değişkenleri için hazırlanacak.
+- v0.2.1 sonrası demo veriden gerçek veriye geçiş başlayacak.

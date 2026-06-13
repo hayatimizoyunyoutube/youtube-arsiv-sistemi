@@ -1,9 +1,12 @@
-# CHANGELOG
+# CHANGELOG - v0.1.7
 
-## v0.1.6
-- 🔍 Gelişmiş arama eklendi.
-- 🏷️ Tür, durum ve etiket filtreleri eklendi.
-- 📂 Kategori ekranları ayrı kalacak şekilde düzenlendi.
-- 📱 Mobil taşma iyileştirildi.
-- 🚀 Vercel sürüm yazıları v0.1.6 olarak güncellendi.
-- 🛡️ BAT dosyaları korundu.
+## ✨ Eklenenler
+- 🎨 Site arayüzü daha modern hale getirildi.
+- ✨ Oyun kartlarına parlama, gölge ve hover efekti eklendi.
+- 🔝 Üst menü görünümü iyileştirildi.
+- 📂 Devam Ediyor / Tamamlandı / Yakında kategori ekranları korundu.
+- 📱 Mobil görünümde kart boşlukları ve menü düzeni iyileştirildi.
+- 🚀 Vercel dist build yapısı korundu.
+
+## Sonraki Sürüm
+- v0.1.8: 📊 istatistik merkezi ve daha gelişmiş sayaçlar.

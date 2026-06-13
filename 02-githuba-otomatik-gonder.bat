@@ -6,7 +6,7 @@ REM Bu BAT dosyasi hangi klasordeyse o klasoru GitHub'a gonderir.
 
 cd /d "%~dp0"
 set "REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
-set "VERSION=v0.1.6"
+set "VERSION=v0.1.7"
 
 echo =========================================
 echo Hayatimiz Oyun - GitHub Otomatik Gonderme
@@ -46,7 +46,7 @@ echo Dosyalar ekleniyor...
 git add .
 
 echo Commit olusturuluyor...
-git commit -m "%VERSION% bat ve vercel fix" 
+git commit -m "%VERSION% gorsel arayuz guncellemesi" 
 if errorlevel 1 (
   echo Commit olusturulamadi veya yeni degisiklik yok. Devam ediliyor...
 )
