@@ -1,4 +1,4 @@
-# 🚀 Vercel Hatası Düzeltildi - v0.1.5
+# 🚀 Vercel Hatası Düzeltildi - v0.1.6
 
 ## Hata
 `ENOENT: no such file or directory, open '/vercel/path0/package.json'`
@@ -11,7 +11,7 @@ Vercel proje ana dizininde `package.json` bulamıyordu.
 ✅ `build.js` eklendi  
 ✅ `vercel.json` eklendi  
 ✅ `dist/index.html` otomatik üretilecek  
-✅ Build çıktısı v0.1.5 olarak güncellendi  
+✅ Build çıktısı v0.1.6 olarak güncellendi  
 
 ## Vercel Ayarları
 - Build Command: `npm run build`
@@ -19,5 +19,5 @@ Vercel proje ana dizininde `package.json` bulamıyordu.
 - Install Command: `npm install`
 
 ## Supabase / ENV Durumu
-v0.1.5 için Supabase SQL ve Vercel ENV zorunlu değil.  
+v0.1.6 için Supabase SQL ve Vercel ENV zorunlu değil.  
 v0.2.0 sürümünde gerçek Supabase geçişi başlayacak.

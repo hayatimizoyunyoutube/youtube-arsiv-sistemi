@@ -1,18 +1,15 @@
-# Hayatımız Oyun Site v0.1.5
+# Hayatımız Oyun Arşiv Sistemi v0.1.6
 
-📚 Koleksiyon sistemi başlangıcı eklendi.
-
-## Eklenenler
-- 📚 Koleksiyonlar sayfası
-- 🧩 Koleksiyon kartları
-- 🎮 Koleksiyon içi oyun listesi
-- 🔝 Üst menüde Koleksiyonlar butonu
-- 📂 Devam Ediyor / Tamamlandı / Yakında ayrı sayfaları korundu
-- 🚀 Vercel dist build fix korundu
+## 🚀 Eklenenler
+- 🔍 Gelişmiş arama sistemi
+- 🏷️ Tür / durum / etiket filtreleri
+- 📂 Ayrı kategori ekranları korundu
+- 📱 Mobil görünüm iyileştirildi
+- 🚀 Vercel `dist` build ayarı korundu
 
 ## Vercel
 Build Command: `npm run build`
 Output Directory: `dist`
 
 ## Supabase
-Bu sürüm hâlâ demo veridedir. SQL v0.2.0 sürümünde eklenecek.
+Bu sürüm hâlâ demo veri kullanır. Gerçek SQL + ENV başlangıcı v0.2.0 sürümünde aktif edilecek.

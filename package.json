@@ -1,8 +1,8 @@
 {
   "name": "hayatimiz-oyun-arsiv-sistemi",
   "private": true,
-  "version": "0.1.5",
-  "description": "Hayatımız Oyun Arşiv Sistemi v0.1.5 Vercel fix",
+  "version": "0.1.6",
+  "description": "Hayatımız Oyun Arşiv Sistemi v0.1.6 gelişmiş arama ve filtreler",
   "scripts": {
     "build": "node build.js",
     "vercel-build": "node build.js",
