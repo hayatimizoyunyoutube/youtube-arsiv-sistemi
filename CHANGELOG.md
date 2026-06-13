@@ -1,21 +1,12 @@
 # CHANGELOG
 
-## v0.1.0
+## 🚀 v0.1.1
 
-### ✅ Eklendi
-- 📚 Arşiv sistemi başlangıcı
-- 🔍 Oyun arama
-- 🏷️ Durum filtresi
-- 🎮 Tür filtresi
-- 📊 Toplam oyun / seri / bölüm sayacı
-- 🚀 Vercel `dist` çıktısı
-- 🛡️ BAT dosyası koruma sistemi
+✅ Oyun detay sayfası/alanı eklendi.
+✅ Kart tıklama sistemi eklendi.
+✅ Bölüm listesi eklendi.
+✅ Vercel dist çıktısı düzeltmesi korundu.
+✅ GitHub repo kullanıcı ekranından gizli tutuldu.
 
-### 🧰 Düzeltildi
-- GitHub repo bilgisi kullanıcı arayüzünde gösterilmedi.
-- Vercel outputDirectory hatası için dist klasörü otomatik oluşturuldu.
-
-### 🔜 v0.1.1 Planı
-- 📄 Oyun detay sayfası görünümü
-- 🎬 Bölüm listesi alanı
-- 🖼️ Kapak görsel alanı geliştirme
+## Sonraki Sürüm v0.1.2
+🔜 Bölüm sistemi geliştirilecek.

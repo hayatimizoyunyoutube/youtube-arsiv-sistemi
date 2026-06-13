@@ -1,14 +1,7 @@
-# Supabase SQL Durumu - v0.1.0
+# 🗄️ Supabase SQL Durumu - v0.1.1
 
-✅ Bu sürümde SQL çalıştırmak zorunlu değil.
+Şu an SQL çalıştırmak zorunlu değildir.
 
-## Durum
-- Arşiv sistemi şimdilik demo veri ile çalışıyor.
-- Supabase tabloları v0.8.x serisinde aktif hazırlanacak.
-- Vercel deploy için `.env` zorunlu değil.
-
-## İleride Eklenecek
-- games tablosu
-- episodes tablosu
-- collections tablosu
-- series tablosu
+✅ Site demo veriyle çalışır.
+✅ Vercel build için Supabase gerekmez.
+🔜 Supabase tabloları v0.8.x hazırlık döneminde eklenecek.
