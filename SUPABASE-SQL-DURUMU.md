@@ -1,10 +1,19 @@
-# 🗄️ Supabase SQL Durumu - v0.1.9
+# 🗄️ Supabase SQL Durumu - v0.2.0
 
-✅ Bu sürümde Supabase dosya hazırlığı korunmuştur.
-⚠️ Gerçek tablo kurulumuna henüz geçilmedi.
+✅ Bu sürümde SQL dosyası eklendi.
 
-## Ne zaman eklenecek?
-🚀 **v0.2.0** sürümünde:
-- `supabase/schema.sql` aktif tablo yapısına geçecek.
-- `.env.example` gerçek Vercel ENV anahtarlarını gösterecek.
-- Demo veriden çıkış başlayacak.
+Çalıştırılacak dosya:
+
+```text
+supabase/schema.sql
+```
+
+## Eklenen tablolar
+- 🎮 games
+- 🎬 episodes
+- 📚 collections
+- 🧩 series
+- ⚙️ site_settings
+
+## Not
+Bu sürümde bağlantı dosyaları hazırlandı. Gerçek veri çekme v0.2.2 sürümünde aktif edilecek.

@@ -1,15 +1,15 @@
-# CHANGELOG - Hayatımız Oyun Arşiv Sistemi
+# CHANGELOG
 
-## 🚀 v0.1.9 - Arşiv Sistemi Tamamlama
+## v0.2.0
+🗄️ Supabase `schema.sql` eklendi.
+🚀 Vercel `.env.example` eklendi.
+📦 `package.json`, `vercel.json`, `build.js` sürümü v0.2.0 yapıldı.
+🔝 Üst menü butonları düzenlendi.
+📂 Kategoriler ayrı sayfa olarak korundu.
+🎨 Arayüz geliştirildi.
+🛡️ BAT dosyaları güncellendi.
 
-### ✅ Eklenenler
-- 🧪 Test merkezi eklendi.
-- 🚀 Vercel `dist` build kontrolü korundu.
-- 📱 Mobil görünüm kontrolleri iyileştirildi.
-- 🔍 Arama ve filtre sistemi son kez test edildi.
-- 📚 Arşiv, bölüm ve koleksiyon yapısı v0.2.0 geçişine hazırlandı.
-- 🗄️ Supabase SQL geçiş notu güncellendi.
-- 🔐 Vercel `.env.example` hazırlığı korundu.
-
-### 🔜 Sonraki Sürüm
-- v0.2.0 ile Supabase SQL ve Vercel ENV gerçek bağlantı başlangıcı yapılacak.
+## Sonraki Sürüm v0.2.1
+🎮 Oyun ekleme paneli
+✏️ Oyun düzenleme başlangıcı
+🗑️ Oyun silme hazırlığı

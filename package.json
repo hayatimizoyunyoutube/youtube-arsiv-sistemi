@@ -1,8 +1,8 @@
 {
   "name": "hayatimiz-oyun-arsiv-sistemi",
   "private": true,
-  "version": "0.1.9",
-  "description": "Hayatımız Oyun Arşiv Sistemi v0.1.9 arşiv sistemi tamamlama ve test",
+  "version": "0.2.0",
+  "description": "Hayatımız Oyun Arşiv Sistemi v0.2.0 Supabase SQL ve Vercel ENV hazırlığı",
   "scripts": {
     "build": "node build.js",
     "vercel-build": "node build.js",

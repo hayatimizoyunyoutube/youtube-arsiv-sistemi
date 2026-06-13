@@ -1,39 +1,33 @@
 @echo off
-setlocal
-
-REM Hayatimiz Oyun - Site Temizleme
-REM .git klasoru ve .bat dosyalari silinmez.
-
+chcp 65001 >nul
+setlocal enabledelayedexpansion
 cd /d "%~dp0"
+title Hayatımız Oyun - Site Temizleme
 
-echo =========================================
-echo Hayatimiz Oyun - Site Temizleme
-echo Silinmeyecekler: .git klasoru ve .bat dosyalari
-echo Klasor: %CD%
-echo =========================================
 echo.
-
-set /p ONAY=Devam etmek icin EVET yaz: 
+echo ==========================================
+echo  SITE TEMIZLEME - .git ve .bat KORUNUR
+echo ==========================================
+echo Klasor: %cd%
+echo.
+set /p ONAY=Bu klasorde .git ve .bat haric her sey silinsin mi? (EVET yaz): 
 if /I not "%ONAY%"=="EVET" (
   echo Islem iptal edildi.
   pause
-  exit /b 0
+  exit /b
 )
-
 for /d %%D in (*) do (
   if /I not "%%D"==".git" (
-    echo Klasor siliniyor: %%D
-    rmdir /s /q "%%D"
+    echo Siliniyor klasor: %%D
+    rmdir /s /q "%%D" 2>nul
   )
 )
-
 for %%F in (*) do (
   if /I not "%%~xF"==".bat" (
-    echo Dosya siliniyor: %%F
-    del /f /q "%%F"
+    echo Siliniyor dosya: %%F
+    del /f /q "%%F" 2>nul
   )
 )
-
 echo.
-echo Temizleme tamamlandi. .git ve .bat dosyalari korundu.
+echo ✅ Temizleme tamamlandi. .git ve .bat dosyalari korundu.
 pause

@@ -1,26 +1,22 @@
-# 🎮 Hayatımız Oyun Arşiv Sistemi - v0.1.9
+# Hayatımız Oyun Arşiv Sistemi v0.2.0
 
-Bu paket Supabase öncesi son arşiv test sürümüdür.
+## 🚀 Bu Sürüm
+- 🗄️ Supabase SQL başlangıç dosyası eklendi.
+- 🚀 Vercel `.env.example` hazırlandı.
+- 🔝 Üst butonlar korundu ve düzenlendi.
+- 📂 Devam Ediyor / Tamamlandı / Yakında ayrı sayfa yapısı korundu.
+- 🎨 Arayüz iyileştirildi.
+- 📦 Vercel build için `dist` çıktısı korunur.
 
-## ✅ İçerik
-- 🏠 Ana sayfa
-- 🎮 Arşiv ekranı
-- 🟢 Devam Ediyor
-- ✅ Tamamlandı
-- 🕒 Yakında
-- 🎬 Bölüm arşivi
-- 📚 Koleksiyonlar
-- 🧪 Test merkezi
-
-## 🚀 Vercel
-Build Command:
+## 🧪 Komutlar
 ```bash
+npm install
 npm run build
-```
-Output Directory:
-```bash
-dist
+npm start
 ```
 
 ## 🗄️ Supabase
-Bu sürüm hâlâ demo veridir. Gerçek SQL ve ENV bağlantısı v0.2.0 sürümünde aktif edilecek.
+`supabase/schema.sql` dosyasını Supabase SQL Editor içinde çalıştır.
+
+## 🚀 Vercel
+Environment Variables için `.env.example` dosyasındaki değerleri kullan.

@@ -1,67 +1,77 @@
 @echo off
-setlocal
-
-REM Hayatimiz Oyun - GitHub Otomatik Gonderme
-REM Bu BAT dosyasi hangi klasordeyse o klasoru GitHub'a gonderir.
-
+setlocal EnableExtensions
+chcp 65001 >nul
 cd /d "%~dp0"
-set "REPO_URL=https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git"
-set "VERSION=v0.1.9"
+title Hayatimiz Oyun - GitHub Otomatik Gonderme
 
-echo =========================================
+echo ========================================
 echo Hayatimiz Oyun - GitHub Otomatik Gonderme
-echo Surum: %VERSION%
-echo Klasor: %CD%
-echo =========================================
+echo ========================================
+echo.
+echo Proje klasoru: %CD%
 echo.
 
 where git >nul 2>nul
 if errorlevel 1 (
   echo HATA: Git bilgisayarda bulunamadi.
-  echo Once Git kurman gerekiyor:
-  echo https://git-scm.com/download/win
+  echo Git kur: https://git-scm.com/download/win
+  echo Kurulumdan sonra CMD/Terminali kapatip yeniden ac.
   echo.
   pause
   exit /b 1
 )
 
-if not exist "package.json" (
-  echo HATA: Bu klasorde package.json yok.
-  echo ZIP icindeki dosyalari proje klasorune cikartip bu BAT dosyasini oradan calistir.
+if not exist "index.html" (
+  echo HATA: Bu BAT dosyasi proje ana klasorunde degil.
+  echo BAT dosyasini index.html, package.json, vercel.json ile ayni klasore koy.
   echo.
   pause
   exit /b 1
 )
 
 if not exist ".git" (
-  echo Git baslatiliyor...
+  echo Git reposu yok, baslatiliyor...
   git init
 )
 
 git branch -M main
+
 git remote remove origin >nul 2>nul
-git remote add origin "%REPO_URL%"
+git remote add origin https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi.git
 
+echo.
+echo Git durumu kontrol ediliyor...
+git status --short
+
+echo.
 echo Dosyalar ekleniyor...
-git add .
+git add -A
 
+echo.
 echo Commit olusturuluyor...
-git commit -m "%VERSION% gorsel arayuz guncellemesi" 
+git commit -m "site guncelleme" >nul 2>nul
 if errorlevel 1 (
-  echo Commit olusturulamadi veya yeni degisiklik yok. Devam ediliyor...
+  echo Commit atlandi veya degisiklik yok.
+) else (
+  echo Commit olusturuldu.
 )
 
+echo.
 echo GitHub'a gonderiliyor...
 git push -u origin main
 if errorlevel 1 (
   echo.
-  echo HATA: GitHub gonderme basarisiz oldu.
-  echo GitHub girisi veya repo yetkisini kontrol et.
+  echo HATA: GitHub push basarisiz.
+  echo Sebep genelde GitHub girisi/token veya internet baglantisi olur.
+  echo GitHub Desktop ile giris yap veya Git Credential Manager penceresini onayla.
   echo.
   pause
   exit /b 1
 )
 
 echo.
-echo GitHub gonderme tamamlandi: %VERSION%
+echo BASARILI: Dosyalar GitHub'a gonderildi.
+echo Repo: https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi
+echo.
 pause
+exit /b 0
