@@ -1,16 +1,12 @@
-# Hayatımız Oyun Site v0.1.1
+# Hayatımız Oyun Site v0.1.2
 
-## ✅ Eklenenler
-- 🧾 Oyun detay alanı
-- 🎬 Bölüm listesi
-- 📚 Seri/platform/çıkış yılı bilgisi
-- 🔍 Arama ve filtre korundu
-- 🚀 Vercel dist build fix korundu
+Bu sürümde kategori sistemi düzeltildi. Durum filtresi açılır menüden çıkarıldı ve ayrı sekmeler halinde gösterildi.
+
+## Kategoriler
+- 🟢 Devam Ediyor
+- ✅ Tamamlandı
+- 🕒 Yakında
 
 ## Vercel
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Install Command: `npm install`
-
-## Supabase
-Bu sürümde zorunlu değil.
+Build Command: `npm run build`
+Output Directory: `dist`

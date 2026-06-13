@@ -1,7 +1,8 @@
-# 🗄️ Supabase SQL Durumu - v0.1.1
+# Supabase SQL Durumu - v0.1.2
 
-Şu an SQL çalıştırmak zorunlu değildir.
+Şu an zorunlu SQL gerekmiyor. Site demo verilerle çalışır.
 
-✅ Site demo veriyle çalışır.
-✅ Vercel build için Supabase gerekmez.
-🔜 Supabase tabloları v0.8.x hazırlık döneminde eklenecek.
+İleride durum alanı için kullanılacak değerler:
+- Devam Ediyor
+- Tamamlandı
+- Yakında

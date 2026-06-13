@@ -1,10 +1,11 @@
-# 🗺️ Güncelleme Planları
-
-## v0.1.1
-✅ Oyun detay alanı
-✅ Bölüm listesi
-✅ Detay kartı
+# Güncelleme Planları
 
 ## v0.1.2
-🔜 Bölüm sistemi geliştirilecek
-🔜 Bölüm detayları eklenecek
+- 🧩 Kategoriler ayrı sekme yapısına alındı.
+- 🟢 Devam Ediyor
+- ✅ Tamamlandı
+- 🕒 Yakında
+
+## Sonraki v0.1.3
+- 📚 Kart listeleme düzeni geliştirilecek.
+- 🔍 Arama sonuçları daha net gösterilecek.

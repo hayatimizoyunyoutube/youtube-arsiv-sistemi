@@ -25,7 +25,7 @@ git remote add origin https://github.com/hayatimizoyunyoutube/youtube-arsiv-sist
 
 git branch -M main
 git add .
-git commit -m "v0.1.1 oyun detay sayfasi" || echo Commit atlanmis olabilir.
+git commit -m "v0.1.2 kategori sekmeleri" || echo Commit atlanmis olabilir.
 git push -u origin main
 
 echo.

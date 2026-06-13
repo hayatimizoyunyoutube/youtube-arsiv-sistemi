@@ -1,12 +1,9 @@
-# CHANGELOG
+# CHANGELOG - v0.1.2
 
-## 🚀 v0.1.1
-
-✅ Oyun detay sayfası/alanı eklendi.
-✅ Kart tıklama sistemi eklendi.
-✅ Bölüm listesi eklendi.
-✅ Vercel dist çıktısı düzeltmesi korundu.
-✅ GitHub repo kullanıcı ekranından gizli tutuldu.
-
-## Sonraki Sürüm v0.1.2
-🔜 Bölüm sistemi geliştirilecek.
+## Eklenenler
+- 🧩 Durum kategorileri artık tek açılır listede değil, ayrı sekmelerde açılıyor.
+- 🟢 Devam Ediyor sekmesi eklendi.
+- ✅ Tamamlandı sekmesi eklendi.
+- 🕒 Yakında sekmesi eklendi.
+- 🔍 Arama ve tür filtresi sekmelerle birlikte çalışıyor.
+- 🚀 Vercel dist build fix korundu.
