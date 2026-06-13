@@ -1,24 +1,12 @@
-# Hayatımız Oyun Arşiv Sistemi - v0.1.7
+# Hayatımız Oyun Arşiv Sistemi - v0.1.8
 
-Bu sürüm görsel arayüz güncellemesidir.
+## 📊 Bu sürümde eklenenler
+- 📊 İstatistik merkezi eklendi.
+- 🎮 Oyun / seri / bölüm sayaçları geliştirildi.
+- 🟢 Devam Ediyor, ✅ Tamamlandı, 🕒 Yakında dağılımı eklendi.
+- 📚 Koleksiyon sayacı eklendi.
+- 🔝 Üst menüye İstatistikler butonu eklendi.
+- 🚀 Vercel build ayarları ve sürüm çıktıları v0.1.8 olarak güncellendi.
 
-## Eklenenler
-- 🎨 Daha modern ana sayfa
-- ✨ Geliştirilmiş oyun kartları
-- 🔝 Düzenlenmiş üst menü
-- 📂 Ayrı kategori ekranları korunur
-- 📱 Mobil arayüz iyileştirmesi
-
-## Vercel
-Build Command:
-```bash
-npm run build
-```
-
-Output Directory:
-```bash
-dist
-```
-
-## Supabase
-Bu sürümde SQL zorunlu değildir. Supabase SQL ve Vercel ENV dosyaları v0.2.0 ile aktif kullanılacak.
+## 🗄️ Supabase / ENV
+Bu sürüm hâlâ demo veriyle çalışır. Supabase SQL ve Vercel ENV gerçek kullanım başlangıcı v0.2.0 sürümünde yapılacak.

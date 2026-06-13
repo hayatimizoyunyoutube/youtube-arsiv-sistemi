@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'v0.1.6';
+const VERSION = 'v0.1.8';
 const root = __dirname;
 const dist = path.join(root, 'dist');
 fs.rmSync(dist, { recursive: true, force: true });

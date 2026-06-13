@@ -1,8 +1,9 @@
-# Supabase SQL Durumu - v0.1.7
+# Supabase SQL Durumu - v0.1.8
 
-✅ Şu an Supabase SQL zorunlu değil.
+🟡 Bu sürümde Supabase SQL zorunlu değildir.
 
-📌 Plan:
-- v0.2.0 ile `schema.sql` eklenecek.
-- v0.2.0 ile `.env.example` gerçek Supabase değişkenleri için hazırlanacak.
-- v0.2.1 sonrası demo veriden gerçek veriye geçiş başlayacak.
+✅ Site demo veriyle çalışır.
+✅ Vercel deploy için package.json + vercel.json + build.js hazırdır.
+✅ .env.example dosyası hazırdır ama doldurmak zorunlu değildir.
+
+🗄️ Gerçek Supabase tablo kurulumu v0.2.0 sürümünde başlayacak.

@@ -1,23 +1,11 @@
-# 🚀 Vercel Hatası Düzeltildi - v0.1.6
+# 🚀 Vercel Notu - v0.1.8
 
-## Hata
-`ENOENT: no such file or directory, open '/vercel/path0/package.json'`
+✅ package.json mevcut.
+✅ build.js dist klasörünü otomatik oluşturur.
+✅ vercel.json outputDirectory olarak dist kullanır.
+✅ Build çıktısı v0.1.8 olarak görünür.
 
-## Sebep
-Vercel proje ana dizininde `package.json` bulamıyordu.
-
-## Düzeltme
-✅ `package.json` eklendi  
-✅ `build.js` eklendi  
-✅ `vercel.json` eklendi  
-✅ `dist/index.html` otomatik üretilecek  
-✅ Build çıktısı v0.1.6 olarak güncellendi  
-
-## Vercel Ayarları
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Install Command: `npm install`
-
-## Supabase / ENV Durumu
-v0.1.6 için Supabase SQL ve Vercel ENV zorunlu değil.  
-v0.2.0 sürümünde gerçek Supabase geçişi başlayacak.
+Vercel ayarı:
+- Build Command: npm run build
+- Output Directory: dist
+- Install Command: npm install

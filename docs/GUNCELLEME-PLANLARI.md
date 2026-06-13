@@ -1,11 +1,12 @@
-# Güncelleme Planı
+# Güncelleme Planları
 
-## Sonraki v0.1.6
-🔍 Gelişmiş arama
-🏷️ Etiket filtreleri
-📱 Mobil filtre düzeni
+## Sonraki v0.1.9
+🧪 Arşiv sistemi testleri
+⚡ Performans kontrolü
+📱 Mobil testler
+🚀 Vercel son kontrol
 
 ## v0.2.0
-🗄️ Supabase SQL
-🔐 Vercel .env
-🎮 Demo veriden çıkış başlangıcı
+🗄️ Supabase SQL başlangıcı
+🔐 Vercel .env kullanımı
+🎮 Demo veriden gerçek veriye geçiş başlangıcı
