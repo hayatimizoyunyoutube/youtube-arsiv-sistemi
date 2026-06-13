@@ -1,14 +1,14 @@
 # CHANGELOG
 
-## v0.1.4
-- 🔝 Üst menü sistemi eklendi.
-- 📂 Kategoriler ayrı ekran mantığıyla açılıyor.
-- 🎨 Arayüz modernleştirildi.
-- 🎬 Bölüm arşivi geliştirildi.
-- 🛡️ BAT dosyaları korundu.
-- 🚀 Vercel outputDirectory `dist` ayarı korundu.
+## v0.1.5
 
-## Sonraki Sürüm v0.1.5
-- 📚 Koleksiyon sistemi başlangıcı.
-- 🎮 Demo veriden çıkış hazırlığı.
-- 🧭 Menü geçişleri iyileştirme.
+✅ 📚 Koleksiyon sistemi başlangıcı eklendi  
+✅ 🧩 Koleksiyon kartları hazırlandı  
+✅ 🎮 Koleksiyon detay alanı eklendi  
+✅ 🔝 Üst menüye Koleksiyonlar butonu eklendi  
+✅ 📂 Ayrı kategori sayfaları korundu  
+✅ 🎨 Arayüz düzeni iyileştirildi  
+✅ 🚀 Vercel dist build fix korundu  
+
+## Sonraki Sürüm v0.1.6
+🔍 Gelişmiş arama ve filtreleme sistemi yapılacak.

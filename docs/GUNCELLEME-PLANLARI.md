@@ -1,10 +1,11 @@
-# Güncelleme Planları
+# Güncelleme Planı
 
-## v0.1.3 ✅
-🎬 Bölüm arşivi eklendi.
+## Sonraki v0.1.6
+🔍 Gelişmiş arama
+🏷️ Etiket filtreleri
+📱 Mobil filtre düzeni
 
-## v0.1.4 🔜
-📚 Seri detay sayfaları geliştirilecek.
-
-## v0.1.5 🔜
-🗂️ Koleksiyon sistemi başlayacak.
+## v0.2.0
+🗄️ Supabase SQL
+🔐 Vercel .env
+🎮 Demo veriden çıkış başlangıcı
