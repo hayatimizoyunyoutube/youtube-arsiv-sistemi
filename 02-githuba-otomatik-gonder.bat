@@ -5,7 +5,7 @@ title Hayatimiz Oyun - GitHub Otomatik Gonderme
 
 echo ========================================
 echo Hayatimiz Oyun - GitHub Otomatik Gonderme
-echo Surum: v0.2.2
+echo Surum: v0.2.3
 echo Repo: https://github.com/hayatimizoyunyoutube/youtube-arsiv-sistemi
 echo ========================================
 echo.
@@ -28,7 +28,7 @@ git remote add origin https://github.com/hayatimizoyunyoutube/youtube-arsiv-sist
 
 git branch -M main
 git add -A
-git commit -m "v0.2.2 supabase kapak sistemi"
+git commit -m "v0.2.3 supabase kapak sistemi"
 if errorlevel 1 (
   echo Commit atlandi veya degisiklik yok.
 )

@@ -1,5 +1,6 @@
--- Hayatımız Oyun v0.2.2 Supabase Schema
+-- Hayatımız Oyun v0.2.3 Supabase Schema
 -- Eski public tabloları siler ve temiz kurulum yapar.
+-- v0.2.3: Seri bağlama + bölüm bağlama hazırlığı
 
 do $$ 
 declare
@@ -12,8 +13,17 @@ end $$;
 
 create extension if not exists "pgcrypto";
 
+create table series (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  slug text unique not null,
+  description text,
+  created_at timestamptz default now()
+);
+
 create table games (
   id uuid primary key default gen_random_uuid(),
+  series_id uuid references series(id) on delete set null,
   title text not null,
   slug text unique not null,
   status text default 'Yakında',
@@ -32,13 +42,7 @@ create table episodes (
   title text not null,
   youtube_url text,
   episode_number int,
-  created_at timestamptz default now()
-);
-
-create table series (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  slug text unique not null,
+  season_number int default 1,
   created_at timestamptz default now()
 );
 
@@ -56,4 +60,4 @@ create table site_settings (
   updated_at timestamptz default now()
 );
 
-insert into site_settings(key,value) values ('site_version','v0.2.2');
+insert into site_settings(key,value) values ('site_version','v0.2.3');

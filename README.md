@@ -1,24 +1,17 @@
-# 🎮 Hayatımız Oyun Arşiv Sistemi - v0.2.2
+# Hayatımız Oyun - Site v0.2.3
 
-Bu sürüm Supabase gerçek veri geçişi için hazırlık sürümüdür.
+Bu sürümde seri bağlama ve bölüm bağlama sistemi geliştirildi.
 
-## ✅ Bu Sürümde Ne Var?
-- 🖼️ Kapak URL alanı
-- 🎮 Oyun ekleme / düzenleme / silme
-- 📂 Ayrı kategori sayfaları
-- 🔝 Üst menü sistemi
-- 🗄️ Supabase ENV dosyası
-- 🚀 Vercel build fix
+## 🚀 Eklenenler
+- 📚 Seri Bağlama Merkezi
+- 🎬 Bölüm bağlama hazırlığı
+- 🔗 Oyun-seri ilişkisi
+- 🗄️ Güncel Supabase schema.sql
+- 🚀 Vercel version fix
 
-## 🚀 Vercel Ayarı
-Build Command:
-```bash
-npm run build
-```
-Output Directory:
-```bash
-dist
-```
-
-## 🗄️ ENV
-Vercel > Settings > Environment Variables içine `.env.example` dosyasındaki değerleri ekle.
+## Kurulum
+1. Dosyaları proje klasörüne çıkar.
+2. `npm install`
+3. `npm run build`
+4. GitHub BAT dosyasıyla gönder.
+5. Vercel otomatik deploy eder.
