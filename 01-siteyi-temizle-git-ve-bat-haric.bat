@@ -5,11 +5,15 @@ title Hayatimiz Oyun - Guvenli Temizleme
 
 echo ========================================
 echo Hayatimiz Oyun - Guvenli Temizleme
-echo Korunanlar: .git klasoru ve .bat dosyalari
+echo Silinmeyecekler: .git klasoru ve .bat dosyalari
 echo ========================================
 echo.
-set /p ONAY=Bu klasor temizlenecek. Devam etmek icin EVET yaz: 
-if /I not "%ONAY%"=="EVET" (
+
+echo Bu klasor temizlenecek:
+echo %CD%
+echo.
+choice /C EH /N /M "Devam etmek icin E, iptal icin H bas: "
+if errorlevel 2 (
   echo Islem iptal edildi.
   pause
   exit /b 0

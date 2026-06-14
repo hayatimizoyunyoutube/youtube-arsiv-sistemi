@@ -1,4 +1,4 @@
--- Hayatımız Oyun v0.2.1 Supabase Schema
+-- Hayatımız Oyun v0.2.2 Supabase Schema
 -- Eski public tabloları siler ve temiz kurulum yapar.
 
 do $$ 
@@ -56,4 +56,4 @@ create table site_settings (
   updated_at timestamptz default now()
 );
 
-insert into site_settings(key,value) values ('site_version','v0.2.1');
+insert into site_settings(key,value) values ('site_version','v0.2.2');
