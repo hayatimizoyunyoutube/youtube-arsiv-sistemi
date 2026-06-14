@@ -1,15 +1,16 @@
-# CHANGELOG
+# 📝 CHANGELOG - v0.2.1
 
-## v0.2.0
-🗄️ Supabase `schema.sql` eklendi.
-🚀 Vercel `.env.example` eklendi.
-📦 `package.json`, `vercel.json`, `build.js` sürümü v0.2.0 yapıldı.
-🔝 Üst menü butonları düzenlendi.
-📂 Kategoriler ayrı sayfa olarak korundu.
-🎨 Arayüz geliştirildi.
-🛡️ BAT dosyaları güncellendi.
+## 🎉 Yeni
+- 🎮 Oyun ekleme sistemi başladı.
+- ✏️ Düzenleme sistemi eklendi.
+- 🗑️ Silme sistemi eklendi.
+- 💾 LocalStorage geçici kayıt eklendi.
+- 🛠️ Yönetim paneli eklendi.
 
-## Sonraki Sürüm v0.2.1
-🎮 Oyun ekleme paneli
-✏️ Oyun düzenleme başlangıcı
-🗑️ Oyun silme hazırlığı
+## 🔧 Düzeltmeler
+- 🚀 Vercel `dist` build sistemi korundu.
+- 📦 `package.json`, `build.js`, `vercel.json` v0.2.1 olarak güncellendi.
+- 🛡️ BAT dosyaları sade ve güvenli tutuldu.
+
+## Sonraki Sürüm
+- v0.2.2: Supabase'den oyun çekme ve kayıt bağlantısı.

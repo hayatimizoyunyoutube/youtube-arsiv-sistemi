@@ -1,19 +1,11 @@
-# 🗄️ Supabase SQL Durumu - v0.2.0
+# 🗄️ Supabase SQL Durumu - v0.2.1
 
-✅ Bu sürümde SQL dosyası eklendi.
+✅ `supabase/schema.sql` güncellendi.
+✅ Tüm public tabloları silip yeniden kuran temiz kurulum SQL'i var.
+✅ Site sürümü `site_settings` içine `v0.2.1` olarak yazılır.
 
-Çalıştırılacak dosya:
+## Şu an zorunlu mu?
+Evet, gerçek veriye geçiş hazırlığı için Supabase SQL'i artık çalıştırabilirsin.
 
-```text
-supabase/schema.sql
-```
-
-## Eklenen tablolar
-- 🎮 games
-- 🎬 episodes
-- 📚 collections
-- 🧩 series
-- ⚙️ site_settings
-
-## Not
-Bu sürümde bağlantı dosyaları hazırlandı. Gerçek veri çekme v0.2.2 sürümünde aktif edilecek.
+## Vercel ENV zorunlu mu?
+v0.2.1'de zorunlu değil. v0.2.2'de Supabase bağlantısı başlayınca zorunlu olacak.
