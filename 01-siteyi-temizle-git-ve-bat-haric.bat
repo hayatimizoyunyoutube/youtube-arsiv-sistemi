@@ -1,35 +1,42 @@
 @echo off
-setlocal EnableExtensions
+setlocal EnableExtensions DisableDelayedExpansion
+chcp 65001 >nul
+title Hayatimiz Oyun - Site Temizle
 cd /d "%~dp0"
-title Hayatimiz Oyun - Guvenli Temizleme
 
-echo ========================================
-echo Hayatimiz Oyun - Guvenli Temizleme
-echo Silinmeyecekler: .git klasoru ve .bat dosyalari
-echo ========================================
+echo ==========================================
+echo Hayatimiz Oyun - Guvenli Site Temizleme
+echo ==========================================
 echo.
-
 echo Bu klasor temizlenecek:
 echo %CD%
 echo.
-choice /C EH /N /M "Devam etmek icin E, iptal icin H bas: "
-if errorlevel 2 (
+echo Korunacaklar:
+echo - .git klasoru
+echo - .bat dosyalari
+echo.
+set /p ONAY=Devam etmek icin EVET yaz: 
+if /I not "%ONAY%"=="EVET" (
   echo Islem iptal edildi.
   pause
   exit /b 0
 )
 
+echo.
+echo Klasorler siliniyor...
 for /d %%D in (*) do (
   if /I not "%%~nxD"==".git" (
-    echo Klasor siliniyor: %%D
-    rmdir /s /q "%%D"
+    echo Siliniyor: %%D
+    rmdir /s /q "%%D" 2>nul
   )
 )
 
+echo.
+echo Dosyalar siliniyor...
 for %%F in (*) do (
   if /I not "%%~xF"==".bat" (
-    echo Dosya siliniyor: %%F
-    del /f /q "%%F"
+    echo Siliniyor: %%F
+    del /f /q "%%F" 2>nul
   )
 )
 

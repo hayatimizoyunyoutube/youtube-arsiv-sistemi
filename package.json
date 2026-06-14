@@ -1,10 +1,1 @@
-{
-  "name": "hayatimiz-oyun-arsiv-sistemi",
-  "version": "0.2.3",
-  "private": true,
-  "scripts": {
-    "build": "node build.js && echo v0.2.3 build basarili"
-  },
-  "dependencies": {},
-  "devDependencies": {}
-}
+{"scripts":{"build":"node build.js"},"dependencies":{},"devDependencies":{},"version":"0.2.4"}

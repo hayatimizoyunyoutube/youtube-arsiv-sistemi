@@ -1,7 +1,1 @@
-const fs = require('fs');
-const path = require('path');
-const dist = path.join(__dirname, 'dist');
-fs.rmSync(dist, { recursive: true, force: true });
-fs.mkdirSync(dist, { recursive: true });
-fs.copyFileSync(path.join(__dirname, 'index.html'), path.join(dist, 'index.html'));
-console.log('Hayatimiz Oyun v0.2.3 dist hazir');
+const fs=require('fs');const path=require('path');const dist=path.join(__dirname,'dist');if(!fs.existsSync(dist))fs.mkdirSync(dist,{recursive:true});fs.copyFileSync(path.join(__dirname,'index.html'),path.join(dist,'index.html'));console.log('✅ Hayatımız Oyun v0.2.4 build başarılı - dist hazır');

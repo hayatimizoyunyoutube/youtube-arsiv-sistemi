@@ -1,12 +1,12 @@
-# 🗄️ Supabase SQL Durumu - v0.2.3
+# 🗄️ Supabase SQL Durumu - v0.2.4
 
-✅ Bu sürümde `supabase/schema.sql` güncellendi.
+SQL dosyası pakette hazırdır: `supabase/schema.sql`
 
-## Ne değişti?
-- 📚 `series` tablosu güçlendirildi.
-- 🎮 `games` tablosuna `series_id` bağlantısı eklendi.
-- 🎬 `episodes` tablosuna `season_number` hazırlığı eklendi.
-- ⚠️ SQL çalıştırınca public içindeki tablolar silinir ve yeniden kurulur.
+## Bu sürümde
+- ✅ Games tablosu korunur
+- ✅ Episodes tablosu korunur
+- ✅ Series / collections ilişkileri hazırlanır
+- ✅ Filtre alanları için `genres`, `tags`, `status` kullanılır
 
-## Çalıştırma
-Supabase → SQL Editor → `supabase/schema.sql` içeriğini çalıştır.
+## Not
+Bu sürümde site hâlâ ön yüz ağırlıklı çalışır. Gerçek Supabase veri çekme v0.3.0 tarafında güçlendirilecek.

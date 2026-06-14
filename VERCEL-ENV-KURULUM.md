@@ -1,12 +1,11 @@
-# 🚀 Vercel ENV - v0.2.3
+# 🚀 Vercel ENV Kurulum - v0.2.4
 
-Vercel > Project Settings > Environment Variables içine ileride şunlar eklenecek:
+Vercel > Project Settings > Environment Variables alanına ileride şunlar eklenecek:
 
 ```env
-NEXT_PUBLIC_SITE_VERSION=v0.2.3
-NEXT_PUBLIC_SITE_TITLE=Hayatımız Oyun Arşiv Sistemi
-NEXT_PUBLIC_SUPABASE_URL=BURAYA_SUPABASE_PROJECT_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=BURAYA_SUPABASE_ANON_KEY
+VITE_SUPABASE_URL=BURAYA_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY=BURAYA_SUPABASE_ANON_KEY
+VITE_SITE_VERSION=v0.2.4
 ```
 
-📌 v0.2.3'de site localStorage ile çalışır. v0.2.3'de Supabase bağlantısı aktif olacak.
+Bu sürümde build için zorunlu değildir ama dosya hazır tutulur.

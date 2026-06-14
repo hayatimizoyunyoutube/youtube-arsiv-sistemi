@@ -1,12 +1,16 @@
-# CHANGELOG - v0.2.3
+# CHANGELOG - v0.2.4
 
 ## ✅ Eklenenler
-- 📚 Seri bağlama merkezi eklendi.
-- 🎬 Bölüm bağlama sistemi geliştirildi.
-- 🔗 Oyunlar seri adına göre otomatik gruplanıyor.
-- 🛠️ Yönetim panelindeki seri ve bölüm alanları korundu.
-- 🗄️ Supabase `schema.sql` içine `series_id` bağlantısı eklendi.
-- 🚀 Vercel sürüm bilgisi v0.2.3 olarak güncellendi.
+- 🔎 Gelişmiş filtreleme alanı eklendi.
+- 📂 Devam Ediyor / Tamamlandı / Yakında ayrı ekran olarak korundu.
+- 🏷️ Tür, etiket ve sıralama filtreleri güçlendirildi.
+- 🎨 Site arayüzü daha modern hale getirildi.
+- 🚀 Vercel build sürüm yazısı v0.2.4 olarak güncellendi.
+- 🗄️ Supabase schema notları güncellendi.
 
-## Sonraki Sürüm
-- v0.2.4: 🔎 gelişmiş filtreleme + çoklu kategori sistemi.
+## 🔜 Sonraki Sürümler
+- v0.2.5: Toplu oyun ekleme.
+- v0.2.6: İstatistik geliştirme.
+- v0.2.7: Yönetici araçları.
+- v0.2.8: Performans.
+- v0.2.9: Oyun yönetimi tamamlama.

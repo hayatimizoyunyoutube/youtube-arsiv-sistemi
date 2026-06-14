@@ -1,4 +1,4 @@
-# 🛡️ BAT Notu - v0.2.3
+# 🛡️ BAT Notu - v0.2.4
 
 BAT dosyaları sadeleştirildi. Türkçe karakter komut satırında bozulmasın diye komut metinleri ASCII tutuldu.
 

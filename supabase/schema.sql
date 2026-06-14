@@ -1,19 +1,7 @@
--- Hayatımız Oyun v0.2.3 Supabase Schema
--- Eski public tabloları siler ve temiz kurulum yapar.
--- v0.2.3: Seri bağlama + bölüm bağlama hazırlığı
-
-do $$ 
-declare
-  r record;
-begin
-  for r in (select tablename from pg_tables where schemaname = 'public') loop
-    execute 'drop table if exists public.' || quote_ident(r.tablename) || ' cascade';
-  end loop;
-end $$;
-
+-- Hayatımız Oyun v0.2.4 Supabase Schema
 create extension if not exists "pgcrypto";
 
-create table series (
+create table if not exists series (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   slug text unique not null,
@@ -21,12 +9,22 @@ create table series (
   created_at timestamptz default now()
 );
 
-create table games (
+create table if not exists collections (
   id uuid primary key default gen_random_uuid(),
-  series_id uuid references series(id) on delete set null,
   title text not null,
   slug text unique not null,
-  status text default 'Yakında',
+  description text,
+  cover_url text,
+  created_at timestamptz default now()
+);
+
+create table if not exists games (
+  id uuid primary key default gen_random_uuid(),
+  series_id uuid references series(id) on delete set null,
+  collection_id uuid references collections(id) on delete set null,
+  title text not null,
+  slug text unique not null,
+  status text not null default 'planned',
   cover_url text,
   release_date date,
   genres text[] default '{}',
@@ -36,7 +34,7 @@ create table games (
   created_at timestamptz default now()
 );
 
-create table episodes (
+create table if not exists episodes (
   id uuid primary key default gen_random_uuid(),
   game_id uuid references games(id) on delete cascade,
   title text not null,
@@ -46,18 +44,12 @@ create table episodes (
   created_at timestamptz default now()
 );
 
-create table collections (
+create table if not exists tags (
   id uuid primary key default gen_random_uuid(),
-  title text not null,
-  slug text unique not null,
-  description text,
+  name text unique not null,
   created_at timestamptz default now()
 );
 
-create table site_settings (
-  key text primary key,
-  value text,
-  updated_at timestamptz default now()
-);
-
-insert into site_settings(key,value) values ('site_version','v0.2.3');
+create index if not exists idx_games_status on games(status);
+create index if not exists idx_games_title on games(title);
+create index if not exists idx_episodes_game_id on episodes(game_id);
