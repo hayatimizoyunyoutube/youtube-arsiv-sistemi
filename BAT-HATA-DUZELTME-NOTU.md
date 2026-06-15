@@ -1,8 +1,9 @@
-# 🛡️ BAT Notu - v0.2.4
+# 🛡️ BAT Dosyaları Notu
 
-BAT dosyaları sadeleştirildi. Türkçe karakter komut satırında bozulmasın diye komut metinleri ASCII tutuldu.
+Bu pakette sadece iki BAT dosyası vardır:
 
-## Kullanım
-1. ZIP içeriğini proje klasörüne çıkar.
-2. BAT dosyalarını proje kökünde çalıştır.
-3. GitHub gönderme için Git kurulu olmalı.
+1. `01-siteyi-temizle-git-ve-bat-haric.bat`
+2. `02-githuba-otomatik-gonder.bat`
+
+❗ BAT dosyalarını proje klasörünün içinde çalıştır.
+❗ GitHub gönderme için bilgisayarda Git kurulu olmalı.

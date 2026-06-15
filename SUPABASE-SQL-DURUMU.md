@@ -1,12 +1,7 @@
-# 🗄️ Supabase SQL Durumu - v0.2.4
+# 🗄️ Supabase SQL Durumu - v0.2.5
 
-SQL dosyası pakette hazırdır: `supabase/schema.sql`
+✅ `supabase/schema.sql` güncellendi.
+✅ Toplu ekleme için `bulk_import_group` alanı eklendi.
+✅ Çoklu düzenleme için `last_edited_at` alanı eklendi.
 
-## Bu sürümde
-- ✅ Games tablosu korunur
-- ✅ Episodes tablosu korunur
-- ✅ Series / collections ilişkileri hazırlanır
-- ✅ Filtre alanları için `genres`, `tags`, `status` kullanılır
-
-## Not
-Bu sürümde site hâlâ ön yüz ağırlıklı çalışır. Gerçek Supabase veri çekme v0.3.0 tarafında güçlendirilecek.
+Not: Gerçek Supabase veri bağlantısı v0.3.x tarafında güçlenecek.

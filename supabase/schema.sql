@@ -1,7 +1,21 @@
--- Hayatımız Oyun v0.2.4 Supabase Schema
+-- Hayatimiz Oyun v0.2.5 Supabase Schema
 create extension if not exists "pgcrypto";
 
-create table if not exists series (
+drop table if exists public.episodes cascade;
+drop table if exists public.game_collections cascade;
+drop table if exists public.games cascade;
+drop table if exists public.collections cascade;
+drop table if exists public.series cascade;
+drop table if exists public.tags cascade;
+
+create table public.series (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  slug text unique not null,
+  created_at timestamptz default now()
+);
+
+create table public.collections (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   slug text unique not null,
@@ -9,47 +23,40 @@ create table if not exists series (
   created_at timestamptz default now()
 );
 
-create table if not exists collections (
+create table public.games (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   slug text unique not null,
-  description text,
-  cover_url text,
-  created_at timestamptz default now()
-);
-
-create table if not exists games (
-  id uuid primary key default gen_random_uuid(),
-  series_id uuid references series(id) on delete set null,
-  collection_id uuid references collections(id) on delete set null,
-  title text not null,
-  slug text unique not null,
-  status text not null default 'planned',
+  status text default 'planned',
   cover_url text,
   release_date date,
   genres text[] default '{}',
   tags text[] default '{}',
+  series_id uuid references public.series(id) on delete set null,
   steam_app_id text,
   rawg_id text,
+  bulk_import_group text,
+  last_edited_at timestamptz,
   created_at timestamptz default now()
 );
 
-create table if not exists episodes (
+create table public.episodes (
   id uuid primary key default gen_random_uuid(),
-  game_id uuid references games(id) on delete cascade,
+  game_id uuid references public.games(id) on delete cascade,
   title text not null,
   youtube_url text,
   episode_number int,
-  season_number int default 1,
   created_at timestamptz default now()
 );
 
-create table if not exists tags (
+create table public.game_collections (
+  game_id uuid references public.games(id) on delete cascade,
+  collection_id uuid references public.collections(id) on delete cascade,
+  primary key(game_id, collection_id)
+);
+
+create table public.tags (
   id uuid primary key default gen_random_uuid(),
   name text unique not null,
   created_at timestamptz default now()
 );
-
-create index if not exists idx_games_status on games(status);
-create index if not exists idx_games_title on games(title);
-create index if not exists idx_episodes_game_id on episodes(game_id);

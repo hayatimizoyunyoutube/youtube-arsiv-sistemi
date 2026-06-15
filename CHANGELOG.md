@@ -1,16 +1,11 @@
-# CHANGELOG - v0.2.4
+# 📝 CHANGELOG
 
-## ✅ Eklenenler
-- 🔎 Gelişmiş filtreleme alanı eklendi.
-- 📂 Devam Ediyor / Tamamlandı / Yakında ayrı ekran olarak korundu.
-- 🏷️ Tür, etiket ve sıralama filtreleri güçlendirildi.
-- 🎨 Site arayüzü daha modern hale getirildi.
-- 🚀 Vercel build sürüm yazısı v0.2.4 olarak güncellendi.
-- 🗄️ Supabase schema notları güncellendi.
+## v0.2.5
 
-## 🔜 Sonraki Sürümler
-- v0.2.5: Toplu oyun ekleme.
-- v0.2.6: İstatistik geliştirme.
-- v0.2.7: Yönetici araçları.
-- v0.2.8: Performans.
-- v0.2.9: Oyun yönetimi tamamlama.
+✨ Eklenenler:
+- ⚡ Toplu oyun ekleme alanı eklendi
+- 📋 Liste yapıştırma ve önizleme sistemi eklendi
+- 🧰 Çoklu düzenleme arayüzü hazırlandı
+- 🗄️ SQL dosyası toplu ekleme alanlarıyla güncellendi
+- 🚀 Vercel sürüm ve `dist` build fix korundu
+- 🛡️ BAT dosyaları sadeleştirildi: sadece 01 ve 02 var

@@ -1,16 +1,15 @@
-# Hayatımız Oyun - Site v0.2.4
+# 🎮 Hayatımız Oyun - YouTube Arşiv Sistemi v0.2.5
 
-Bu sürüm oyun yönetim sistemi için gelişmiş filtreleme ve çoklu kategori yapısını hazırlar.
+## ✅ Bu sürümde
+- ⚡ Toplu oyun ekleme ekranı
+- 🧰 Çoklu düzenleme taslağı
+- 📋 İçeri aktarma önizlemesi
+- 🔝 Üst menü butonları korunuyor
+- 📂 Devam Ediyor / Tamamlandı / Yakında ayrı açılıyor
+- 🚀 Vercel `dist` build fix korunuyor
 
 ## 🚀 Kurulum
-1. Dosyaları proje klasörüne çıkar.
-2. `npm install` çalıştır.
-3. `npm run build` çalıştır.
-4. Vercel deploy çıktısında `v0.2.4 build başarılı` yazmalıdır.
-
-## ✅ İçerik
-- 🔝 Üst butonlar
-- 📂 Ayrı kategori ekranları
-- 🔎 Gelişmiş arama/filtre
-- 🎨 Modern arayüz
-- 🗄️ Supabase SQL hazırlığı
+```bash
+npm install
+npm run build
+```
