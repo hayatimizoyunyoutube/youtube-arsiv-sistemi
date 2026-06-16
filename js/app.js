@@ -1,6 +1,11 @@
 async function loadData() {
     try {
+		
+		// app.js dosyasının en üstüne bunu ekle
+console.log("Supabase URL:", 'https://cdreaudjyujawqbfqnhv.supabase.co');
+// Sonra sayfayı yenile ve F12 Konsoluna bak
         // 1. Kategorileri Çek
+		
         const { data: kategoriler, error: katError } = await supabase.from('kategoriler').select('*');
         if (katError) console.error("Kategori hatası:", katError);
         
