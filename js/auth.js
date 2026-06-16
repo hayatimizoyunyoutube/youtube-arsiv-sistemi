@@ -1,36 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('login-btn');
     const registerBtn = document.getElementById('register-btn');
-    const message = document.getElementById('message');
+    const messageDiv = document.getElementById('message');
 
-    // Supabase'in yüklenmesini bekleyen bir kontrol
-    function getSupabase() {
+    // Supabase kontrolü
+    const checkSupabase = () => {
         if (!window.supabase) {
-            console.error("Supabase yüklenemedi!");
-            return null;
+            console.error("Supabase yüklenmedi!");
+            messageDiv.innerText = "Sistem yükleniyor, bekleyin...";
+            return false;
         }
-        return window.supabase;
-    }
+        return true;
+    };
 
     async function handleAuth(type) {
-        const client = getSupabase();
-        if (!client) return message.innerText = "Sistem yükleniyor, bekleyin...";
+        if (!checkSupabase()) return;
 
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        message.innerText = type === 'login' ? "Giriş yapılıyor..." : "Kayıt olunuyor...";
+        if (!email || !password) {
+            messageDiv.innerText = "Lütfen e-posta ve şifre girin!";
+            return;
+        }
+
+        messageDiv.innerText = type === 'login' ? "Giriş yapılıyor..." : "Kayıt olunuyor...";
 
         try {
-            const { error } = type === 'login' 
-                ? await client.auth.signInWithPassword({ email, password })
-                : await client.auth.signUp({ email, password });
+            const { data, error } = type === 'login' 
+                ? await window.supabase.auth.signInWithPassword({ email, password })
+                : await window.supabase.auth.signUp({ email, password });
 
             if (error) throw error;
-            message.innerText = type === 'login' ? "Giriş başarılı!" : "Kayıt başarılı!";
+
+            messageDiv.innerText = type === 'login' ? "Giriş başarılı!" : "Kayıt başarılı!";
             if (type === 'login') setTimeout(() => window.location.href = 'index.html', 1000);
         } catch (err) {
-            message.innerText = "Hata: " + err.message;
+            console.error("Auth Hata Detayı:", err);
+            messageDiv.innerText = "Hata: " + err.message;
         }
     }
 
