@@ -1,16 +1,35 @@
-// ... (Diğer kodlar aynı kalabilir, sadece register kısmını şu şekilde güncelle)
-registerBtn.addEventListener('click', async () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    
-    if (!email || !password) return showMessage("Lütfen bilgileri girin.", "#ff9900");
-    showMessage("Kayıt oluşturuluyor...", "#3ea6ff");
+document.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.getElementById('login-btn');
+    const registerBtn = document.getElementById('register-btn');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const messageDiv = document.getElementById('message');
 
-    const { error } = await supabase.auth.signUp({ email, password });
-
-    if (error) {
-        showMessage("Hata: " + error.message, "#ff4444");
-    } else {
-        showMessage("Kayıt başarılı! Giriş yapabilirsiniz.", "#28a745");
+    function showMessage(text, color) {
+        messageDiv.innerText = text;
+        messageDiv.style.color = color;
     }
+
+    loginBtn.addEventListener('click', async () => {
+        showMessage("Giriş yapılıyor...", "#3ea6ff");
+        const { error } = await supabase.auth.signInWithPassword({
+            email: emailInput.value,
+            password: passwordInput.value
+        });
+        if (error) showMessage(error.message, "#ff4444");
+        else {
+            showMessage("Başarılı! Yönlendiriliyorsunuz...", "#28a745");
+            setTimeout(() => window.location.href = 'index.html', 1000);
+        }
+    });
+
+    registerBtn.addEventListener('click', async () => {
+        showMessage("Kayıt olunuyor...", "#3ea6ff");
+        const { error } = await supabase.auth.signUp({
+            email: emailInput.value,
+            password: passwordInput.value
+        });
+        if (error) showMessage(error.message, "#ff4444");
+        else showMessage("Kayıt başarılı! Giriş yapabilirsiniz.", "#28a745");
+    });
 });
