@@ -91,7 +91,15 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./js/supabase-client.js"></script>
-	<script src="./js/app.js"></script>
+<script src="./js/supabase-client.js"></script>
+<script src="./js/app.js"></script> ```
+
+### ⚠️ Kritik Kontrol (Supabase URL)
+`js/supabase-client.js` dosyanı tekrar aç. Oradaki URL ve KEY bilgilerinin **sadece tırnak içinde** olduğundan ve aralarında boşluk olmadığından emin ol. 
+
+**Bir de şunu yap:**
+Vercel paneline git, **Deployments** sekmesine tıkla ve en son yaptığın deploy'un yanındaki üç noktaya basıp **"Redeploy"** de. Bazen Vercel, `js` dosyalarındaki değişiklikleri hemen görmeyebilir.
+
+Bu değişiklikleri yapıp tekrar `02-githuba-otomatik-gonder.bat` ile gönderdiğinde site anında açılacaktır. Eğer hala açılmazsa, tarayıcıda `F12` -> `Console` kısmına bak, orada hangi dosyanın "404" (bulunamadı) hatası verdiğini bana yaz, anında nokta atışı düzeltelim! Hazır mısın?
 </body>
 </html>
