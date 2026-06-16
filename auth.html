@@ -2,34 +2,27 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Hayatımız Oyun | Giriş</title>
+    <title>Giriş - Hayatımız Oyun</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .auth-box { background: #151515; padding: 40px; border-radius: 15px; border: 1px solid #333; width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { color: #fff; margin-bottom: 25px; font-weight: 300; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #222; color: white; box-sizing: border-box; }
-        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        body { background: #0a0a0a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: #151515; padding: 30px; border-radius: 12px; width: 300px; text-align: center; border: 1px solid #333; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #444; background: #222; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; margin: 5px 0; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         #login-btn { background: #3ea6ff; color: white; }
-        #register-btn { background: transparent; border: 1px solid #444; color: #ccc; }
-        button:hover { opacity: 0.8; }
-        #message { margin-top: 20px; font-size: 13px; font-weight: 500; }
-        .back-link { margin-top: 25px; display: block; color: #666; font-size: 12px; text-decoration: none; }
+        #register-btn { background: #333; color: white; }
+        #message { margin-top: 15px; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="auth-box">
+    <div class="box">
         <h2>Oturum Aç</h2>
         <input type="email" id="email" placeholder="E-posta">
         <input type="password" id="password" placeholder="Şifre">
-        <div class="btn-group">
-            <button id="login-btn" type="button">Giriş Yap</button>
-            <button id="register-btn" type="button">Kayıt Ol</button>
-        </div>
+        <button id="login-btn">Giriş Yap</button>
+        <button id="register-btn">Kayıt Ol</button>
         <div id="message"></div>
-        <a href="index.html" class="back-link">← Ana Sayfaya Dön</a>
+        <a href="index.html" style="color:#666; font-size:12px; display:block; margin-top:20px;">← Ana Sayfa</a>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./js/supabase-client.js"></script>
     <script src="./js/auth.js"></script>

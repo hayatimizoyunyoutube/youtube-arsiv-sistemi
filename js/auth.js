@@ -1,45 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('login-btn');
     const registerBtn = document.getElementById('register-btn');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const messageDiv = document.getElementById('message');
+    const message = document.getElementById('message');
 
-    function showMessage(text, color) {
-        messageDiv.innerText = text;
-        messageDiv.style.color = color;
+    async function handleAuth(type) {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        if (!email || !password) return message.innerText = "Alanları doldur!";
+        
+        message.innerText = "İşleniyor...";
+        
+        const { error } = type === 'login' 
+            ? await window.supabase.auth.signInWithPassword({ email, password })
+            : await window.supabase.auth.signUp({ email, password });
+
+        if (error) message.innerText = "Hata: " + error.message;
+        else {
+            message.innerText = type === 'login' ? "Giriş başarılı!" : "Kayıt başarılı!";
+            if (type === 'login') setTimeout(() => window.location.href = 'index.html', 1000);
+        }
     }
 
-    // GİRİŞ YAP
-    loginBtn.addEventListener('click', async () => {
-        showMessage("Giriş yapılıyor...", "#3ea6ff");
-        
-        const { error } = await window.supabase.auth.signInWithPassword({
-            email: emailInput.value,
-            password: passwordInput.value
-        });
-
-        if (error) {
-            showMessage("Hata: " + error.message, "#ff4444");
-        } else {
-            showMessage("Başarılı! Yönlendiriliyorsunuz...", "#28a745");
-            setTimeout(() => window.location.href = 'index.html', 1000);
-        }
-    });
-
-    // KAYIT OL
-    registerBtn.addEventListener('click', async () => {
-        showMessage("Kayıt olunuyor...", "#3ea6ff");
-        
-        const { error } = await window.supabase.auth.signUp({
-            email: emailInput.value,
-            password: passwordInput.value
-        });
-
-        if (error) {
-            showMessage("Hata: " + error.message, "#ff4444");
-        } else {
-            showMessage("Kayıt başarılı! Giriş yapabilirsiniz.", "#28a745");
-        }
-    });
+    if(loginBtn) loginBtn.onclick = () => handleAuth('login');
+    if(registerBtn) registerBtn.onclick = () => handleAuth('register');
 });
