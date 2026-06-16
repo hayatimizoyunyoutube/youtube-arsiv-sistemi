@@ -1,8 +1,9 @@
 {
-  "name": "youtube-oynatma-listesi",
+  "name": "youtube-arsiv-sistemi",
   "version": "0.0.1",
   "description": "Profesyonel Video Platformu",
   "scripts": {
+    "build": "echo 'Build islemine gerek yok, statik site.'",
     "start": "echo 'Sistem aktif!'"
   }
 }
