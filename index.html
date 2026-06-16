@@ -21,6 +21,9 @@
   </style>
 </head>
 <body>
+<div style="text-align: right; padding: 10px;">
+    <a href="auth.html" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Giriş Yap / Kayıt Ol</a>
+</div>
 <header><div class="wrap"><div class="top"><div class="brand"><div class="logo">🎮</div><div><h1>Hayatımız Oyun</h1><div class="muted">YouTube Arşiv Sistemi</div></div></div><div class="version">v0.2.5 • Toplu oyun ekleme & çoklu düzenleme</div></div><nav><button class="navbtn active" onclick="showPage('home',this)">🏠 Ana Sayfa</button><button class="navbtn" onclick="showPage('devam',this)">🟢 Devam Ediyor</button><button class="navbtn" onclick="showPage('tamam',this)">✅ Tamamlandı</button><button class="navbtn" onclick="showPage('yakinda',this)">🕒 Yakında</button><button class="navbtn" onclick="showPage('koleksiyon',this)">📚 Koleksiyonlar</button><button class="navbtn" onclick="showPage('admin',this)">🛠️ Yönetim</button><button class="navbtn" onclick="showPage('toplu',this)">⚡ Toplu Ekle</button><button class="navbtn" onclick="showPage('plan',this)">🚀 Gelecek</button></nav></div></header>
 <main class="wrap">
 <section id="home" class="section show"><div class="hero"><div class="panel"><h2>Oyun yönetiminde <span class="gradient">toplu işlem</span> dönemi başladı.</h2><p class="muted">v0.2.5 ile toplu oyun ekleme, çoklu düzenleme önizlemesi, CSV/JSON mantığı ve yönetim paneli iş akışı eklendi. Demo veri yavaş yavaş gerçek Supabase yapısına hazırlanıyor.</p><div class="stats"><div class="stat"><b id="sGames">7</b><span>Oyun</span></div><div class="stat"><b>3</b><span>Kategori</span></div><div class="stat"><b>4</b><span>Seri</span></div><div class="stat"><b>24</b><span>Bölüm</span></div></div></div><div class="panel"><h3>✅ v0.2.5 Durumu</h3><p>⚡ Toplu oyun ekleme alanı</p><p>🧰 Çoklu düzenleme taslağı</p><p>📋 İçeri aktarma önizlemesi</p><p>🚀 Vercel sürüm fix korundu</p><p>🗄️ SQL alanları güncel</p></div></div></section>
@@ -41,5 +44,8 @@ function card(x){let cls=x.st==='tamam'?'ok':x.st==='yakinda'?'soon':'warn';retu
 function render(st){let n=st==='devam'?1:st==='tamam'?2:3;let q=(document.getElementById('search'+n)?.value||'').toLowerCase();let ge=document.getElementById('genre'+n)?.value||'';let ta=document.getElementById('tag'+n)?.value||'';let so=document.getElementById('sort'+n)?.value||'new';let arr=games.filter(x=>x.st===st&&x.t.toLowerCase().includes(q)&&(!ge||x.g===ge)&&(!ta||x.tags.includes(ta)));if(so==='az')arr.sort((a,b)=>a.t.localeCompare(b.t,'tr'));document.getElementById('grid-'+st).innerHTML=arr.map(card).join('')||'<div class="panel">Sonuç bulunamadı.</div>'}
 function previewBulk(){let rows=document.getElementById('bulkText').value.split('\n').filter(Boolean).map(r=>r.split('|').map(x=>x.trim()));document.querySelector('#bulkTable tbody').innerHTML=rows.map(r=>`<tr><td>${r[0]||''}</td><td>${r[1]||''}</td><td>${r[2]||''}</td><td>${r[3]||''}</td><td>${r[4]||'0'}</td></tr>`).join('')}
 render('devam');render('tamam');render('yakinda');previewBulk();
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./js/supabase-client.js"></script>
 </script>
 </body></html>
