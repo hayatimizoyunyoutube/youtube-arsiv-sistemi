@@ -1,0 +1,8 @@
+{
+  "name": "youtube-oynatma-listesi",
+  "version": "0.0.1",
+  "description": "Profesyonel Video Platformu",
+  "scripts": {
+    "start": "echo 'Sistem aktif!'"
+  }
+}
