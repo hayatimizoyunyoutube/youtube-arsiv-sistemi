@@ -1,6 +1,5 @@
 # Planlanan Güncellemeler
 
-3.  **v0.0.7** - Admin Paneli: Yeni kategori ekleme formu.
 4.  **v0.0.8** - Video detay sayfası (Tıklandığında YouTube videosunun açılması).
 5.  **v0.0.9** - YouTube API entegrasyonu ile otomatik küçük resim çekme.
 6.  **v0.1.0** - Arama çubuğu ile video arama özelliği.

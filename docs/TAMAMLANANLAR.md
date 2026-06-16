@@ -6,3 +6,4 @@
 * **v0.0.4** - Dinamik veri çekme (Supabase -> Site) sistemi aktif edildi.
 * v0.0.5 - Kategoriye göre video filtreleme ve dinamik menü sistemi eklendi.
 * v0.0.6 - Admin Video Yonetim Paneli (CRUD temeli) eklendi.
+* v0.0.7 - Profesyonel navigasyon, kategori sistemleri ve yetki bazlı yönetim paneli görünürlüğü eklendi.

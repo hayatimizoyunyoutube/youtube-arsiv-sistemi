@@ -34,5 +34,12 @@ async function filterVideos(categoryId, element) {
     });
 }
 
-loadCategories();
-filterVideos(null, document.querySelector('li'));
+async function loadCategories() {
+    const { data: categories } = await supabase.from('categories').select('*');
+    const list = document.getElementById('category-list');
+    list.innerHTML = ''; 
+    
+    categories.forEach(cat => {
+        list.innerHTML += `<li onclick="filterVideos('${cat.id}', this)">${cat.name}</li>`;
+    });
+}
