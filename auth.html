@@ -1,30 +1,35 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Giriş - Hayatımız Oyun</title>
-    <style>
-        body { background: #0a0a0a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { background: #151515; padding: 30px; border-radius: 12px; width: 300px; text-align: center; border: 1px solid #333; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #444; background: #222; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; margin: 5px 0; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        #login-btn { background: #3ea6ff; color: white; }
-        #register-btn { background: #333; color: white; }
-        #message { margin-top: 15px; font-size: 14px; }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h2>Oturum Aç</h2>
-        <input type="email" id="email" placeholder="E-posta">
-        <input type="password" id="password" placeholder="Şifre">
-        <button id="login-btn">Giriş Yap</button>
-        <button id="register-btn">Kayıt Ol</button>
-        <div id="message"></div>
-        <a href="index.html" style="color:#666; font-size:12px; display:block; margin-top:20px;">← Ana Sayfa</a>
-    </div>
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./js/supabase-client.js"></script>
-    <script src="./js/auth.js"></script>
-</body>
-</html>
+document.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.getElementById('login-btn');
+    const registerBtn = document.getElementById('register-btn');
+    const message = document.getElementById('message');
+
+    async function handleAuth(type) {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        if (!email || !password) return message.innerText = "Bilgileri girin!";
+        
+        message.innerText = "İşleniyor...";
+        
+        // Supabase işlemini başlat
+        const { data, error } = type === 'login' 
+            ? await window.supabase.auth.signInWithPassword({ email, password })
+            : await window.supabase.auth.signUp({ email, password });
+
+        // Hata varsa konsola ve ekrana bas
+        if (error) {
+            console.error("Supabase Hatası:", error);
+            message.innerText = "Hata: " + error.message;
+        } else {
+            console.log("Supabase Yanıtı:", data); // Başarılıysa veriyi gör
+            if (type === 'login') {
+                message.innerText = "Giriş başarılı!";
+                setTimeout(() => window.location.href = 'index.html', 1000);
+            } else {
+                message.innerText = "Kayıt başarılı! Şimdi giriş yapabilirsiniz.";
+            }
+        }
+    }
+
+    if(loginBtn) loginBtn.onclick = () => handleAuth('login');
+    if(registerBtn) registerBtn.onclick = () => handleAuth('register');
+});
