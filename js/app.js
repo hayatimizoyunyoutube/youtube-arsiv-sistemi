@@ -54,4 +54,11 @@ async function filterVideos(categoryId, element) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', loadData);
+document.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            window.location.href = 'auth.html';
+        });
+    }
+});
