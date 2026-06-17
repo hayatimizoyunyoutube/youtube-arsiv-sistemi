@@ -1,10 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Supabase kontrolü (Eğer yüklenmemişse hata bas)
-    if (!window.supabase) {
-        console.error("Supabase yüklenemedi, bağlantı ayarlarını kontrol et!");
-        return;
-    }
-
     const loginBtn = document.getElementById('login-btn');
     const registerBtn = document.getElementById('register-btn');
     const emailInput = document.getElementById('email');
@@ -12,25 +6,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const message = document.getElementById('message');
 
     async function handleAuth(type) {
-        if (!emailInput || !passwordInput) return;
-        
-        message.innerText = type === 'login' ? "Giriş yapılıyor..." : "Kayıt olunuyor...";
+        if (!emailInput.value || !passwordInput.value) {
+            message.innerText = "Bilgileri girin!";
+            return;
+        }
+
+        message.innerText = "İşleniyor...";
 
         try {
-            const { error } = type === 'login' 
-                ? await window.supabase.auth.signInWithPassword({ email: emailInput.value, password: passwordInput.value })
-                : await window.supabase.auth.signUp({ email: emailInput.value, password: passwordInput.value });
+            // Supabase işlemini başlat
+            const { data, error } = type === 'login' 
+                ? await window.supabase.auth.signInWithPassword({ 
+                    email: emailInput.value, 
+                    password: passwordInput.value 
+                  })
+                : await window.supabase.auth.signUp({ 
+                    email: emailInput.value, 
+                    password: passwordInput.value 
+                  });
 
             if (error) throw error;
 
-            message.innerText = type === 'login' ? "Giriş başarılı!" : "Kayıt başarılı!";
-            if (type === 'login') setTimeout(() => window.location.href = 'index.html', 1000);
+            console.log("Supabase Yanıtı:", data);
+            
+            if (type === 'login') {
+                message.innerText = "Giriş başarılı!";
+                setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+            } else {
+                message.innerText = "Kayıt başarılı! Şimdi giriş yapabilirsiniz.";
+            }
         } catch (err) {
-            console.error("Auth Hata:", err);
+            console.error("Supabase Hatası:", err);
             message.innerText = "Hata: " + err.message;
         }
     }
 
-    if(loginBtn) loginBtn.onclick = () => handleAuth('login');
-    if(registerBtn) registerBtn.onclick = () => handleAuth('register');
+    if (loginBtn) loginBtn.onclick = () => handleAuth('login');
+    if (registerBtn) registerBtn.onclick = () => handleAuth('register');
 });
