@@ -1,6 +1,11 @@
-# Kurulum
 
-npm install
-npm run dev
+Vercel Ayarı:
 
-Vercel ile uyumludur.
+Framework Preset = Next.js
+
+Output Directory alanını BOŞ bırak.
+
+dist yazıyorsa sil.
+
+Build Command:
+next build

@@ -1,4 +1,5 @@
-export const metadata={title:'Hayatımız Oyun Arşiv'};
+
+export const metadata={title:'Hayatımız Oyun'};
 export default function RootLayout({children}){
- return <html lang="tr"><body>{children}</body></html>
+ return <html lang="tr"><body>{children}</body></html>;
 }

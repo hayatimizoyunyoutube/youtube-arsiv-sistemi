@@ -1,9 +1,9 @@
-export default function Home(){
+
+export default function Page(){
  return (
-  <main style={{padding:'40px',fontFamily:'Arial'}}>
+  <main>
    <h1>Hayatımız Oyun Arşiv Sistemi</h1>
-   <p>v0.0.1 çalışan altyapı</p>
-   <p>Supabase ve YouTube entegrasyonları sonraki sürümlerde eklenecek.</p>
+   <p>Vercel düzeltme paketi</p>
   </main>
- )
+ );
 }
