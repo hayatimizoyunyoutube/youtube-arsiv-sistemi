@@ -1,1 +1,0 @@
-Vercel yapılandırmaları burada tutulacak.

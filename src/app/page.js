@@ -1,9 +1,1 @@
-
-export default function Page(){
- return (
-  <main>
-   <h1>Hayatımız Oyun Arşiv Sistemi</h1>
-   <p>Vercel düzeltme paketi</p>
-  </main>
- );
-}
+export default function Home(){return <main><h1>Hayatımız Oyun YouTube Arşivi</h1><p>v0.0.1</p></main>}

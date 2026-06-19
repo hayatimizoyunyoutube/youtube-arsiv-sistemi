@@ -1,1 +1,0 @@
-Supabase dosyaları burada tutulacak.
