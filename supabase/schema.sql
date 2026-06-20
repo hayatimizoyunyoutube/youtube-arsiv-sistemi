@@ -1,1 +1,0 @@
-create table oyunlar(id bigint primary key);

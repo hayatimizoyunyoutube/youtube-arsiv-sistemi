@@ -1,1 +1,0 @@
-Vercel Framework: Next.js

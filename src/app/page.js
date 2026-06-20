@@ -1,1 +1,0 @@
-export default function Home(){return <main><h1>Hayatımız Oyun YouTube Arşivi</h1><p>v0.0.1</p></main>}
