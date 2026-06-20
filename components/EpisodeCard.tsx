@@ -1,0 +1,1 @@
+export default function EpisodeCard(){return <div>Episode</div>}

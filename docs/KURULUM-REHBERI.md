@@ -1,0 +1,1 @@
+# Kurulum\nnpm install\nnpm run dev
